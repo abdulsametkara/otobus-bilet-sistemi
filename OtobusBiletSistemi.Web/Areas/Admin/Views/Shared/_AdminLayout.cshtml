@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Otobüs Bilet Admin Panel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Admin Panel CSS -->
+    <style>
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fc;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #5a67d8 0%, #667eea 100%);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1000;
+            position: relative;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 1001;
+            position: relative;
+            user-select: none;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+        
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            color: #5a67d8 !important;
+        }
+        
+        .text-gray-800 {
+            color: #5a5c69 !important;
+        }
+        
+        .text-gray-300 {
+            color: #dddfeb !important;
+        }
+        
+        .text-gray-500 {
+            color: #858796 !important;
+        }
+        
+        .shadow {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <!-- Logo -->
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">
+                            <i class="fas fa-bus me-2"></i>
+                            Admin Panel
+                        </h4>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" 
+                               href="/Admin">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Kullanici" ? "active" : "")" 
+                               href="/Admin/Kullanici">
+                                <i class="fas fa-users me-2"></i>
+                                Kullanıcılar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Otobus" ? "active" : "")" 
+                               href="/Admin/Otobus">
+                                <i class="fas fa-bus me-2"></i>
+                                Otobüsler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Sefer" ? "active" : "")" 
+                               href="/Admin/Sefer">
+                                <i class="fas fa-route me-2"></i>
+                                Seferler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Bilet" ? "active" : "")" 
+                               href="/Admin/Bilet">
+                                <i class="fas fa-ticket-alt me-2"></i>
+                                Biletler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Rapor" ? "active" : "")" 
+                               href="/Admin/Rapor">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Raporlar
+                            </a>
+                        </li>
+                        
+                        <hr class="my-3" style="border-color: rgba(255,255,255,0.2);">
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Ana Siteye Dön
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Çıkış Yap
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Top Navigation -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/Admin">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                        </ol>
+                    </nav>
+                    
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>
+                                @User.Identity.Name
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <span class="badge bg-success ms-1">Admin</span>
+                                }
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/">Ana Site</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Çıkış Yap</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Content -->
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Fix Sidebar Links -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar linklerini manuel olarak çalışır hale getir
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            sidebarLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    console.log('Sidebar link clicked:', this.getAttribute('href'));
+                    
+                    // Eğer href varsa, sayfayı yönlendir
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#' && href !== 'javascript:void(0)') {
+                        e.preventDefault();
+                        window.location.href = href;
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

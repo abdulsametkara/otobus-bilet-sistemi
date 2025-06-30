@@ -1,0 +1,144 @@
+@model OtobusBiletSistemi.Core.Data.YolcuUser
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Yeni Kullanıcı Ekle
+                    </h2>
+                    <p class="text-muted mb-0">Sisteme yeni kullanıcı ekleyin</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-user-edit me-2"></i>
+                        Kullanıcı Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Admin/Kullanici/Create">
+                        @Html.AntiForgeryToken()
+                        
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>Hatalar:</h6>
+                                <ul class="mb-0">
+                                    @foreach (var error in ViewData.ModelState.SelectMany(x => x.Value.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="TCNo" class="form-label">TC Kimlik No</label>
+                                <input name="TCNo" type="text" class="form-control" placeholder="TC Kimlik Numarası" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Email" class="form-label">Email</label>
+                                <input name="Email" type="email" class="form-control" placeholder="email@example.com" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Ad" class="form-label">Ad</label>
+                                <input name="Ad" type="text" class="form-control" placeholder="Ad" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Soyad" class="form-label">Soyad</label>
+                                <input name="Soyad" type="text" class="form-control" placeholder="Soyad" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="TelNo" class="form-label">Telefon</label>
+                                <input name="TelNo" type="text" class="form-control" placeholder="0555 123 45 67" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Şifre</label>
+                                <input name="password" type="password" class="form-control" placeholder="Şifre" required />
+                                <small class="form-text text-muted">Minimum 6 karakter</small>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/Admin/Kullanici" class="btn btn-secondary">
+                                        <i class="fas fa-times me-1"></i>
+                                        İptal
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>
+                                        Kullanıcı Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Bilgi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Önemli Notlar:</h6>
+                        <ul class="mb-0">
+                            <li>TC Kimlik No 11 haneli olmalıdır</li>
+                            <li>Email adresi benzersiz olmalıdır</li>
+                            <li>Şifre minimum 6 karakter olmalıdır</li>
+                            <li>Telefon numarası geçerli format olmalıdır</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+ 

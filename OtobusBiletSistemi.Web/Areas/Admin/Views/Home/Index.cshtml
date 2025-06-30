@@ -1,0 +1,457 @@
+@using OtobusBiletSistemi.Web.Areas.Admin.Controllers
+@model AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Panel - Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Welcome Section -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                Dashboard
+            </h1>
+            <p class="text-muted mb-0">Hoş geldiniz!</p>
+        </div>
+        <div class="d-none d-lg-inline-block">
+            <div class="text-end">
+                <small class="text-muted d-block">Son güncelleme</small>
+                <span class="badge bg-light text-dark">
+                    <i class="fas fa-clock me-1"></i>
+                    @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ana İstatistik Kartları -->
+    <div class="row mb-4">
+        <!-- Toplam Bilet -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card stat-primary h-100 shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">Toplam Bilet</div>
+                            <div class="stat-value">@Model.ToplamBiletSayisi.ToString("N0")</div>
+                            <div class="stat-trend">
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Gelir -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card stat-success h-100 shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">Toplam Gelir</div>
+                            <div class="stat-value">₺@Model.ToplamGelir.ToString("N2")</div>
+                            <div class="stat-trend">
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bugünkü Satış -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card stat-info h-100 shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">Bugünkü Satış</div>
+                            <div class="stat-value">@Model.BugunBiletSayisi</div>
+                            <div class="stat-sub">₺@Model.BugunGelir.ToString("N2")</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kayıtlı Kullanıcı -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card stat-warning h-100 shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">Kayıtlı Kullanıcı</div>
+                            <div class="stat-value">@Model.ToplamKullaniciSayisi.ToString("N0")</div>
+                            <div class="stat-trend">
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İkinci Satır - Detaylı Kartlar -->
+    <div class="row mb-4">
+        <!-- Aylık Performans -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card modern-card h-100 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-chart-line me-2"></i>
+                        <h6 class="m-0 font-weight-bold">Bu Ay Satış Performansı</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="performance-metric">
+                                <div class="metric-icon bg-primary">
+                                    <i class="fas fa-ticket-alt text-white"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Aylık Bilet Satışı</div>
+                                    <div class="metric-value text-primary">@Model.AylikBiletSayisi</div>
+                                    <div class="progress mt-2" style="height: 1px;">
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="performance-metric">
+                                <div class="metric-icon bg-success">
+                                    <i class="fas fa-lira-sign text-white"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Aylık Gelir</div>
+                                    <div class="metric-value text-success">₺@Model.AylikGelir.ToString("N2")</div>
+                                    <div class="progress mt-2" style="height: 1px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bilet Durum Analizi -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card modern-card h-100 shadow-lg">
+                <div class="card-header bg-gradient-info text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        <h6 class="m-0 font-weight-bold">Bilet Durum Analizi</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-icon bg-success">
+                                <i class="fas fa-check-circle text-white"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-number text-success">@Model.AktifBiletSayisi</div>
+                                <div class="status-label">Aktif Bilet</div>
+                                <div class="status-percentage">%@(Model.ToplamBiletSayisi > 0 ? Math.Round((double)Model.AktifBiletSayisi / Model.ToplamBiletSayisi * 100, 1) : 0)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-icon bg-danger">
+                                <i class="fas fa-times-circle text-white"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-number text-danger">@Model.IptalBiletSayisi</div>
+                                <div class="status-label">İptal Edilen</div>
+                                <div class="status-percentage">%@(Model.ToplamBiletSayisi > 0 ? Math.Round((double)Model.IptalBiletSayisi / Model.ToplamBiletSayisi * 100, 1) : 0)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="progress-stacked" style="height: 10px;">
+                            <div class="progress-bar bg-success" style="width: @(Model.ToplamBiletSayisi > 0 ? (double)Model.AktifBiletSayisi / Model.ToplamBiletSayisi * 100 : 0)%"></div>
+                            <div class="progress-bar bg-danger" style="width: @(Model.ToplamBiletSayisi > 0 ? (double)Model.IptalBiletSayisi / Model.ToplamBiletSayisi * 100 : 0)%"></div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">Toplam @Model.ToplamBiletSayisi bilet</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modern Dashboard Styles */
+.stat-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.stat-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+.stat-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+.stat-info { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+.stat-warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+
+.stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0.5rem 0;
+}
+
+.stat-sub {
+    font-size: 1rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.stat-trend {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.modern-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.bg-gradient-info { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+.bg-gradient-dark { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
+
+.performance-metric {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.metric-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.status-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.status-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.status-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.status-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.status-percentage {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.quick-action-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    color: inherit;
+    text-decoration: none;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: transparent;
+}
+
+.quick-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+}
+
+.quick-icon i {
+    font-size: 1.5rem;
+}
+
+.quick-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: #2c3e50;
+}
+
+.quick-subtitle {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.border-left-primary {
+    border-left: 4px solid #667eea !important;
+}
+
+.progress-stacked {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Animasyonlar */
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card, .modern-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .performance-metric {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .metric-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}
+</style> 
+    .btn-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50% !important;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card {
+        transition: all 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,.12) !important;
+    }
+</style> 

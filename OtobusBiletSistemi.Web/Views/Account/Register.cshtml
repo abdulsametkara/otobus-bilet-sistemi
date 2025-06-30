@@ -1,0 +1,222 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h2><i class="fas fa-user-plus me-2"></i>Kayıt Ol</h2>
+                        <p class="mb-0">Yeni hesap oluşturun</p>
+                    </div>
+                    
+                    <div class="auth-body">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                        
+                        <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Ad" class="form-control" placeholder="Adınız" required />
+                                        <label asp-for="Ad"><i class="fas fa-user me-2"></i>Adınız</label>
+                                        <span asp-validation-for="Ad" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Soyad" class="form-control" placeholder="Soyadınız" required />
+                                        <label asp-for="Soyad"><i class="fas fa-user me-2"></i>Soyadınız</label>
+                                        <span asp-validation-for="Soyad" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input asp-for="TCNo" class="form-control" placeholder="11 haneli TC Kimlik No" maxlength="11" required />
+                                <label asp-for="TCNo"><i class="fas fa-id-card me-2"></i>TC Kimlik No</label>
+                                <span asp-validation-for="TCNo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" required />
+                                <label asp-for="Email"><i class="fas fa-envelope me-2"></i>Email Adresiniz</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input asp-for="TelNo" class="form-control" placeholder="0555 123 45 67" required />
+                                <label asp-for="TelNo"><i class="fas fa-phone me-2"></i>Telefon Numaranız</label>
+                                <span asp-validation-for="TelNo" class="text-danger"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Password" type="password" class="form-control" placeholder="En az 6 karakter" required />
+                                        <label asp-for="Password"><i class="fas fa-lock me-2"></i>Şifreniz</label>
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Şifrenizi tekrar girin" required />
+                                        <label asp-for="ConfirmPassword"><i class="fas fa-lock me-2"></i>Şifre Tekrar</label>
+                                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="terms" required />
+                                <label class="form-check-label" for="terms">
+                                    <i class="fas fa-check me-1"></i>
+                                    <a href="#" class="text-decoration-none">Kullanım koşullarını</a> ve 
+                                    <a href="#" class="text-decoration-none">gizlilik politikasını</a> kabul ediyorum
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-auth">
+                                <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                            </button>
+                        </form>
+                        
+                        <div class="auth-links">
+                            <p class="mb-0">
+                                Zaten hesabınız var mı? 
+                                <a asp-action="Login" class="text-decoration-none">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Giriş Yapın
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus first input
+            document.querySelector('input[name="Ad"]').focus();
+            
+            // TC No input formatting
+            const tcInput = document.querySelector('input[name="TCNo"]');
+            tcInput.addEventListener('input', function() {
+                // Only allow numbers
+                this.value = this.value.replace(/\D/g, '');
+            });
+            
+            // Phone input formatting
+            const phoneInput = document.querySelector('input[name="TelNo"]');
+            phoneInput.addEventListener('input', function() {
+                // Auto format phone number
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 4 && value.length <= 7) {
+                    value = value.replace(/^(\d{4})(\d+)/, '$1 $2');
+                } else if (value.length >= 8) {
+                    value = value.replace(/^(\d{4})(\d{3})(\d+)/, '$1 $2 $3');
+                }
+                this.value = value;
+            });
+        });
+    </script>
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3><i class="fas fa-user-plus me-2"></i>Kayıt Ol</h3>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Hata mesajları gösterimi -->
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    
+                    <form asp-action="Register" method="post">
+                        
+                        <!-- TC Kimlik No -->
+                        <div class="mb-3">
+                            <label asp-for="TCNo" class="form-label">TC Kimlik No</label>
+                            <input asp-for="TCNo" class="form-control" placeholder="11 haneli TC Kimlik No" />
+                            <span asp-validation-for="TCNo" class="text-danger"></span>
+                        </div>
+
+                        <!-- Kullanıcı Adı -->
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label">Kullanıcı Adı</label>
+                            <input asp-for="UserName" class="form-control" placeholder="Kullanıcı adınız" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Ad -->
+                        <div class="mb-3">
+                            <label asp-for="Ad" class="form-label">Ad</label>
+                            <input asp-for="Ad" class="form-control" placeholder="Adınız" />
+                            <span asp-validation-for="Ad" class="text-danger"></span>
+                        </div>
+
+                        <!-- Soyad -->
+                        <div class="mb-3">
+                            <label asp-for="Soyad" class="form-label">Soyad</label>
+                            <input asp-for="Soyad" class="form-control" placeholder="Soyadınız" />
+                            <span asp-validation-for="Soyad" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Telefon -->
+                        <div class="mb-3">
+                            <label asp-for="TelNo" class="form-label">Telefon</label>
+                            <input asp-for="TelNo" class="form-control" placeholder="0555 123 45 67" />
+                            <span asp-validation-for="TelNo" class="text-danger"></span>
+                        </div>
+
+                        <!-- Şifre -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Şifre</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="En az 6 karakter" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Şifre Tekrar -->
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Şifrenizi tekrar girin" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <!-- Kayıt Ol Butonu -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Giriş yap linki -->
+                    <div class="text-center mt-3">
+                        <p>Zaten hesabınız var mı? 
+                            <a asp-action="Login" class="text-decoration-none">Giriş yapın</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,285 @@
+@model OtobusBiletSistemi.Core.Entities.Sefer
+
+@{
+    ViewData["Title"] = "Yeni Sefer Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Sayfa Başlığı -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-plus-circle text-success me-2"></i>
+                Yeni Sefer Ekle
+            </h1>
+            <p class="text-muted mb-0">Yeni bir otobüs seferi planlayın</p>
+        </div>
+        <div>
+            <a href="/Admin/Sefer" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>
+                Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Sefer Bilgileri -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-success text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Sefer Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Lütfen aşağıdaki hataları düzeltin:</h6>
+                            <ul class="mb-0">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form method="post" action="/Admin/Sefer/Create">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="GuzergahID" class="form-label">
+                                        <i class="fas fa-route me-1 text-primary"></i>
+                                        Güzergah <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="GuzergahID" name="GuzergahID" class="form-select" required>
+                                        <option value="">Güzergah Seçin...</option>
+                                        @foreach (var guzergah in ViewBag.Guzergahlar as List<OtobusBiletSistemi.Core.Entities.Guzergah>)
+                                        {
+                                            <option value="@guzergah.GuzergahID">
+                                                @guzergah.Nereden → @guzergah.Nereye (@guzergah.Mesafe km)
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="GuzergahID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="OtobusID" class="form-label">
+                                        <i class="fas fa-bus me-1 text-primary"></i>
+                                        Otobüs <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="OtobusID" name="OtobusID" class="form-select" required>
+                                        <option value="">Otobüs Seçin...</option>
+                                        @foreach (var otobus in ViewBag.Otobusler as List<OtobusBiletSistemi.Core.Entities.Otobus>)
+                                        {
+                                            <option value="@otobus.OtobusID">
+                                                @otobus.Plaka - @otobus.OtobusTipi (@otobus.KoltukSayısı koltuk)
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="OtobusID" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Tarih" class="form-label">
+                                        <i class="fas fa-calendar me-1 text-primary"></i>
+                                        Sefer Tarihi <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Tarih" name="Tarih" type="date" class="form-control" 
+                                           min="@DateTime.Today.ToString("yyyy-MM-dd")" required>
+                                    <span asp-validation-for="Tarih" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Saat" class="form-label">
+                                        <i class="fas fa-clock me-1 text-primary"></i>
+                                        Kalkış Saati <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Saat" name="Saat" type="time" class="form-control" required>
+                                    <span asp-validation-for="Saat" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Kalkis" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1 text-success"></i>
+                                        Kalkış Terminali <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Kalkis" name="Kalkis" type="text" class="form-control" 
+                                           placeholder="Örn: Ankara Otogarı" required>
+                                    <span asp-validation-for="Kalkis" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Varis" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                        Varış Terminali <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Varis" name="Varis" type="text" class="form-control" 
+                                           placeholder="Örn: İstanbul Esenler Otogarı" required>
+                                    <span asp-validation-for="Varis" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success me-2">
+                                    <i class="fas fa-save me-1"></i>
+                                    Seferi Kaydet
+                                </button>
+                                <a href="/Admin/Sefer" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>
+                                    İptal
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Yardım & Bilgi -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Sefer Planlama İpuçları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-primary">
+                            <i class="fas fa-clock me-1"></i>
+                            Zaman Planlaması
+                        </h6>
+                        <p class="small text-muted mb-0">
+                            Seferler arasında en az 30 dakika ara bırakın. Aynı otobüsün aynı saatte farklı seferi olamaz.
+                        </p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-success">
+                            <i class="fas fa-route me-1"></i>
+                            Güzergah Seçimi
+                        </h6>
+                        <p class="small text-muted mb-0">
+                            Popüler güzergahlar için daha fazla sefer planlayın. Mesafe bilgisini kontrol edin.
+                        </p>
+                    </div>
+                    
+                    <div class="mb-0">
+                        <h6 class="text-warning">
+                            <i class="fas fa-bus me-1"></i>
+                            Otobüs Kapasitesi
+                        </h6>
+                        <p class="small text-muted mb-0">
+                            Otobüs koltuk sayısını göz önünde bulundurarak sefer sıklığını belirleyin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mevcut Seferler Özeti -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Günlük Sefer İstatistikleri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="mb-2">
+                            <h4 class="text-primary font-weight-bold mb-0">
+                                @DateTime.Today.ToString("dd")
+                            </h4>
+                            <small class="text-muted">@DateTime.Today.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</small>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <h6 class="text-success mb-1">Sabah</h6>
+                                    <small class="text-muted">06:00-12:00</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-info mb-1">Akşam</h6>
+                                <small class="text-muted">18:00-24:00</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #11998e;
+    box-shadow: 0 0 0 0.2rem rgba(17, 153, 142, 0.25);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #0e8574 0%, #2dd464 100%);
+    transform: translateY(-1px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tarih input'unu bugün ile başlat
+    const tarihInput = document.querySelector('input[name="Tarih"]');
+    if (tarihInput && !tarihInput.value) {
+        tarihInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Saat input'unu şu anki saat ile başlat
+    const saatInput = document.querySelector('input[name="Saat"]');
+    if (saatInput && !saatInput.value) {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(Math.ceil(now.getMinutes() / 15) * 15).padStart(2, '0');
+        saatInput.value = `${hours}:${minutes}`;
+    }
+});
+</script>

@@ -1,0 +1,319 @@
+@model OtobusBiletSistemi.Web.Models.YolcuBilgileriViewModel
+
+@{
+    ViewData["Title"] = "Yolcu Bilgileri";
+}
+
+<div class="container mt-4">
+    <!-- Sefer Özeti -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-bus me-2"></i>Sefer Özeti
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Güzergah:</strong><br>
+                    <span class="text-success">@Model.KalkisTerminali</span>
+                    <i class="fas fa-arrow-right mx-2"></i>
+                    <span class="text-danger">@Model.VarisTerminali</span>
+                </div>
+                <div class="col-md-2">
+                    <strong>Tarih:</strong><br>
+                    @Model.SeferTarihi
+                </div>
+                <div class="col-md-2">
+                    <strong>Saat:</strong><br>
+                    @Model.KalkisSaati
+                </div>
+                <div class="col-md-2">
+                    <strong>Otobüs:</strong><br>
+                    @(Model.Otobus?.Plaka ?? "Bilinmiyor")
+                </div>
+                <div class="col-md-3">
+                    <strong>Seçilen Koltuklar:</strong><br>
+                    @foreach (var koltuk in Model.Koltuklar)
+                    {
+                        <span class="badge bg-info me-1">@koltuk.KoltukNo</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Lütfen aşağıdaki hataları düzeltiniz:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Yolcu Bilgileri Formu -->
+    <form asp-action="YolcuBilgileri" method="post" id="yolcuBilgileriForm">
+        <!-- Hidden fields for maintaining data -->
+        <input type="hidden" asp-for="BiletFiyati" />
+        
+        <div class="row">
+            <!-- Yolcu Bilgileri -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>Yolcu Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @for (int i = 0; i < Model.YolcuBilgileri.Count; i++)
+                        {
+                            <div class="passenger-section mb-4">
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="fas fa-user me-2"></i>
+                                            @(i + 1). Yolcu - Koltuk @Model.YolcuBilgileri[i].KoltukNo
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" asp-for="YolcuBilgileri[i].KoltukID" />
+                                <input type="hidden" asp-for="YolcuBilgileri[i].KoltukNo" />
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].TCNo" class="form-label">
+                                            <i class="fas fa-id-card me-1"></i>TC Kimlik No *
+                                        </label>
+                                        <input asp-for="YolcuBilgileri[i].TCNo" class="form-control" placeholder="12345678901" maxlength="11" />
+                                        <span asp-validation-for="YolcuBilgileri[i].TCNo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].Cinsiyet" class="form-label">
+                                            <i class="fas fa-venus-mars me-1"></i>Cinsiyet
+                                        </label>
+                                        <select asp-for="YolcuBilgileri[i].Cinsiyet" class="form-select">
+                                            <option value="">Seçiniz</option>
+                                            <option value="Erkek">Erkek</option>
+                                            <option value="Kadın">Kadın</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].Ad" class="form-label">
+                                            <i class="fas fa-user me-1"></i>Ad *
+                                        </label>
+                                        <input asp-for="YolcuBilgileri[i].Ad" class="form-control" placeholder="Ad" />
+                                        <span asp-validation-for="YolcuBilgileri[i].Ad" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].Soyad" class="form-label">
+                                            <i class="fas fa-user me-1"></i>Soyad *
+                                        </label>
+                                        <input asp-for="YolcuBilgileri[i].Soyad" class="form-control" placeholder="Soyad" />
+                                        <span asp-validation-for="YolcuBilgileri[i].Soyad" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].Telefon" class="form-label">
+                                            <i class="fas fa-phone me-1"></i>Telefon *
+                                        </label>
+                                        <input asp-for="YolcuBilgileri[i].Telefon" class="form-control" placeholder="05xxxxxxxxx" maxlength="11" />
+                                        <span asp-validation-for="YolcuBilgileri[i].Telefon" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="YolcuBilgileri[i].Email" class="form-label">
+                                            <i class="fas fa-envelope me-1"></i>E-posta *
+                                        </label>
+                                        <input asp-for="YolcuBilgileri[i].Email" type="email" class="form-control" placeholder="ornek@email.com" />
+                                        <span asp-validation-for="YolcuBilgileri[i].Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                @if (i < Model.YolcuBilgileri.Count - 1)
+                                {
+                                    <hr class="my-4">
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rezervasyon Özeti -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>Rezervasyon Özeti
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Koltuk Bilgileri -->
+                        <div class="mb-3">
+                            <h6>Seçilen Koltuklar:</h6>
+                            <div>
+                                @foreach (var koltuk in Model.Koltuklar)
+                                {
+                                    <span class="badge bg-primary me-1 mb-1">@koltuk.KoltukNo</span>
+                                }
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Fiyat Detayı -->
+                        <div class="mb-3">
+                            <h6>Fiyat Detayı:</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Bilet Fiyatı:</span>
+                                <span>₺@Model.BiletFiyati.ToString("N2")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Yolcu Sayısı:</span>
+                                <span>@Model.YolcuBilgileri.Count kişi</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Toplam:</span>
+                                <span class="text-primary">₺@Model.ToplamFiyat.ToString("N2")</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- İletişim Bilgisi -->
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Biletiniz ve sefer bilgileri e-posta adresinize gönderilecektir.
+                            </small>
+                        </div>
+
+                        <!-- Devam Et Butonu -->
+                        <button type="submit" class="btn btn-success w-100 btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Ödemeye Geç
+                        </button>
+
+                        <div class="mt-3 text-center">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .passenger-section {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #007bff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // TC Kimlik No sadece rakam girişi
+        const tcInputs = document.querySelectorAll('input[name*="TCNo"]');
+        tcInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        // Telefon sadece rakam girişi
+        const telefonInputs = document.querySelectorAll('input[name*="Telefon"]');
+        telefonInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        // Ad ve Soyad için harf, rakam ve boşluk girişi (daha esnek)
+        const adInputs = document.querySelectorAll('input[name*="Ad"], input[name*="Soyad"]');
+        adInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                // Türkçe karakterler, harfler, rakamlar ve boşluk
+                this.value = this.value.replace(/[^a-zA-ZçğıöşüÇĞIİÖŞÜ0-9\s]/g, '');
+            });
+        });
+
+        // Form submit validation
+        const form = document.getElementById('yolcuBilgileriForm');
+        form.addEventListener('submit', function(e) {
+            let hasError = false;
+            
+            // Tüm gerekli alanları kontrol et
+            const requiredInputs = form.querySelectorAll('input[required], input[name*="TCNo"], input[name*="Ad"], input[name*="Soyad"], input[name*="Telefon"], input[name*="Email"]');
+            
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    hasError = true;
+                    input.classList.add('is-invalid');
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            if (hasError) {
+                e.preventDefault();
+                alert('Lütfen tüm zorunlu alanları doldurunuz.');
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+ 
+ 
+ 
+ 

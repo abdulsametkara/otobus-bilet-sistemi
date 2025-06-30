@@ -1,0 +1,410 @@
+@using OtobusBiletSistemi.Core.Entities
+@model IEnumerable<OtobusBiletSistemi.Core.Entities.Sefer>
+
+@{
+    ViewData["Title"] = "Sefer Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <!-- Sayfa Başlığı -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-route text-primary me-2"></i>
+                Sefer Yönetimi
+            </h1>
+            <p class="text-muted mb-0">Otobüs seferlerini planlayın ve yönetin</p>
+        </div>
+        <div>
+            <a href="/Admin/Sefer/Create" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>
+                Yeni Sefer
+            </a>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card-mini bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label-mini">Toplam Sefer</div>
+                            <div class="stat-value-mini">@Model.Count()</div>
+                        </div>
+                        <div class="stat-icon-mini">
+                            <i class="fas fa-route"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card-mini bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label-mini">Bugünkü Sefer</div>
+                            <div class="stat-value-mini">@Model.Count(s => s.Tarih.Date == DateTime.Today)</div>
+                        </div>
+                        <div class="stat-icon-mini">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card-mini bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label-mini">Aktif Güzergah</div>
+                            <div class="stat-value-mini">@Model.Select(s => s.GuzergahID).Distinct().Count()</div>
+                        </div>
+                        <div class="stat-icon-mini">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card-mini bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-label-mini">Aktif Otobüs</div>
+                            <div class="stat-value-mini">@Model.Select(s => s.OtobusID).Distinct().Count()</div>
+                        </div>
+                        <div class="stat-icon-mini">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arama ve Filtre -->
+    <div class="card mb-4">
+        <div class="card-body py-3">
+            <form method="get" action="/Admin/Sefer" class="row align-items-center">
+                <div class="col-md-3">
+                    <input type="text" name="searchGuzergah" class="form-control form-control-sm" 
+                           placeholder="Güzergah ara (Ankara, İstanbul...)" value="@ViewBag.SearchGuzergah">
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="filterTarih" class="form-control form-control-sm" 
+                           value="@ViewBag.FilterTarih">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="searchOtobus" class="form-control form-control-sm" 
+                           placeholder="Otobüs plakası ara..." value="@ViewBag.SearchOtobus">
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill">
+                            <i class="fas fa-search me-1"></i>
+                            Filtrele
+                        </button>
+                        @if (!string.IsNullOrEmpty(ViewBag.SearchGuzergah as string) || 
+                             !string.IsNullOrEmpty(ViewBag.FilterTarih as string) || 
+                             !string.IsNullOrEmpty(ViewBag.SearchOtobus as string))
+                        {
+                            <a href="/Admin/Sefer" class="btn btn-outline-secondary btn-sm" title="Filtreleri Temizle">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sefer Tablosu -->
+    <div class="card shadow">
+        <div class="card-header py-3 bg-gradient-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-table me-2"></i>
+                    Sefer Listesi
+                    @if (!string.IsNullOrEmpty(ViewBag.SearchGuzergah as string) || 
+                         !string.IsNullOrEmpty(ViewBag.FilterTarih as string) || 
+                         !string.IsNullOrEmpty(ViewBag.SearchOtobus as string))
+                    {
+                        <small class="text-light ms-2">
+                            Filtrelenmiş - @Model.Count() sonuç
+                        </small>
+                    }
+                    else
+                    {
+                        <small class="text-light ms-2">
+                            Toplam @Model.Count() sefer
+                        </small>
+                    }
+                </h6>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sefer No</th>
+                                <th>Güzergah</th>
+                                <th>Tarih & Saat</th>
+                                <th>Otobüs</th>
+                                <th>Terminal Bilgileri</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sefer in Model.OrderBy(s => s.Tarih).ThenBy(s => s.Saat))
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">#@sefer.SeferID</strong>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="route-icon me-2">
+                                                <i class="fas fa-arrow-right text-success"></i>
+                                            </div>
+                                            <div>
+                                                <strong>@sefer.Guzergah?.Nereden</strong>
+                                                <i class="fas fa-arrow-right text-muted mx-1"></i>
+                                                <strong>@sefer.Guzergah?.Nereye</strong>
+                                                <br>
+                                                <small class="text-muted">@sefer.Guzergah?.Mesafe km</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <strong>@sefer.Tarih.ToString("dd.MM.yyyy")</strong>
+                                            <br>
+                                            <span class="badge bg-info">@sefer.Saat</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bus-icon-small me-2">
+                                                <i class="fas fa-bus text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <strong>@sefer.Otobus?.Plaka</strong>
+                                                <br>
+                                                <small class="text-muted">@sefer.Otobus?.OtobusTipi</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="small">
+                                            <div><strong>Kalkış:</strong> @sefer.Kalkis</div>
+                                            <div><strong>Varış:</strong> @sefer.Varis</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (sefer.Tarih.Date > DateTime.Today)
+                                        {
+                                            <span class="badge bg-primary">Beklemede</span>
+                                        }
+                                        else if (sefer.Tarih.Date == DateTime.Today)
+                                        {
+                                            <span class="badge bg-success">Bugün</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Tamamlandı</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="/Admin/Sefer/Details/@sefer.SeferID" class="btn btn-info btn-sm" title="Detay">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="/Admin/Sefer/Edit/@sefer.SeferID" class="btn btn-warning btn-sm" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-sm" title="Sil"
+                                                    onclick="deleteSefer(@sefer.SeferID, '@sefer.Guzergah?.Nereden', '@sefer.Guzergah?.Nereye', '@sefer.Tarih.ToString("dd.MM.yyyy")')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    @if (!string.IsNullOrEmpty(ViewBag.SearchGuzergah as string) || 
+                         !string.IsNullOrEmpty(ViewBag.FilterTarih as string) || 
+                         !string.IsNullOrEmpty(ViewBag.SearchOtobus as string))
+                    {
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Arama Kriterlerine Uygun Sefer Bulunamadı</h5>
+                        <p class="text-muted">
+                            Lütfen arama kriterlerinizi değiştirip tekrar deneyin.
+                        </p>
+                        <a href="/Admin/Sefer" class="btn btn-primary btn-sm">
+                            <i class="fas fa-times me-1"></i>
+                            Filtreleri Temizle
+                        </a>
+                    }
+                    else
+                    {
+                        <i class="fas fa-route fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Henüz Sefer Eklenmemiş</h5>
+                        <p class="text-muted">Sisteme ilk seferinizi eklemek için yukarıdaki "Yeni Sefer" butonunu kullanın.</p>
+                        <a href="/Admin/Sefer/Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>
+                            İlk Seferi Ekle
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card-mini {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+
+.stat-card-mini:hover {
+    transform: translateY(-2px);
+}
+
+.stat-label-mini {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.stat-value-mini {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-icon-mini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.2);
+}
+
+.route-icon {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,123,255,0.1);
+    border-radius: 50%;
+}
+
+.bus-icon-small {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,123,255,0.1);
+    border-radius: 50%;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Basit buton stilleri */
+.btn {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.table {
+    position: relative;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.d-flex.gap-1 > * {
+    margin-right: 0.25rem;
+}
+
+.d-flex.gap-1 > *:last-child {
+    margin-right: 0;
+}
+</style>
+
+<script>
+function deleteSefer(seferID, nereden, nereye, tarih) {
+    if (confirm(`${nereden} → ${nereye} (${tarih}) seferini silmek istediğinizden emin misiniz?`)) {
+        // Form oluştur ve submit et
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Admin/Sefer/DeleteConfirmed/' + seferID;
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const hiddenToken = document.createElement('input');
+            hiddenToken.type = 'hidden';
+            hiddenToken.name = '__RequestVerificationToken';
+            hiddenToken.value = token.value;
+            form.appendChild(hiddenToken);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Arama formunda Enter tuşu desteği
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInputs = document.querySelectorAll('input[name="searchGuzergah"], input[name="searchOtobus"]');
+    searchInputs.forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.closest('form').submit();
+            }
+        });
+    });
+    
+    // Tarih değiştiğinde otomatik arama
+    const tarihInput = document.querySelector('input[name="filterTarih"]');
+    if (tarihInput) {
+        tarihInput.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    }
+});
+</script> 
+ 

@@ -1,0 +1,320 @@
+@model OtobusBiletSistemi.Web.Models.KoltukSecimViewModel
+
+@{
+    ViewData["Title"] = "Koltuk Seçimi";
+}
+
+<div class="container mt-4">
+    <!-- Sefer Bilgileri -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-bus me-2"></i>Sefer Bilgileri
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Güzergah:</strong><br>
+                    <span class="text-success">@(Model.Guzergah?.Nereden ?? "Başlangıç")</span>
+                    <i class="fas fa-arrow-right mx-2"></i>
+                    <span class="text-danger">@(Model.Guzergah?.Nereye ?? "Varış")</span>
+                </div>
+                <div class="col-md-2">
+                    <strong>Tarih:</strong><br>
+                    @Model.SeferTarihi
+                </div>
+                <div class="col-md-2">
+                    <strong>Saat:</strong><br>
+                    @Model.KalkisSaati
+                </div>
+                <div class="col-md-2">
+                    <strong>Otobüs:</strong><br>
+                    @(Model.Otobus?.Plaka ?? "Bilinmiyor")
+                </div>
+                <div class="col-md-3">
+                    <strong>Yolcu Sayısı:</strong><br>
+                    <span class="badge bg-info fs-6">@Model.YolcuSayisi kişi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Koltuk Düzeni -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chair me-2"></i>Koltuk Düzeni
+                        <span class="badge bg-secondary ms-2">@Model.BosKoltukSayisi boş koltuk</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Otobüs Şoför Alanı -->
+                    <div class="text-center mb-3">
+                        <div class="d-inline-block p-2 bg-dark text-white rounded">
+                            <i class="fas fa-steering-wheel me-1"></i> Şoför
+                        </div>
+                    </div>
+
+                    <!-- Koltuk Layout -->
+                    <form id="koltukForm" method="post" action="/Koltuk/KoltukOnayla">
+                        <input type="hidden" name="seferId" value="@Model.Sefer.SeferID" />
+                        
+                        <div class="bus-layout">
+                            @{
+                                var koltukLayout = Model.GetKoltukLayout();
+                            }
+                            
+                            @foreach (var sira in koltukLayout)
+                            {
+                                <div class="row mb-2 justify-content-center">
+                                    <div class="col-auto">
+                                        <!-- Sol taraf koltukları (A) -->
+                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("A")))
+                                        {
+                                            <button type="button" 
+                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
+                                                    data-koltuk-id="@koltuk.KoltukID"
+                                                    data-koltuk-no="@koltuk.KoltukNo"
+                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
+                                                @koltuk.KoltukNo
+                                            </button>
+                                        }
+                                    </div>
+                                    
+                                    <!-- Orta koltukları (B) -->
+                                    <div class="col-auto">
+                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("B")))
+                                        {
+                                            <button type="button" 
+                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
+                                                    data-koltuk-id="@koltuk.KoltukID"
+                                                    data-koltuk-no="@koltuk.KoltukNo"
+                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
+                                                @koltuk.KoltukNo
+                                            </button>
+                                        }
+                                    </div>
+
+                                    <!-- Koridor -->
+                                    <div class="col-auto corridor">
+                                        <!-- Boşluk -->
+                                    </div>
+
+                                    <!-- Sağ taraf koltukları (C) -->
+                                    <div class="col-auto">
+                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("C")))
+                                        {
+                                            <button type="button" 
+                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
+                                                    data-koltuk-id="@koltuk.KoltukID"
+                                                    data-koltuk-no="@koltuk.KoltukNo"
+                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
+                                                @koltuk.KoltukNo
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Seçilen koltukları gönderecek hidden inputlar -->
+                        <div id="seciliKoltuklarInput"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seçim Özeti -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt me-2"></i>Seçim Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Seçilen Koltuklar -->
+                    <div class="mb-3">
+                        <h6>Seçilen Koltuklar:</h6>
+                        <div id="secilenKoltukList" class="text-muted">
+                            Henüz koltuk seçilmedi
+                        </div>
+                    </div>
+
+                    <!-- Fiyat Bilgisi -->
+                    <div class="mb-3">
+                        <h6>Fiyat Bilgisi:</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>Bilet Fiyatı:</span>
+                            <span>₺@Model.BiletFiyati</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Yolcu Sayısı:</span>
+                            <span id="secilenYolcuSayisi">0</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Toplam:</span>
+                            <span id="toplamFiyat">₺0</span>
+                        </div>
+                    </div>
+
+                    <!-- Devam Et Butonu -->
+                    <button type="button" id="devamEtBtn" class="btn btn-primary w-100" disabled>
+                        <i class="fas fa-arrow-right me-2"></i>Devam Et
+                    </button>
+                    
+                    <div class="mt-2 text-center">
+                        <small class="text-muted">@Model.YolcuSayisi koltuk seçmelisiniz</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bus-layout {
+        background-color: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: 20px;
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .seat-btn {
+        width: 45px;
+        height: 45px;
+        margin: 2px;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .seat-available {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+
+    .seat-available:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .seat-occupied {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        cursor: not-allowed;
+    }
+
+    .seat-selected {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+
+    .corridor {
+        width: 30px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const seatButtons = document.querySelectorAll('.seat-btn:not([disabled])');
+        const secilenKoltukList = document.getElementById('secilenKoltukList');
+        const secilenYolcuSayisi = document.getElementById('secilenYolcuSayisi');
+        const toplamFiyat = document.getElementById('toplamFiyat');
+        const devamEtBtn = document.getElementById('devamEtBtn');
+        const seciliKoltuklarInput = document.getElementById('seciliKoltuklarInput');
+        
+        const yolcuSayisi = @Model.YolcuSayisi;
+        const biletFiyati = @Model.BiletFiyati;
+        let secilenKoltuklar = [];
+
+        seatButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const koltukId = parseInt(this.dataset.koltukId);
+                const koltukNo = this.dataset.koltukNo;
+
+                if (secilenKoltuklar.includes(koltukId)) {
+                    // Koltuk zaten seçili, kaldır
+                    secilenKoltuklar = secilenKoltuklar.filter(id => id !== koltukId);
+                    this.classList.remove('seat-selected');
+                    this.classList.add('seat-available');
+                } else {
+                    // Yeni koltuk seç
+                    if (secilenKoltuklar.length < yolcuSayisi) {
+                        secilenKoltuklar.push(koltukId);
+                        this.classList.remove('seat-available');
+                        this.classList.add('seat-selected');
+                    } else {
+                        alert('En fazla ' + yolcuSayisi + ' koltuk seçebilirsiniz.');
+                        return;
+                    }
+                }
+
+                updateSecilenKoltuklar();
+            });
+        });
+
+        function updateSecilenKoltuklar() {
+            // Seçilen koltuk listesini güncelle
+            if (secilenKoltuklar.length === 0) {
+                secilenKoltukList.innerHTML = '<span class="text-muted">Henüz koltuk seçilmedi</span>';
+            } else {
+                const koltukNolari = secilenKoltuklar.map(id => {
+                    const button = document.querySelector(`[data-koltuk-id="${id}"]`);
+                    return button ? button.dataset.koltukNo : '';
+                }).filter(no => no);
+                
+                secilenKoltukList.innerHTML = koltukNolari.map(no => 
+                    `<span class="badge bg-primary me-1">${no}</span>`
+                ).join('');
+            }
+
+            // Sayıları güncelle
+            secilenYolcuSayisi.textContent = secilenKoltuklar.length;
+            toplamFiyat.textContent = '₺' + (secilenKoltuklar.length * biletFiyati);
+
+            // Devam et butonunu aktif/pasif yap
+            devamEtBtn.disabled = secilenKoltuklar.length !== yolcuSayisi;
+
+            // Hidden inputları güncelle
+            seciliKoltuklarInput.innerHTML = '';
+            secilenKoltuklar.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'seciliKoltuklar';
+                input.value = id;
+                seciliKoltuklarInput.appendChild(input);
+            });
+        }
+
+        // Devam et butonuna tıklayınca formu gönder
+        devamEtBtn.addEventListener('click', function() {
+            if (secilenKoltuklar.length === yolcuSayisi) {
+                document.getElementById('koltukForm').submit();
+            }
+        });
+    });
+</script> 
+ 
+ 
+ 
+ 

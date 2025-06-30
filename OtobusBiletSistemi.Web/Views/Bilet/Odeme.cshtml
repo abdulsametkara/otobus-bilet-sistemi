@@ -1,0 +1,421 @@
+@model OtobusBiletSistemi.Web.Models.OdemeViewModel
+
+@{
+    ViewData["Title"] = "Ödeme";
+}
+
+<div class="container mt-4">
+    <!-- Rezervasyon Özeti -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-bus me-2"></i>Rezervasyon Özeti
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Güzergah:</strong><br>
+                    <span class="text-success">@Model.KalkisTerminali</span>
+                    <i class="fas fa-arrow-right mx-2"></i>
+                    <span class="text-danger">@Model.VarisTerminali</span>
+                </div>
+                <div class="col-md-2">
+                    <strong>Tarih:</strong><br>
+                    @Model.SeferTarihi
+                </div>
+                <div class="col-md-2">
+                    <strong>Saat:</strong><br>
+                    @Model.KalkisSaati
+                </div>
+                <div class="col-md-2">
+                    <strong>Otobüs:</strong><br>
+                    @(Model.Otobus?.Plaka ?? "Bilinmiyor")
+                </div>
+                <div class="col-md-3">
+                    <strong>Koltuklar:</strong><br>
+                    @foreach (var koltuk in Model.Koltuklar)
+                    {
+                        <span class="badge bg-info me-1">@koltuk.KoltukNo</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Lütfen aşağıdaki hataları düzeltiniz:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Ödeme Formu -->
+    <form asp-action="Odeme" method="post" id="odemeForm">
+        
+        <div class="row">
+            <!-- Ödeme Bilgileri -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-credit-card me-2"></i>Ödeme Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Kredi Kartı Bilgileri -->
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="KartSahibiAdi" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Kart Üzerindeki İsim *
+                                </label>
+                                <input asp-for="KartSahibiAdi" class="form-control" placeholder="AHMET YILMAZ" style="text-transform: uppercase;" />
+                                <span asp-validation-for="KartSahibiAdi" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="KartNumarasi" class="form-label">
+                                    <i class="fas fa-credit-card me-1"></i>Kart Numarası *
+                                </label>
+                                <input asp-for="KartNumarasi" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" />
+                                <span asp-validation-for="KartNumarasi" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="CVV" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>CVV *
+                                </label>
+                                <input asp-for="CVV" type="password" class="form-control" placeholder="123" maxlength="3" />
+                                <span asp-validation-for="CVV" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SonKullanmaTarihi" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Son Kullanma Tarihi *
+                                </label>
+                                <input asp-for="SonKullanmaTarihi" class="form-control" placeholder="MM/YY" maxlength="5" />
+                                <span asp-validation-for="SonKullanmaTarihi" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- İletişim Bilgileri -->
+                        <h6 class="mb-3">İletişim Bilgileri</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Telefon" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Telefon *
+                                </label>
+                                <input asp-for="Telefon" class="form-control" placeholder="05xxxxxxxxx" />
+                                <span asp-validation-for="Telefon" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>E-posta *
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="ornek@email.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Güvenlik Bildirimi -->
+                        <div class="alert alert-info">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            <strong>Test Sistemi:</strong> Bu demo amaçlı bir sistemdir. Gerçek kart bilgilerinizi kullanmayın.
+                            <br>
+                            <small class="mt-1 d-block">
+                                • Test için: <code>1234 5678 9012 3456</code> (Başarılı) 
+                                • Test için: <code>4444 4444 4444 4444</code> (Başarısız)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ödeme Özeti -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>Ödeme Özeti
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Yolcu Listesi -->
+                        <div class="mb-3">
+                            <h6>Yolcular:</h6>
+                            @foreach (var yolcu in Model.YolcuBilgileri)
+                            {
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small>@yolcu.AdSoyad</small>
+                                    <small>₺@Model.BiletFiyati.ToString("N2")</small>
+                                </div>
+                            }
+                        </div>
+
+                        <hr>
+
+                        <!-- Fiyat Detayı -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Bilet Tutarı:</span>
+                                <span>₺@Model.ToplamFiyat.ToString("N2")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>KDV (%18):</span>
+                                <span>₺@Model.KDV.ToString("N2")</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Toplam Ödeme:</span>
+                                <span class="text-success">₺@Model.ToplamOdeme.ToString("N2")</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Ödeme Butonu -->
+                        <button type="button" class="btn btn-success w-100 btn-lg" id="odemeBtn">
+                            <i class="fas fa-lock me-2"></i>Güvenli Ödeme Yap
+                        </button>
+
+                        <div class="mt-3 text-center">
+                            <a href="/Bilet/YolcuBilgileri" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                            </a>
+                        </div>
+
+                        <!-- Güvenlik Logoları -->
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                128-bit SSL Güvenlik
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Ödeme Onay Modal -->
+<div class="modal fade" id="onayModal" tabindex="-1" aria-labelledby="onayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="onayModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Ödeme Onayı
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Ödeme bilgilerinizi kontrol edin:</strong>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Sefer Bilgileri:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Güzergah:</strong> @Model.KalkisTerminali - @Model.VarisTerminali</li>
+                            <li><strong>Tarih:</strong> @Model.SeferTarihi</li>
+                            <li><strong>Saat:</strong> @Model.KalkisSaati</li>
+                            <li><strong>Otobüs:</strong> @Model.Otobus?.Plaka</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Yolcular:</h6>
+                        <ul class="list-unstyled">
+                            @foreach (var yolcu in Model.YolcuBilgileri)
+                            {
+                                <li>• @yolcu.AdSoyad - <span class="text-muted">@yolcu.TCNo</span></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Ödeme Bilgileri:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Kart Sahibi:</strong> <span id="modalKartSahibi"></span></li>
+                            <li><strong>Kart No:</strong> <span id="modalKartNo"></span></li>
+                            <li><strong>E-posta:</strong> <span id="modalEmail"></span></li>
+                            <li><strong>Telefon:</strong> <span id="modalTelefon"></span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Tutar Bilgileri:</h6>
+                        <div class="bg-light p-3 rounded">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Bilet Tutarı:</span>
+                                <span>₺@Model.ToplamFiyat.ToString("N2")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>KDV:</span>
+                                <span>₺@Model.KDV.ToString("N2")</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Toplam:</span>
+                                <span class="text-success">₺@Model.ToplamOdeme.ToString("N2")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Dikkat:</strong> Bu işlem geri alınamaz. Ödemeyi onayladığınızda kartınızdan tutar çekilecektir.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>İptal Et
+                </button>
+                <button type="button" class="btn btn-success" id="onaylaBtn">
+                    <i class="fas fa-check me-1"></i>Ödemeyi Onayla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kart numarası formatting
+        const kartNumarasiInput = document.querySelector('input[name="KartNumarasi"]');
+        kartNumarasiInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            let formattedValue = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            this.value = formattedValue;
+        });
+
+        // Son kullanma tarihi formatting
+        const sonKullanmaInput = document.querySelector('input[name="SonKullanmaTarihi"]');
+        sonKullanmaInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            this.value = value;
+        });
+
+        // CVV sadece rakam
+        const cvvInput = document.querySelector('input[name="CVV"]');
+        cvvInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Telefon sadece rakam
+        const telefonInput = document.querySelector('input[name="Telefon"]');
+        telefonInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Kart sahibi adı büyük harf
+        const kartSahibiInput = document.querySelector('input[name="KartSahibiAdi"]');
+        kartSahibiInput.addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase().replace(/[^A-ZÇĞIİÖŞÜ\s]/g, '');
+        });
+
+        // Modal butonuna tıklandığında önce validasyon yap
+        document.getElementById('odemeBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = document.getElementById('odemeForm');
+            
+            // Form validasyonu kontrol et
+            if (!form.checkValidity()) {
+                form.reportValidity(); // Hataları göster
+                return;
+            }
+
+            // Validasyon başarılıysa modal'daki bilgileri güncelle
+            document.getElementById('modalKartSahibi').textContent = 
+                document.querySelector('input[name="KartSahibiAdi"]').value;
+            
+            const kartNo = document.querySelector('input[name="KartNumarasi"]').value;
+            document.getElementById('modalKartNo').textContent = 
+                kartNo.replace(/(\d{4})\s?(\d{4})\s?(\d{4})\s?(\d{4})/, '**** **** **** $4');
+            
+            document.getElementById('modalEmail').textContent = 
+                document.querySelector('input[name="Email"]').value;
+            
+            document.getElementById('modalTelefon').textContent = 
+                document.querySelector('input[name="Telefon"]').value;
+                
+            // Modal'ı aç
+            const modal = new bootstrap.Modal(document.getElementById('onayModal'));
+            modal.show();
+        });
+
+        // Onay butonuna tıklandığında formu submit et
+        document.getElementById('onaylaBtn').addEventListener('click', function() {
+            const form = document.getElementById('odemeForm');
+            const onaylaBtn = this;
+            
+            // Butonu devre dışı bırak
+            onaylaBtn.disabled = true;
+            onaylaBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Ödeme İşleniyor...';
+            
+            // Modal'ı kapat
+            const modal = bootstrap.Modal.getInstance(document.getElementById('onayModal'));
+            modal.hide();
+            
+            // Formu submit et
+            setTimeout(function() {
+                form.submit();
+            }, 500);
+        });
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+
+
+
+
+
+ 
+ 
+ 

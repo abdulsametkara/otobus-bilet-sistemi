@@ -1,0 +1,336 @@
+@model List<OtobusBiletSistemi.Web.Models.BiletDetayViewModel>
+@{
+    ViewData["Title"] = "Biletlerim";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-ticket-alt me-2 text-primary"></i>Biletlerim
+                </h2>
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni Bilet Al
+                </a>
+            </div>
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-ticket-alt fa-5x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted">Henüz biletiniz bulunmuyor</h4>
+                    <p class="text-muted">İlk seyahatinizi planlamak için bilet satın alabilirsiniz.</p>
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>Sefer Ara
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-6 col-xl-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-gradient-primary text-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">@item.Bilet?.BiletNo</h6>
+                                            <small class="opacity-75">@item.SeferTarihi - @item.SeferSaati</small>
+                                        </div>
+                                        <span class="badge bg-@item.BiletDurumuRenk">
+                                            <i class="@item.BiletDurumuIcon me-1"></i>@item.Bilet?.BiletDurumu
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <!-- Güzergah Bilgisi -->
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-5">
+                                            <div class="text-center">
+                                                <div class="fw-bold text-primary">@item.Guzergah?.Nereden</div>
+                                                <small class="text-muted">@item.KalkisTerminali</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-center">
+                                            <i class="fas fa-arrow-right text-muted"></i>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="text-center">
+                                                <div class="fw-bold text-success">@item.Guzergah?.Nereye</div>
+                                                <small class="text-muted">@item.VarisTerminali</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-3">
+
+                                    <!-- Detay Bilgileri -->
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-bus text-muted me-2"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Otobüs</small>
+                                                    <span class="fw-bold">@item.Otobus?.Plaka</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-chair text-muted me-2"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Koltuk</small>
+                                                    <span class="fw-bold">@item.Koltuk?.KoltukNo</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-lira-sign text-muted me-2"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Fiyat</small>
+                                                    <span class="fw-bold">₺@(item.Bilet?.Fiyat > 0 ? item.Bilet.Fiyat.ToString("N2") : "120,00")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-calendar text-muted me-2"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Satın Alma</small>
+                                                    <span class="fw-bold">@item.Bilet?.BiletTarihi?.ToString("dd.MM.yy")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="printTicket('@item.Bilet?.BiletNo', '@item.Bilet?.BiletDurumu', '@item.Guzergah?.Nereden', '@item.Guzergah?.Nereye', '@item.SeferTarihi', '@item.SeferSaati', '@item.Otobus?.Plaka', '@item.Koltuk?.KoltukNo', '@(item.Bilet?.Fiyat > 0 ? item.Bilet.Fiyat.ToString("N2") : "120,00")')">
+                                            <i class="fas fa-print me-1"></i>Yazdır
+                                        </button>
+                                        
+                                        @if (item.Bilet?.BiletDurumu == "Aktif")
+                                        {
+                                            <button class="btn btn-outline-danger btn-sm" onclick="cancelTicket('@item.Bilet?.BiletID')">
+                                                <i class="fas fa-times me-1"></i>İptal Et
+                                            </button>
+                                        }
+                                        else if (item.Bilet?.BiletDurumu == "İptal")
+                                        {
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="deleteTicket('@item.Bilet?.BiletID')">
+                                                <i class="fas fa-trash me-1"></i>Sil
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">@item.Bilet?.BiletDurumu</small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Sayfa Alt Bilgisi -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Önemli Bilgiler:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Seyahat etmeden önce kimlik belgenizi yanınızda bulundurunuz.</li>
+                                <li>Sefer saatinden 30 dakika önce terminalde bulununuz.</li>
+                                <li>Bilet iptal işlemleri sefer saatinden en az 2 saat önce yapılmalıdır.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+    }
+</style>
+
+<script>
+    function printTicket(biletNo, biletDurumu, nereden, nereye, tarih, saat, plaka, koltukNo, fiyat) {
+        // İptal damgası HTML'i
+        const iptalDamgasi = biletDurumu === 'İptal' ? `
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); 
+                        border: 4px solid #dc3545; color: #dc3545; padding: 20px 40px; 
+                        font-size: 48px; font-weight: bold; opacity: 0.8; z-index: 1000;
+                        background: rgba(255,255,255,0.8);">
+                İPTAL EDİLDİ
+            </div>
+        ` : '';
+
+        // Terminal isimlerini düzelt
+        const kalkisTerminali = nereden === 'Ankara' ? 'Ankara Otogarı' : 
+                               nereden === 'İstanbul' ? 'İstanbul Büyük Otogarı' : 
+                               `${nereden} Terminali`;
+        
+        const varisTerminali = nereye === 'Ankara' ? 'Ankara Otogarı' : 
+                              nereye === 'İstanbul' ? 'İstanbul Büyük Otogarı' : 
+                              `${nereye} Terminali`;
+        
+        // Yazdırılacak bilet HTML'ini oluştur
+        const printContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; position: relative; border: 2px solid #333;">
+                ${iptalDamgasi}
+                <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #333;">🚌 OTOBÜS BİLETİ</h2>
+                    <h3 style="margin: 10px 0; color: #666;">Bilet No: ${biletNo}</h3>
+                    ${biletDurumu === 'İptal' ? '<p style="color: #dc3545; font-weight: bold; margin: 5px 0;">❌ BU BİLET İPTAL EDİLMİŞTİR</p>' : ''}
+                </div>
+                <div style="margin-bottom: 20px; ${biletDurumu === 'İptal' ? 'opacity: 0.6;' : ''}">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Güzergah:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${kalkisTerminali} → ${varisTerminali}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Tarih:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${tarih}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Saat:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${saat}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Otobüs:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${plaka}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Koltuk:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${koltukNo}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Fiyat:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">₺${fiyat}</td>
+                        </tr>
+                        ${biletDurumu === 'İptal' ? `
+                        <tr style="background-color: #f8f9fa;">
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Durum:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #dc3545; font-weight: bold;">İPTAL EDİLDİ</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+                </div>
+                <div style="text-align: center; margin-top: 30px; ${biletDurumu === 'İptal' ? 'opacity: 0.5;' : ''}">
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">
+                        ${biletDurumu === 'İptal' ? 
+                          'Bu bilet iptal edilmiştir ve seyahat için geçerli değildir.' : 
+                          'Sefer saatinden 30 dakika önce terminalde bulununuz.'}
+                    </p>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">
+                        ${biletDurumu !== 'İptal' ? 'Kimlik belgenizi yanınızda bulundurunuz.' : ''}
+                    </p>
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 10px; color: #999;">
+                    <p>Otobüs Bilet Satış Sistemi - ${new Date().toLocaleDateString('tr-TR')}</p>
+                </div>
+            </div>
+        `;
+        
+        // Yeni pencere aç ve yazdır
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Bilet - ${biletNo}</title>
+                                         <style>
+                         body { margin: 0; padding: 20px; }
+                     </style>
+                </head>
+                <body>
+                    ${printContent}
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            window.close();
+                        }
+                    </` + `script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+    
+    function cancelTicket(biletId) {
+        if (confirm('Bu bileti iptal etmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+            // AJAX ile bilet iptal etme
+            fetch('/Bilet/IptalEt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({ biletId: biletId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Bilet başarıyla iptal edildi.');
+                    location.reload(); // Sayfayı yenile
+                } else {
+                    alert('Bilet iptal edilirken hata oluştu: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bilet iptal edilirken hata oluştu.');
+                         });
+        }
+    }
+    
+    function deleteTicket(biletId) {
+        if (confirm('Bu bileti kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+            // AJAX ile bilet silme
+            fetch('/Bilet/Sil', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({ biletId: biletId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Bilet başarıyla silindi.');
+                    location.reload(); // Sayfayı yenile
+                } else {
+                    alert('Bilet silinirken hata oluştu: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bilet silinirken hata oluştu.');
+            });
+        }
+    }
+</script> 

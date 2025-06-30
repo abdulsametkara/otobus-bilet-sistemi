@@ -1,0 +1,194 @@
+@model OtobusBiletSistemi.Core.Data.YolcuUser
+
+@{
+    ViewData["Title"] = "Kullanıcı Detayları";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        Kullanıcı Detayları
+                    </h2>
+                    <p class="text-muted mb-0">@Model.FullName bilgileri</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Kullanıcı Listesi
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            @TempData["InfoMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Kullanıcı Bilgileri -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-user-edit me-2"></i>
+                        Kişisel Bilgiler
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Kullanıcı ID</label>
+                                <p class="form-control-static">@Model.Id</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">TC Kimlik No</label>
+                                <p class="form-control-static">@Model.TCNo</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ad</label>
+                                <p class="form-control-static">@Model.Ad</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <p class="form-control-static">@Model.Email</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Soyad</label>
+                                <p class="form-control-static">@Model.Soyad</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Telefon</label>
+                                <p class="form-control-static">@Model.TelNo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İşlemler -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-cogs me-2"></i>
+                        İşlemler
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form action="/Admin/Kullanici/AdminYap/@Model.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success" onclick="return confirm('Bu kullanıcıya admin yetkisi vermek istediğinizden emin misiniz?')">
+                                    <i class="fas fa-user-shield me-1"></i>
+                                    Admin Yap
+                                </button>
+                            </form>
+                            
+                            <form action="/Admin/Kullanici/AdminKaldir/@Model.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Bu kullanıcının admin yetkisini kaldırmak istediğinizden emin misiniz?')">
+                                    <i class="fas fa-user-minus me-1"></i>
+                                    Admin Kaldır
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Avatar -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-image me-2"></i>
+                        Profil
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="avatar-placeholder mb-3">
+                        <i class="fas fa-user-circle fa-5x text-muted"></i>
+                    </div>
+                    <h5 class="mb-1">@Model.FullName</h5>
+                    <p class="text-muted">@Model.Email</p>
+                </div>
+            </div>
+
+            <!-- Durum Bilgileri -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-success text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-info me-2"></i>
+                        Durum
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <span class="badge bg-success">Aktif Kullanıcı</span>
+                    </div>
+                    <small class="text-muted">
+                        Kayıt Tarihi: Bilinmiyor
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.form-control-static {
+    background-color: #f8f9fa;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    min-height: 1.5em;
+}
+</style> 
+ 

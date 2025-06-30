@@ -1,0 +1,188 @@
+﻿@model OtobusBiletSistemi.Web.Models.SeferAramaViewModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="fade-in-up">Türkiye'nin En Güvenilir Otobüs Bileti Platformu</h1>
+                    <p class="fade-in-up">Konforlu yolculuk, uygun fiyat, güvenli ödeme - Hemen biletinizi alın!</p>
+                    <a href="#search" class="btn-hero fade-in-up">
+                        <i class="fas fa-search me-2"></i>Bilet Ara
+                    </a>
+                </div>  
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section" id="search">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="search-card shadow-lg">
+                    <h3><i class="fas fa-route me-2"></i>Sefer Arama</h3>
+                    
+                    @using (Html.BeginForm("SeferAra", "Home", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1"></i>Nereden
+                                    </label>
+                                    @{
+                                        var guzergahlar = ViewBag.Guzergahlar as List<OtobusBiletSistemi.Core.Entities.Guzergah> ?? new List<OtobusBiletSistemi.Core.Entities.Guzergah>();
+                                        var nereden = guzergahlar.Select(g => g.Nereden).Distinct().Select(x => new SelectListItem { Text = x, Value = x });
+                                        var nereye = guzergahlar.Select(g => g.Nereye).Distinct().Select(x => new SelectListItem { Text = x, Value = x });
+                                    }
+                                    @Html.DropDownListFor(m => m.Nereden, 
+                                        nereden, 
+                                        "Kalkış şehri seçiniz", 
+                                        new { @class = "form-control city-input", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Nereden, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1"></i>Nereye
+                                    </label>
+                                    @Html.DropDownListFor(m => m.Nereye, 
+                                        nereye, 
+                                        "Varış şehri seçiniz", 
+                                        new { @class = "form-control city-input", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Nereye, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-calendar-alt me-1"></i>Tarih
+                                    </label>
+                                    @Html.EditorFor(m => m.Tarih, new { 
+                                        htmlAttributes = new { 
+                                            @class = "form-control", 
+                                            @type = "date", 
+                                            @min = DateTime.Today.ToString("yyyy-MM-dd"),
+                                            @required = "required"
+                                        } 
+                                    })
+                                    @Html.ValidationMessageFor(m => m.Tarih, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-users me-1"></i>Yolcu
+                                    </label>
+                                    @Html.EditorFor(m => m.YolcuSayisi, new { 
+                                        htmlAttributes = new { 
+                                            @class = "form-control", 
+                                            @min = "1", 
+                                            @max = "10",
+                                            @value = "1",
+                                            @required = "required"
+                                        } 
+                                    })
+                                    @Html.ValidationMessageFor(m => m.YolcuSayisi, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label text-transparent">Ara</label>
+                                    <button type="submit" class="btn-search">
+                                        <i class="fas fa-search me-2"></i>Sefer Ara
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 class="text-center mb-5">Neden Bizi Tercih Etmelisiniz?</h2>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>7/24 Rezervasyon</h4>
+                    <p>Dilediğiniz zaman online bilet alabilir, kolayca rezervasyon yapabilirsiniz.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Güvenli Ödeme</h4>
+                    <p>SSL sertifikası ile korumalı ödeme sistemi sayesinde güvenle alışveriş yapın.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4>7/24 Destek</h4>
+                    <p>Müşteri hizmetlerimiz her zaman yanınızda. Canlı destek ile sorularınızı çözün.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4>Mobil Uyumlu</h4>
+                    <p>Tüm cihazlardan kolayca erişim sağlayabilir, mobil deneyimin keyfini çıkarın.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date to today
+            const dateInput = document.querySelector('input[name="Tarih"]');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+            
+            // Add smooth scroll to search section
+            document.querySelector('.btn-hero').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('#search').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

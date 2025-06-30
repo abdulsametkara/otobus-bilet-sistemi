@@ -1,0 +1,157 @@
+@model OtobusBiletSistemi.Core.Data.YolcuUser
+
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-user-edit me-2"></i>
+                        Kullanıcı Düzenle
+                    </h2>
+                    <p class="text-muted mb-0">@Model.FullName bilgilerini düzenleyin</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-user-edit me-2"></i>
+                        Kullanıcı Bilgilerini Düzenle
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Admin/Kullanici/Edit/@Model.Id">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>Hatalar:</h6>
+                                <ul class="mb-0">
+                                    @foreach (var error in ViewData.ModelState.SelectMany(x => x.Value.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="TCNo" class="form-label">TC Kimlik No</label>
+                                <input name="TCNo" type="text" class="form-control" placeholder="TC Kimlik Numarası" value="@Model.TCNo" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Email" class="form-label">Email</label>
+                                <input name="Email" type="email" class="form-control" placeholder="email@example.com" value="@Model.Email" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Ad" class="form-label">Ad</label>
+                                <input name="Ad" type="text" class="form-control" placeholder="Ad" value="@Model.Ad" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Soyad" class="form-label">Soyad</label>
+                                <input name="Soyad" type="text" class="form-control" placeholder="Soyad" value="@Model.Soyad" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="TelNo" class="form-label">Telefon</label>
+                                <input name="TelNo" type="text" class="form-control" placeholder="0555 123 45 67" value="@Model.TelNo" required />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/Admin/Kullanici" class="btn btn-secondary">
+                                        <i class="fas fa-times me-1"></i>
+                                        İptal
+                                    </a>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i>
+                                            Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Kullanıcı Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="avatar-placeholder mb-3">
+                        <i class="fas fa-user-circle fa-4x text-muted"></i>
+                    </div>
+                    <h5 class="mb-1">@Model.FullName</h5>
+                    <p class="text-muted mb-2">ID: @Model.Id</p>
+                    <span class="badge bg-success">Aktif Kullanıcı</span>
+                </div>
+            </div>
+
+            <div class="card shadow mt-4">
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Önemli Notlar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <ul class="mb-0">
+                            <li>TC Kimlik No 11 haneli olmalıdır</li>
+                            <li>Email adresi benzersiz olmalıdır</li>
+                            <li>Telefon numarası geçerli format olmalıdır</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+ 

@@ -1,0 +1,374 @@
+@model OtobusBiletSistemi.Core.Entities.Sefer
+
+@{
+    ViewData["Title"] = "Sefer Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Sayfa Başlığı -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-info-circle text-info me-2"></i>
+                Sefer Detayları
+            </h1>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/Admin/Sefer/Edit/@Model.SeferID" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i>
+                Düzenle
+            </a>
+            <a href="/Admin/Sefer" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>
+                Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Sefer Genel Bilgileri -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-route me-2"></i>
+                        Sefer Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-group mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-hashtag me-1"></i>
+                                    Sefer No
+                                </h6>
+                                <p class="h5 text-dark mb-0">#@Model.SeferID</p>
+                            </div>
+                            
+                            <div class="info-group mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-route me-1"></i>
+                                    Güzergah
+                                </h6>
+                                <div class="route-display">
+                                    <div class="d-flex align-items-center">
+                                        <div class="route-point start">
+                                            <i class="fas fa-circle text-success"></i>
+                                            <span class="ms-2 fw-bold">@Model.Guzergah?.Nereden</span>
+                                        </div>
+                                    </div>
+                                    <div class="route-line">
+                                        <div class="route-arrow">
+                                            <i class="fas fa-arrow-down text-muted"></i>
+                                        </div>
+                                        <div class="route-distance">
+                                            @Model.Guzergah?.Mesafe km
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="route-point end">
+                                            <i class="fas fa-circle text-danger"></i>
+                                            <span class="ms-2 fw-bold">@Model.Guzergah?.Nereye</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-group mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    Tarih & Saat
+                                </h6>
+                                <div class="datetime-display">
+                                    <div class="date-part">
+                                        <span class="h5 text-dark">@Model.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                    </div>
+                                    <div class="time-part">
+                                        <span class="badge bg-info fs-6">@Model.Saat</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-group mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    Terminal Bilgileri
+                                </h6>
+                                <div class="terminal-info">
+                                    <div class="mb-2">
+                                        <strong class="text-success">Kalkış:</strong>
+                                        <span>@Model.Kalkis</span>
+                                    </div>
+                                    <div>
+                                        <strong class="text-danger">Varış:</strong>
+                                        <span>@Model.Varis</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Otobüs Bilgileri -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-success text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-bus me-2"></i>
+                        Otobüs Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.Otobus != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center mb-3">
+                                    <div class="bus-icon-large mb-2">
+                                        <i class="fas fa-bus text-primary"></i>
+                                    </div>
+                                    <h5 class="text-primary">@Model.Otobus.Plaka</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group mb-3">
+                                            <h6 class="text-success">Otobüs Tipi</h6>
+                                            <span class="badge bg-success fs-6">@Model.Otobus.OtobusTipi</span>
+                                        </div>
+                                        
+                                        <div class="info-group mb-3">
+                                            <h6 class="text-info">Koltuk Sayısı</h6>
+                                            <span class="h5 text-dark">@Model.Otobus.KoltukSayısı</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                            <p>Bu sefere henüz otobüs atanmamış.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Sefer Durumu -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-clock me-2"></i>
+                        Sefer Durumu
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    @{
+                        var now = DateTime.Now;
+                        var seferZamani = Model.Tarih.Date.Add(TimeSpan.Parse(Model.Saat));
+                        var timeDiff = seferZamani - now;
+                    }
+                    
+                    @if (seferZamani > now)
+                    {
+                        <div class="status-display">
+                            <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                            <h5 class="text-primary">Beklemede</h5>
+                            <p class="text-muted">
+                                @if (timeDiff.TotalDays >= 1)
+                                {
+                                    <span>@((int)timeDiff.TotalDays) gün @timeDiff.Hours saat kaldı</span>
+                                }
+                                else if (timeDiff.TotalHours >= 1)
+                                {
+                                    <span>@timeDiff.Hours saat @timeDiff.Minutes dakika kaldı</span>
+                                }
+                                else
+                                {
+                                    <span>@timeDiff.Minutes dakika kaldı</span>
+                                }
+                            </p>
+                        </div>
+                    }
+                    else if (seferZamani.Date == DateTime.Today && timeDiff.TotalHours > -2)
+                    {
+                        <div class="status-display">
+                            <i class="fas fa-bus fa-3x text-success mb-3"></i>
+                            <h5 class="text-success">Aktif</h5>
+                            <p class="text-muted">Sefer şu anda yolda</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="status-display">
+                            <i class="fas fa-check-circle fa-3x text-secondary mb-3"></i>
+                            <h5 class="text-secondary">Tamamlandı</h5>
+                            <p class="text-muted">Sefer tamamlanmış</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-secondary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Sefer İstatistikleri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="stat-mini mb-3">
+                                <h4 class="text-primary mb-0">@Model.Otobus?.KoltukSayısı</h4>
+                                <small class="text-muted">Toplam Koltuk</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-mini mb-3">
+                                <h4 class="text-success mb-0">0</h4>
+                                <small class="text-muted">Satılan Bilet</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-mini">
+                                <h4 class="text-warning mb-0">@Model.Guzergah?.Mesafe</h4>
+                                <small class="text-muted">KM Mesafe</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-mini">
+                                <h4 class="text-info mb-0">%0</h4>
+                                <small class="text-muted">Doluluk</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+
+.bg-gradient-secondary {
+    background: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
+}
+
+.info-group h6 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.route-display {
+    border-left: 3px solid #e9ecef;
+    padding-left: 1rem;
+    margin-left: 0.5rem;
+}
+
+.route-point {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.route-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem 0;
+    opacity: 0.7;
+}
+
+.route-distance {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.datetime-display .date-part {
+    margin-bottom: 0.5rem;
+}
+
+.terminal-info {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #007bff;
+}
+
+.bus-icon-large {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,123,255,0.1);
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.bus-icon-large i {
+    font-size: 2rem;
+}
+
+.status-display {
+    padding: 1rem 0;
+}
+
+.stat-mini h4 {
+    font-weight: 700;
+}
+</style>
+
+<script>
+function deleteSefer(seferID, nereden, nereye, tarih) {
+    if (confirm(`${nereden} → ${nereye} (${tarih}) seferini silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+        // Form oluştur ve submit et
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Admin/Sefer/DeleteConfirmed/' + seferID;
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const hiddenToken = document.createElement('input');
+            hiddenToken.type = 'hidden';
+            hiddenToken.name = '__RequestVerificationToken';
+            hiddenToken.value = token.value;
+            form.appendChild(hiddenToken);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script> 

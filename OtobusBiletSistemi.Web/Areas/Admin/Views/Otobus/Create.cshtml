@@ -1,0 +1,134 @@
+@model OtobusBiletSistemi.Core.Entities.Otobus
+
+@{
+    ViewData["Title"] = "Yeni Otobüs Ekle";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-bus me-2"></i>
+                        Yeni Otobüs Ekle
+                    </h2>
+                    <p class="text-muted mb-0">Sisteme yeni otobüs ekleyin</p>
+                </div>
+                <a href="/Admin/Otobus" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-bus me-2"></i>
+                        Otobüs Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Admin/Otobus/Create">
+                        @Html.AntiForgeryToken()
+                        
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>Hatalar:</h6>
+                                <ul class="mb-0">
+                                    @foreach (var error in ViewData.ModelState.SelectMany(x => x.Value.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Plaka" class="form-label">Plaka</label>
+                                <input name="Plaka" type="text" class="form-control" placeholder="06ABC123" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="OtobusTipi" class="form-label">Otobüs Tipi</label>
+                                <select name="OtobusTipi" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Standard">Standard</option>
+                                    <option value="Premium">Premium</option>
+                                    <option value="VIP">VIP</option>
+                                    <option value="Travego">Travego</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="KoltukSayısı" class="form-label">Koltuk Sayısı</label>
+                                <input name="KoltukSayısı" type="number" class="form-control" placeholder="40" min="20" max="60" required />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/Admin/Otobus" class="btn btn-secondary">
+                                        <i class="fas fa-times me-1"></i>
+                                        İptal
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>
+                                        Otobüs Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-gradient-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Bilgi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Önemli Notlar:</h6>
+                        <ul class="mb-0">
+                            <li>Plaka formatı: 06ABC123</li>
+                            <li>Koltuk sayısı 20-60 arasında olmalı</li>
+                            <li>Otobüs tipi seçimi zorunludur</li>
+                            <li>Plaka benzersiz olmalıdır</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+}
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+ 

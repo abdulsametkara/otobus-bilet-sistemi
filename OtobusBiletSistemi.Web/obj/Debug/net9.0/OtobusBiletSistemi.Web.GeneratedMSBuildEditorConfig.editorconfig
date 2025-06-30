@@ -1,0 +1,169 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = OtobusBiletSistemi.Web
+build_property.RootNamespace = OtobusBiletSistemi.Web
+build_property.ProjectDir = C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Kullanici/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcS3VsbGFuaWNpXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Kullanici/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcS3VsbGFuaWNpXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Kullanici/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcS3VsbGFuaWNpXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Kullanici/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcS3VsbGFuaWNpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Otobus/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3RvYnVzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Otobus/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3RvYnVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Otobus/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3RvYnVzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Otobus/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3RvYnVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2VmZXJcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2VmZXJcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2VmZXJcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2VmZXJcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2VmZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Shared/_AdminLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Bilet/Biletlerim.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcQmlsZXRsZXJpbS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Bilet/Odeme.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcT2RlbWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Bilet/OdemeBasarili.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcT2RlbWVCYXNhcmlsaS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Bilet/OdemeBasarisiz.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcT2RlbWVCYXNhcmlzaXouY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Bilet/YolcuBilgileri.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcWW9sY3VCaWxnaWxlcmkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Koltuk/Secim.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29sdHVrXFNlY2ltLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Sefer/SeferListesi.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VmZXJcU2VmZXJMaXN0ZXNpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-c702mbcj6j

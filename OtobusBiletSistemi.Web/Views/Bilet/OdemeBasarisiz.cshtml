@@ -1,0 +1,114 @@
+@{
+    ViewData["Title"] = "Ödeme Başarısız";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-times-circle me-2"></i>Ödeme Başarısız
+                    </h4>
+                </div>
+                <div class="card-body text-center">
+                    <!-- Hata İkonu -->
+                    <div class="mb-4">
+                        <div class="mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 100px; height: 100px; background-color: #dc3545; border-radius: 50%;">
+                            <i class="fas fa-times text-white" style="font-size: 48px;"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="text-danger mb-3">İşleminiz Gerçekleştirilemedi!</h2>
+                    <p class="text-muted mb-4">Ödemeniz başarısız oldu. Bilgilerinizi kontrol ederek tekrar deneyiniz.</p>
+
+                    <!-- Hata Detayı -->
+                    @if (ViewBag.HataMesaji != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Hata:</strong> @ViewBag.HataMesaji
+                        </div>
+                    }
+
+                    <!-- Olası Nedenler -->
+                    <div class="alert alert-info text-start">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Olası Nedenler:
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Kart bilgileriniz hatalı olabilir</li>
+                            <li>Kartınızda yeterli bakiye bulunmuyor olabilir</li>
+                            <li>Kartınız internet alışverişine kapalı olabilir</li>
+                            <li>Güvenlik kodu (CVV) yanlış girilmiş olabilir</li>
+                            <li>Geçici bir teknik sorun yaşanmış olabilir</li>
+                        </ul>
+                    </div>
+
+                    <!-- İşlem Bilgileri -->
+                    @if (ViewBag.SeferBilgisi != null)
+                    {
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">İptal Edilen Rezervasyon</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Güzergah:</small><br>
+                                        <strong>@ViewBag.SeferBilgisi</strong>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <small class="text-muted">Tarih:</small><br>
+                                        <strong>@ViewBag.SeferTarihi</strong>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <small class="text-muted">Tutar:</small><br>
+                                        <strong class="text-danger">₺@ViewBag.ToplamTutar</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Aksiyon Butonları -->
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="/Bilet/Odeme" class="btn btn-warning btn-lg me-2">
+                            <i class="fas fa-credit-card me-2"></i>Tekrar Dene
+                        </a>
+                        <a href="/" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-home me-2"></i>Ana Sayfa
+                        </a>
+                        <a href="/Sefer/SeferListesi" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-search me-2"></i>Yeni Arama
+                        </a>
+                    </div>
+
+                    <!-- Yardım -->
+                    <hr class="my-4">
+                    <div class="text-muted">
+                        <small>
+                            <i class="fas fa-phone me-1"></i>
+                            Sorun devam ederse müşteri hizmetlerimizle iletişime geçin: 
+                            <strong>0850 123 45 67</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn {
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style> 
