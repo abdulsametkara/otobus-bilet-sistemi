@@ -162,6 +162,7 @@
                                 <th>Tarih & Saat</th>
                                 <th>Otobüs</th>
                                 <th>Terminal Bilgileri</th>
+                                <th>Fiyat</th>
                                 <th>Durum</th>
                                 <th>İşlemler</th>
                             </tr>
@@ -210,6 +211,13 @@
                                         <div class="small">
                                             <div><strong>Kalkış:</strong> @sefer.Kalkis</div>
                                             <div><strong>Varış:</strong> @sefer.Varis</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <strong class="text-success fs-5">@sefer.Fiyat.ToString("C")</strong>
+                                            <br>
+                                            <small class="text-muted">Bilet Fiyatı</small>
                                         </div>
                                     </td>
                                     <td>

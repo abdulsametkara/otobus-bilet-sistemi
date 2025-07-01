@@ -121,6 +121,7 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                 Console.WriteLine($"Saat: '{model?.Saat}'");
                 Console.WriteLine($"Kalkis: '{model?.Kalkis}'");
                 Console.WriteLine($"Varis: '{model?.Varis}'");
+                Console.WriteLine($"Fiyat: {model?.Fiyat}");
                 
                 // Model null kontrolü
                 if (model == null)
@@ -149,6 +150,9 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                     
                 if (string.IsNullOrWhiteSpace(model.Varis))
                     errors.Add("Varış terminali girilmesi zorunludur.");
+                    
+                if (model.Fiyat <= 0)
+                    errors.Add("Geçerli bir bilet fiyatı girilmesi zorunludur.");
 
                 // Eğer hatalar varsa geri dön
                 if (errors.Any())
@@ -192,7 +196,8 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                     Tarih = model.Tarih,
                     Saat = model.Saat.Trim(),
                     Kalkis = model.Kalkis.Trim(),
-                    Varis = model.Varis.Trim()
+                    Varis = model.Varis.Trim(),
+                    Fiyat = model.Fiyat
                 };
 
                 await _seferRepository.AddAsync(yeniSefer);
@@ -265,6 +270,7 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                 Console.WriteLine($"Saat: '{sefer?.Saat}'");
                 Console.WriteLine($"Kalkis: '{sefer?.Kalkis}'");
                 Console.WriteLine($"Varis: '{sefer?.Varis}'");
+                Console.WriteLine($"Fiyat: {sefer?.Fiyat}");
                 
                 Console.WriteLine($"DEBUG - URL ID parametresi: {id}");
                 
@@ -302,6 +308,9 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                     
                 if (string.IsNullOrWhiteSpace(sefer.Varis))
                     errors.Add("Varış terminali girilmesi zorunludur.");
+                    
+                if (sefer.Fiyat <= 0)
+                    errors.Add("Geçerli bir bilet fiyatı girilmesi zorunludur.");
 
                 // Eğer validation hataları varsa
                 if (errors.Any())

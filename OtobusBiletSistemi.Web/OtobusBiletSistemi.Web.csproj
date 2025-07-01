@@ -20,4 +20,8 @@
     <ProjectReference Include="..\OtobusBiletSistemi.Core\OtobusBiletSistemi.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Views\Guzergah\" />
+  </ItemGroup>
+
 </Project>

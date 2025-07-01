@@ -128,7 +128,6 @@
                             <input type="text" class="form-control border-start-0 ps-0" name="searchTerm" 
                                    value="@ViewBag.SearchTerm" placeholder="Ad, soyad, email, TC No veya telefon ile arayın...">
                         </div>
-                        <small class="text-muted">Ad, Soyad, Email, TC Kimlik No, Telefon alanlarında arama yapılır</small>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label text-muted fw-semibold">&nbsp;</label>
@@ -212,7 +211,6 @@
                                             </div>
                                             <div>
                                                 <h6 class="mb-1 fw-semibold">@item.User.FullName</h6>
-                                                <small class="text-muted">Kullanıcı ID: @item.User.Id</small>
                                                 @if (item.IsAdmin)
                                                 {
                                                     <div>

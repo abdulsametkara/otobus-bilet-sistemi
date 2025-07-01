@@ -125,6 +125,7 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cs
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.sourcelink.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json

@@ -12,11 +12,13 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
     public class OtobusController : Controller
     {
         private readonly IRepository<Otobus> _otobusRepository;
+        private readonly IRepository<Koltuk> _koltukRepository;
         private readonly AppDbContext _context;
 
-        public OtobusController(IRepository<Otobus> otobusRepository, AppDbContext context)
+        public OtobusController(IRepository<Otobus> otobusRepository, IRepository<Koltuk> koltukRepository, AppDbContext context)
         {
             _otobusRepository = otobusRepository;
+            _koltukRepository = koltukRepository;
             _context = context;
         }
 
@@ -74,8 +76,13 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                     KoltukSayısı = koltukSayisi
                 };
 
-                await _otobusRepository.AddAsync(yeniOtobus);
-                TempData["SuccessMessage"] = "Otobüs başarıyla eklendi.";
+                // Otobüsü ekle ve ID'sini al
+                var eklenenOtobus = await _otobusRepository.AddAsync(yeniOtobus);
+                
+                // Otomatik koltukları oluştur
+                await OtomatikKoltuklariOlustur(eklenenOtobus.OtobusID, koltukSayisi);
+
+                TempData["SuccessMessage"] = $"Otobüs başarıyla eklendi ve {koltukSayisi} adet koltuk oluşturuldu.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -84,6 +91,36 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
             }
 
             return View(otobus);
+        }
+
+        // Yeni metot: Otomatik koltukları oluşturur
+        private async Task OtomatikKoltuklariOlustur(int otobusID, int koltukSayisi)
+        {
+            int siraNo = 1;
+            int siraKoltukSayisi = 0;
+            string[] siraKoltukHarfler = new string[] { "A", "B", "C" }; // Her sırada 3 koltuk olacak
+
+            for (int i = 0; i < koltukSayisi; i++)
+            {
+                // Her sırada 3 koltuk olacak şekilde hesapla
+                if (siraKoltukSayisi >= 3) // 3 koltuk tamamlandı, yeni sıraya geç
+                {
+                    siraNo++;
+                    siraKoltukSayisi = 0;
+                }
+
+                string koltukHarf = siraKoltukHarfler[siraKoltukSayisi];
+                string koltukNo = $"{siraNo}{koltukHarf}";
+
+                var yeniKoltuk = new Koltuk
+                {
+                    OtobusID = otobusID,
+                    KoltukNo = koltukNo
+                };
+
+                await _koltukRepository.AddAsync(yeniKoltuk);
+                siraKoltukSayisi++;
+            }
         }
 
         public async Task<IActionResult> Edit(int id)

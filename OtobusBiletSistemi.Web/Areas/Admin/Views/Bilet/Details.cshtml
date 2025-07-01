@@ -1,0 +1,421 @@
+@using OtobusBiletSistemi.Core.Data
+@model OtobusBiletSistemi.Core.Entities.Bilet
+
+@{
+    ViewData["Title"] = "Bilet Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h1 class="h3 mb-0 text-gray-800">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        Bilet Detayları
+                    </h1>
+                    <p class="text-muted mb-0">@Model.BiletNo biletinin detayları</p>
+                </div>
+                <div>
+                    <a href="/Admin/Bilet" class="btn btn-secondary btn-sm me-2">
+                        <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Bilet Bilgileri -->
+                <div class="col-lg-8">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Bilet Bilgileri
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td class="fw-bold text-gray-600">Bilet No:</td>
+                                            <td class="text-primary fw-bold">@Model.BiletNo</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-gray-600">Bilet ID:</td>
+                                            <td>#@Model.BiletID</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-gray-600">Durum:</td>
+                                            <td>
+                                                @switch (Model.BiletDurumu)
+                                                {
+                                                    case "Aktif":
+                                                        <span class="badge bg-success px-3 py-2">
+                                                            <i class="fas fa-check-circle me-1"></i>Aktif
+                                                        </span>
+                                                        break;
+                                                    case "İptal":
+                                                        <span class="badge bg-danger px-3 py-2">
+                                                            <i class="fas fa-ban me-1"></i>İptal
+                                                        </span>
+                                                        break;
+                                                    case "Kullanıldı":
+                                                        <span class="badge bg-secondary px-3 py-2">
+                                                            <i class="fas fa-check me-1"></i>Kullanıldı
+                                                        </span>
+                                                        break;
+                                                    case "Beklemede":
+                                                        <span class="badge bg-warning px-3 py-2">
+                                                            <i class="fas fa-clock me-1"></i>Beklemede
+                                                        </span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-light text-dark px-3 py-2">@Model.BiletDurumu</span>
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-gray-600">Fiyat:</td>
+                                            <td class="text-success fw-bold fs-5">
+                                                @if (Model.Sefer != null)
+                                                {
+                                                    @Model.Sefer.Fiyat.ToString("C", new System.Globalization.CultureInfo("tr-TR"))
+                                                    <small class="text-muted d-block">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        Sefer tablosundan alınır
+                                                    </small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Fiyat bilgisi yok</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        @if (Model.BiletTarihi.HasValue)
+                                        {
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">Satış Tarihi:</td>
+                                                <td>@Model.BiletTarihi.Value.ToString("dd.MM.yyyy HH:mm")</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (Model.Koltuk != null)
+                                    {
+                                        <div class="seat-preview text-center">
+                                            <h5 class="text-gray-700 mb-3">Koltuk Bilgisi</h5>
+                                            <div class="seat-icon-large">
+                                                <i class="fas fa-chair fa-4x text-info mb-2"></i>
+                                                <h3 class="text-info">@Model.Koltuk.KoltukNo</h3>
+                                                <p class="text-muted">Koltuk Numarası</p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yolcu Bilgileri -->
+                    @{
+                        var yolcu = ViewBag.YolcuBilgisi as YolcuUser;
+                    }
+                    @if (yolcu != null)
+                    {
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    <i class="fas fa-user me-1"></i>
+                                    Yolcu Bilgileri
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">Ad Soyad:</td>
+                                                <td class="fw-bold">@yolcu.FullName</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">TC Kimlik No:</td>
+                                                <td>@yolcu.TCNo</td>
+                                            </tr>
+                                            @if (!string.IsNullOrEmpty(yolcu.TelNo))
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-gray-600">Telefon:</td>
+                                                    <td>
+                                                        <a href="tel:@yolcu.TelNo" class="text-decoration-none">
+                                                            <i class="fas fa-phone me-1"></i>@yolcu.TelNo
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            @if (!string.IsNullOrEmpty(yolcu.Email))
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-gray-600">E-posta:</td>
+                                                    <td>
+                                                        <a href="mailto:@yolcu.Email" class="text-decoration-none">
+                                                            <i class="fas fa-envelope me-1"></i>@yolcu.Email
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-center">
+                                            <i class="fas fa-user-circle fa-4x text-gray-300 mb-3"></i>
+                                            <h5 class="text-gray-700">@yolcu.FullName</h5>
+                                            <p class="text-muted">Yolcu</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Sefer Bilgileri -->
+                    @if (Model.Sefer != null)
+                    {
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    <i class="fas fa-route me-1"></i>
+                                    Sefer Bilgileri
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">Sefer No:</td>
+                                                <td class="fw-bold">#@Model.Sefer.SeferID</td>
+                                            </tr>
+                                            @if (Model.Sefer.Guzergah != null)
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-gray-600">Güzergah:</td>
+                                                    <td>
+                                                        <div class="route-display">
+                                                            <span class="city-name">@Model.Sefer.Guzergah.Nereden</span>
+                                                            <i class="fas fa-arrow-right mx-2 text-primary"></i>
+                                                            <span class="city-name">@Model.Sefer.Guzergah.Nereye</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">Tarih:</td>
+                                                <td class="fw-bold text-info">@Model.Sefer.Tarih.ToString("dd MMMM yyyy dddd", new System.Globalization.CultureInfo("tr-TR"))</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-gray-600">Saat:</td>
+                                                <td class="fw-bold text-info">@Model.Sefer.Saat</td>
+                                            </tr>
+                                            @if (Model.Sefer.Otobus != null)
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-gray-600">Otobüs:</td>
+                                                    <td>
+                                                        <i class="fas fa-bus me-1"></i>
+                                                        @Model.Sefer.Otobus.Plaka
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <i class="fas fa-bus fa-4x text-primary mb-3"></i>
+                                            <h6 class="text-gray-700">Sefer #@Model.Sefer.SeferID</h6>
+                                            <p class="text-muted">@Model.Sefer.Tarih.ToString("dd.MM.yyyy")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Durum Güncelleme -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-cogs me-1"></i>
+                                Hızlı İşlemler
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                @if (Model.BiletDurumu == "Aktif")
+                                {
+                                    <button onclick="updateStatus('Kullanıldı')" class="btn btn-success">
+                                        <i class="fas fa-check me-2"></i>Kullanıldı Olarak İşaretle
+                                    </button>
+                                }
+                                @if (Model.BiletDurumu != "İptal")
+                                {
+                                    <a href="/Admin/Bilet/Delete/@Model.BiletID" class="btn btn-danger">
+                                        <i class="fas fa-ban me-2"></i>Bilet İptal Et
+                                    </a>
+                                }
+                                <a href="/Admin/Sefer/Details/@Model.SeferID" class="btn btn-info">
+                                    <i class="fas fa-route me-2"></i>Sefer Detayları
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ödeme Bilgileri -->
+                    @if (Model.Odeme != null)
+                    {
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    <i class="fas fa-credit-card me-1"></i>
+                                    Ödeme Bilgileri
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="fw-bold text-gray-600">Ödeme ID:</td>
+                                        <td>#@Model.Odeme.OdemeID</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-gray-600">Tutar:</td>
+                                        <td class="text-success fw-bold">@Model.Odeme.ToplamTutar.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-gray-600">Tarih:</td>
+                                        <td>@Model.Odeme.OdemeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-gray-600">Yöntem:</td>
+                                        <td>@Model.Odeme.OdemeYontemi</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-gray-600">Durum:</td>
+                                        <td>
+                                            @if (Model.Odeme.OdemeDurumu == "Tamamlandı")
+                                            {
+                                                <span class="badge bg-success">Tamamlandı</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">@Model.Odeme.OdemeDurumu</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- İstatistikler -->
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                Bilet Özeti
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-ticket-alt fa-3x text-primary mb-2"></i>
+                                    <h4 class="text-primary">@Model.BiletNo</h4>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <h6 class="text-muted">Oluşturulma</h6>
+                                        <p class="mb-0">
+                                            @if (Model.BiletTarihi.HasValue)
+                                            {
+                                                @Model.BiletTarihi.Value.ToString("dd.MM.yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="text-muted">Sefer Tarihi</h6>
+                                        <p class="mb-0">
+                                            @if (Model.Sefer != null)
+                                            {
+                                                @Model.Sefer.Tarih.ToString("dd.MM.yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateStatus(newStatus) {
+            if (confirm('Bilet durumunu "' + newStatus + '" olarak güncellemek istediğinizden emin misiniz?')) {
+                $.post('/Admin/Bilet/UpdateStatus', {
+                    id: @Model.BiletID,
+                    status: newStatus
+                }, function(result) {
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert('Hata: ' + result.message);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+<style>
+    .seat-icon-large {
+        padding: 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .route-display {
+        font-size: 1.1em;
+    }
+
+    .city-name {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    }
+
+    .badge {
+        font-size: 0.875rem;
+    }
+</style> 

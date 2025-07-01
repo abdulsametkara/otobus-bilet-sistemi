@@ -7,6 +7,7 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.AssemblyInfoInputs.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.AssemblyInfo.cs
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.csproj.CoreCompileInputs.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.sourcelink.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.dll
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\refint\OtobusBiletSistemi.Core.dll
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Core\obj\Debug\net9.0\OtobusBiletSistemi.Core.pdb

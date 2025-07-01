@@ -32,8 +32,44 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Guzergah/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcR3V6ZXJnYWhcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Guzergah/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcR3V6ZXJnYWhcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Guzergah/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcR3V6ZXJnYWhcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Guzergah/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcR3V6ZXJnYWhcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Guzergah/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcR3V6ZXJnYWhcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Home/Index.cshtml]

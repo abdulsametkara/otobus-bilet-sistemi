@@ -75,7 +75,8 @@ namespace OtobusBiletSistemi.Web.Controllers
             var otobus = await _otobusRepository.GetByIdAsync(sefer.OtobusID);
             var guzergah = await _guzergahRepository.GetByIdAsync(sefer.GuzergahID);
 
-            var biletFiyati = 120m; // Sabit fiyat
+            // Sefer tablosundan güncel fiyat bilgisini al
+            var biletFiyati = sefer.Fiyat;
             
             var model = new YolcuBilgileriViewModel
             {
@@ -152,11 +153,11 @@ namespace OtobusBiletSistemi.Web.Controllers
             var otobus = await _otobusRepository.GetByIdAsync(sefer.OtobusID);
             var guzergah = await _guzergahRepository.GetByIdAsync(sefer.GuzergahID);
 
-            // Bilet fiyatını al
-            decimal biletFiyati = 120m; // Default
+            // Bilet fiyatını sefer tablosundan al (session'a öncelik ver ama sefer fiyatını fallback olarak kullan)
+            decimal biletFiyati = sefer.Fiyat; // Sefer tablosundan güncel fiyat
             if (decimal.TryParse(biletFiyatiStr, out decimal sessionFiyat))
             {
-                biletFiyati = sessionFiyat;
+                biletFiyati = sessionFiyat; // Session'daki fiyat varsa onu kullan
             }
 
             // İletişim bilgilerini yolcu bilgilerinden al (ilk yolcudan)
@@ -186,10 +187,12 @@ namespace OtobusBiletSistemi.Web.Controllers
             var yolcuBilgileri = HttpContext.Session.GetObject<List<YolcuBilgisiModel>>("YolcuBilgileri");
             var biletFiyatiStr = HttpContext.Session.GetString("BiletFiyati");
             
-            decimal biletFiyati = 120m; // Default
+            // Sefer bilgisini al ve güncel fiyatı kullan
+            var sefer = await _seferRepository.GetByIdAsync(seferId.Value);
+            decimal biletFiyati = sefer?.Fiyat ?? 120m; // Sefer tablosundan fiyat, yoksa default
             if (decimal.TryParse(biletFiyatiStr, out decimal sessionFiyat))
             {
-                biletFiyati = sessionFiyat;
+                biletFiyati = sessionFiyat; // Session'daki fiyat varsa onu kullan
             }
             decimal toplamTutar = (yolcuBilgileri?.Count ?? 1) * biletFiyati;
 
@@ -203,12 +206,12 @@ namespace OtobusBiletSistemi.Web.Controllers
             // Test amaçlı başarısız ödeme simülasyonu
             if (cleanCardNumber == "4444444444444444")
             {
-                var sefer = seferId.HasValue ? await _seferRepository.GetByIdAsync(seferId.Value) : null;
-                var guzergah = sefer != null ? await _guzergahRepository.GetByIdAsync(sefer.GuzergahID) : null;
+                var seferForError = seferId.HasValue ? await _seferRepository.GetByIdAsync(seferId.Value) : null;
+                var guzergah = seferForError != null ? await _guzergahRepository.GetByIdAsync(seferForError.GuzergahID) : null;
                 
                 TempData["HataMesaji"] = "Kartınızda yeterli bakiye bulunmamaktadır.";
                 TempData["SeferBilgisi"] = guzergah != null ? $"{guzergah.Nereden} - {guzergah.Nereye}" : "Bilinmiyor";
-                TempData["SeferTarihi"] = sefer?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
+                TempData["SeferTarihi"] = seferForError?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
                 TempData["ToplamTutar"] = toplamTutar.ToString("N2");
 
                 return RedirectToAction("OdemeBasarisiz");
@@ -219,9 +222,9 @@ namespace OtobusBiletSistemi.Web.Controllers
                 // Model validation başarısız, view'ı tekrar yükle
                 if (seciliKoltuklar != null && seferId != null && yolcuBilgileri != null)
                 {
-                    var sefer = await _seferRepository.GetByIdAsync(seferId.Value);
-                    var otobus = await _otobusRepository.GetByIdAsync(sefer?.OtobusID ?? 0);
-                    var guzergah = await _guzergahRepository.GetByIdAsync(sefer?.GuzergahID ?? 0);
+                    var seferForModel = await _seferRepository.GetByIdAsync(seferId.Value);
+                    var otobus = await _otobusRepository.GetByIdAsync(seferForModel?.OtobusID ?? 0);
+                    var guzergah = await _guzergahRepository.GetByIdAsync(seferForModel?.GuzergahID ?? 0);
                     
                     var koltuklar = new List<Koltuk>();
                     foreach (var koltukId in seciliKoltuklar)
@@ -230,7 +233,7 @@ namespace OtobusBiletSistemi.Web.Controllers
                         if (koltuk != null) koltuklar.Add(koltuk);
                     }
 
-                    model.Sefer = sefer;
+                    model.Sefer = seferForModel;
                     model.Otobus = otobus;
                     model.Guzergah = guzergah;
                     model.Koltuklar = koltuklar;
@@ -290,8 +293,7 @@ namespace OtobusBiletSistemi.Web.Controllers
                         YolcuID = yolcuId,
                         OdemeID = odeme.OdemeID, // Ödeme ID'sini ekle
                         BiletTarihi = DateTime.Now,
-                        BiletDurumu = "Aktif",
-                        Fiyat = biletFiyati // Session'dan alınan fiyatı kullan
+                        BiletDurumu = "Aktif"
                     };
 
                     await _biletRepository.AddAsync(bilet);
@@ -308,14 +310,14 @@ namespace OtobusBiletSistemi.Web.Controllers
                 var ilkBilet = biletler.FirstOrDefault();
                 
                 // Sefer ve güzergah bilgisini al
-                var sefer = await _seferRepository.GetByIdAsync(seferId.Value);
-                var guzergah = sefer != null ? await _guzergahRepository.GetByIdAsync(sefer.GuzergahID) : null;
+                var seferForSuccess = await _seferRepository.GetByIdAsync(seferId.Value);
+                var guzergah2 = seferForSuccess != null ? await _guzergahRepository.GetByIdAsync(seferForSuccess.GuzergahID) : null;
                 
                 TempData["BiletNumarasi"] = ilkBilet?.BiletNo ?? "N/A";
                 TempData["BiletSayisi"] = biletler.Count.ToString();
                 TempData["ToplamTutar"] = toplamTutar.ToString("N2");
-                TempData["SeferBilgisi"] = guzergah != null ? $"{guzergah.Nereden} - {guzergah.Nereye}" : "Bilinmiyor";
-                TempData["SeferTarihi"] = sefer?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
+                TempData["SeferBilgisi"] = guzergah2 != null ? $"{guzergah2.Nereden} - {guzergah2.Nereye}" : "Bilinmiyor";
+                TempData["SeferTarihi"] = seferForSuccess?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
                 
                 return RedirectToAction("OdemeBasarili");
             }
@@ -329,12 +331,12 @@ namespace OtobusBiletSistemi.Web.Controllers
                 }
 
                 // Hata bilgilerini TempData'ya ekle
-                var sefer = seferId.HasValue ? await _seferRepository.GetByIdAsync(seferId.Value) : null;
-                var guzergah = sefer != null ? await _guzergahRepository.GetByIdAsync(sefer.GuzergahID) : null;
+                var seferForError2 = seferId.HasValue ? await _seferRepository.GetByIdAsync(seferId.Value) : null;
+                var guzergah3 = seferForError2 != null ? await _guzergahRepository.GetByIdAsync(seferForError2.GuzergahID) : null;
                 
                 TempData["HataMesaji"] = "Ödeme işlemi sırasında teknik bir sorun oluştu. Lütfen tekrar deneyiniz.";
-                TempData["SeferBilgisi"] = guzergah != null ? $"{guzergah.Nereden} - {guzergah.Nereye}" : "Bilinmiyor";
-                TempData["SeferTarihi"] = sefer?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
+                TempData["SeferBilgisi"] = guzergah3 != null ? $"{guzergah3.Nereden} - {guzergah3.Nereye}" : "Bilinmiyor";
+                TempData["SeferTarihi"] = seferForError2?.Tarih.ToString("dd.MM.yyyy") ?? "Bilinmiyor";
                 TempData["ToplamTutar"] = toplamTutar.ToString("N2");
 
                 return RedirectToAction("OdemeBasarisiz");

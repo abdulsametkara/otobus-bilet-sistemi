@@ -21,6 +21,8 @@ namespace OtobusBiletSistemi.Core.Entities
         public string Kalkis { get; set; } = string.Empty;
         
         public string Varis { get; set; } = string.Empty;
+        
+        public decimal Fiyat { get; set; }
 
         // Navigation Properties
         public virtual Otobus? Otobus { get; set; }

@@ -1,0 +1,252 @@
+@model OtobusBiletSistemi.Core.Entities.Guzergah
+
+@{
+    ViewData["Title"] = "Güzergah Detayı";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var seferler = ViewBag.Seferler as List<OtobusBiletSistemi.Core.Entities.Sefer> ?? new List<OtobusBiletSistemi.Core.Entities.Sefer>();
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-info-circle me-2"></i>Güzergah Detayı
+                </h1>
+                <div>
+                    <a href="/Admin/Guzergah/Edit/@Model.GuzergahID" class="btn btn-warning btn-sm shadow-sm me-2">
+                        <i class="fas fa-edit fa-sm text-white-50 me-1"></i>
+                        Düzenle
+                    </a>
+                    <a href="/Admin/Guzergah" class="btn btn-secondary btn-sm shadow-sm">
+                        <i class="fas fa-arrow-left fa-sm text-white-50 me-1"></i>
+                        Geri Dön
+                    </a>
+                </div>
+            </div>
+
+            <!-- Route Overview -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-left-primary shadow mb-4">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Güzergah #@Model.GuzergahID
+                                    </div>
+                                    <div class="h4 mb-0 font-weight-bold text-gray-800">
+                                        <i class="fas fa-map-marker-alt text-success me-1"></i>@Model.Nereden
+                                        <i class="fas fa-arrow-right mx-3 text-primary"></i>
+                                        <i class="fas fa-map-marker-alt text-danger me-1"></i>@Model.Nereye
+                                        <span class="badge bg-info ms-3">@Model.Mesafe km</span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-route fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Kalkış Şehri
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Nereden</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-map-marker-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-danger shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        Varış Şehri
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Nereye</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-map-marker-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Mesafe
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Mesafe km</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-road fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Aktif Seferler
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@seferler.Count</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-bus fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow mb-4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Trips -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-bus me-1"></i>
+                                Bu Güzergahtaki Seferler (@seferler.Count adet)
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if (seferler.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="seferTable" width="100%" cellspacing="0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Sefer ID</th>
+                                                <th>Otobüs</th>
+                                                <th>Tarih</th>
+                                                <th>Saat</th>
+                                                <th>Kalkış Terminal</th>
+                                                <th>Varış Terminal</th>
+                                                <th>Fiyat</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var sefer in seferler.OrderBy(s => s.Tarih).ThenBy(s => s.Saat))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <strong class="text-primary">#@sefer.SeferID</strong>
+                                                    </td>
+                                                    <td>
+                                                        @if (sefer.Otobus != null)
+                                                        {
+                                                            <span class="badge bg-secondary">@sefer.Otobus.Plaka</span>
+                                                            <br><small class="text-muted">@sefer.Otobus.OtobusTipi</small>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">Otobüs #@sefer.OtobusID</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <strong>@sefer.Tarih.ToString("dd.MM.yyyy")</strong>
+                                                        <br><small class="text-muted">@sefer.Tarih.ToString("dddd", new System.Globalization.CultureInfo("tr-TR"))</small>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-info">@sefer.Saat</span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="fas fa-map-marker-alt text-success me-1"></i>
+                                                        @sefer.Kalkis
+                                                    </td>
+                                                    <td>
+                                                        <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                                        @sefer.Varis
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-success">@sefer.Fiyat.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a href="/Admin/Sefer/Details/@sefer.SeferID" 
+                                                               class="btn btn-info btn-sm" title="Sefer Detayı">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                            <a href="/Admin/Sefer/Edit/@sefer.SeferID" 
+                                                               class="btn btn-warning btn-sm" title="Sefer Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-5">
+                                    <i class="fas fa-bus fa-3x text-gray-300 mb-3"></i>
+                                    <h5 class="text-gray-500">Bu güzergaha henüz sefer tanımlanmamış</h5>
+                                    <p class="text-gray-400">Bu güzergaha sefer ekleyerek başlayın.</p>
+                                    <a href="/Admin/Sefer/Create?guzergahId=@Model.GuzergahID" class="btn btn-primary">
+                                        <i class="fas fa-plus me-1"></i>İlk Seferi Ekle
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            if ($('#seferTable tbody tr').length > 0) {
+                $('#seferTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                    },
+                    "pageLength": 10,
+                    "order": [[ 2, "desc" ], [ 3, "asc" ]]
+                });
+            }
+        });
+    </script>
+} 

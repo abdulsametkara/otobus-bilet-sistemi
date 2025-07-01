@@ -1,5 +1,6 @@
 @using OtobusBiletSistemi.Core.Entities
-@model List<Bilet>
+@using OtobusBiletSistemi.Core.Data
+@model IEnumerable<Bilet>
 
 @{
     ViewData["Title"] = "Bilet Yönetimi";
@@ -7,302 +8,416 @@
 }
 
 <div class="container-fluid">
-    <!-- Sayfa Başlığı -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-                <i class="fas fa-ticket-alt text-primary me-2"></i>
-                Bilet Yönetimi
-            </h1>
-            <p class="text-muted mb-0">Satılan biletleri görüntüleyin ve yönetin</p>
-        </div>
-        <div>
-            <button class="btn btn-success me-2">
-                <i class="fas fa-download me-1"></i>
-                Rapor Al
-            </button>
-            <button class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i>
-                Yeni Bilet
-            </button>
-        </div>
-    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-ticket-alt me-2"></i>Bilet Yönetimi
+                </h1>
+                <a href="/Admin/Bilet/Create" class="btn btn-primary btn-sm shadow-sm">
+                    <i class="fas fa-plus fa-sm text-white-50 me-1"></i>
+                    Yeni Bilet Oluştur
+                </a>
+            </div>
 
-    <!-- İstatistik Kartları -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card-mini bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stat-label-mini">Toplam Bilet</div>
-                            <div class="stat-value-mini">@Model.Count</div>
-                        </div>
-                        <div class="stat-icon-mini">
-                            <i class="fas fa-ticket-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card-mini bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stat-label-mini">Toplam Gelir</div>
-                            <div class="stat-value-mini">₺@Model.Sum(b => b.Fiyat).ToString("N0")</div>
-                        </div>
-                        <div class="stat-icon-mini">
-                            <i class="fas fa-lira-sign"></i>
+            <!-- Stats Cards -->
+            <div class="row">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Toplam Bilet
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-ticket-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card-mini bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stat-label-mini">Bugünkü Satış</div>
-                            <div class="stat-value-mini">@Model.Count(b => b.Sefer?.Tarih.Date == DateTime.Today)</div>
-                        </div>
-                        <div class="stat-icon-mini">
-                            <i class="fas fa-calendar-day"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card-mini bg-warning text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stat-label-mini">Ortalama Fiyat</div>
-                            <div class="stat-value-mini">₺@(Model.Count > 0 ? Math.Round(Model.Average(b => b.Fiyat), 0) : 0)</div>
-                        </div>
-                        <div class="stat-icon-mini">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Filtreler -->
-    <div class="card mb-4">
-        <div class="card-body py-3">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <input type="date" class="form-control form-control-sm" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Aktif Biletler
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(b => b.BiletDurumu == "Aktif")</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select form-select-sm">
-                        <option value="">Tüm Güzergahlar</option>
-                        @foreach (var guzergah in Model.Select(b => b.Sefer?.Guzergah).Where(g => g != null).Distinct())
-                        {
-                            <option value="@guzergah?.GuzergahID">@guzergah?.Nereden - @guzergah?.Nereye</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <input type="text" class="form-control form-control-sm" placeholder="PNR Kodu ara...">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-primary btn-sm w-100">
-                        <i class="fas fa-search me-1"></i>
-                        Filtrele
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Bilet Tablosu -->
-    <div class="card shadow">
-        <div class="card-header py-3 bg-gradient-warning text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold">
-                    <i class="fas fa-table me-2"></i>
-                    Bilet Listesi
-                </h6>
-                <div class="d-flex">
-                    <button class="btn btn-light btn-sm me-2">
-                        <i class="fas fa-print me-1"></i>
-                        Yazdır
-                    </button>
-                    <button class="btn btn-light btn-sm">
-                        <i class="fas fa-file-excel me-1"></i>
-                        Excel
-                    </button>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Toplam Gelir
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Where(b => b.BiletDurumu == "Aktif").Sum(b => b.Sefer.Fiyat).ToString("C", new System.Globalization.CultureInfo("tr-TR"))</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-lira-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        İptal Edilen
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(b => b.BiletDurumu == "İptal")</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-ban fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            @if (Model.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Bilet No</th>
-                                <th>Yolcu</th>
-                                <th>Sefer</th>
-                                <th>Koltuk</th>
-                                <th>Tarih</th>
-                                <th>Fiyat</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var bilet in Model.OrderByDescending(b => b.BiletID))
+
+            <!-- Filter Form -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-filter me-1"></i>
+                        Filtrele ve Ara
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="/Admin/Bilet">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="searchBiletNo" class="form-label">Bilet No</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="searchBiletNo" 
+                                           name="searchBiletNo" 
+                                           value="@ViewBag.SearchBiletNo"
+                                           placeholder="Bilet No ara...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="searchYolcu" class="form-label">Yolcu</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="searchYolcu" 
+                                           name="searchYolcu" 
+                                           value="@ViewBag.SearchYolcu"
+                                           placeholder="Yolcu adı veya TC ara...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="searchSefer" class="form-label">Sefer/Güzergah</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="searchSefer" 
+                                           name="searchSefer" 
+                                           value="@ViewBag.SearchSefer"
+                                           placeholder="Sefer No veya şehir ara...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filterDurum" class="form-label">Bilet Durumu</label>
+                                    <select class="form-select" id="filterDurum" name="filterDurum">
+                                        <option value="">Tüm Durumlar</option>
+                                        @foreach (var durum in ViewBag.BiletDurumlari as List<string> ?? new List<string>())
+                                        {
+                                            <option value="@durum" @(ViewBag.FilterDurum?.ToString() == durum ? "selected" : "")>@durum</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filterTarih" class="form-label">Sefer Tarihi</label>
+                                    <input type="date" 
+                                           class="form-control" 
+                                           id="filterTarih" 
+                                           name="filterTarih" 
+                                           value="@ViewBag.FilterTarih">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filterGuzergah" class="form-label">Güzergah</label>
+                                    <select class="form-select" id="filterGuzergah" name="filterGuzergah">
+                                        <option value="">Tüm Güzergahlar</option>
+                                        @foreach (var guzergah in ViewBag.Guzergahlar as List<Guzergah> ?? new List<Guzergah>())
+                                        {
+                                            <option value="@guzergah.GuzergahID" @(ViewBag.FilterGuzergah?.ToString() == guzergah.GuzergahID.ToString() ? "selected" : "")>
+                                                @guzergah.Nereden → @guzergah.Nereye
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search me-1"></i>Ara
+                                        </button>
+                                        <a href="/Admin/Bilet" class="btn btn-secondary">
+                                            <i class="fas fa-undo me-1"></i>Temizle
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-list me-1"></i>
+                        Bilet Listesi (@Model.Count() adet)
+                    </h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow">
+                            <div class="dropdown-header">İşlemler:</div>
+                            <a class="dropdown-item" href="/Admin/Bilet/Create">
+                                <i class="fas fa-plus fa-sm fa-fw me-2 text-gray-400"></i>
+                                Yeni Bilet Oluştur
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" onclick="exportToExcel()">
+                                <i class="fas fa-file-excel fa-sm fa-fw me-2 text-gray-400"></i>
+                                Excel'e Aktar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Bilet No</th>
+                                        <th>Yolcu</th>
+                                        <th>Sefer Bilgisi</th>
+                                        <th>Koltuk</th>
+                                        <th>Tarih</th>
+                                        <th>Fiyat</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bilet in Model.OrderByDescending(b => b.BiletID))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong class="text-primary">@bilet.BiletNo</strong>
+                                                <br><small class="text-muted">ID: @bilet.BiletID</small>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var yolcuBilgileri = ViewBag.YolcuBilgileri as Dictionary<int, YolcuUser>;
+                                                    YolcuUser yolcu = null;
+                                                    var yolcuVar = yolcuBilgileri != null && yolcuBilgileri.TryGetValue(bilet.BiletID, out yolcu);
+                                                }
+                                                @if (yolcuVar && yolcu != null)
+                                                {
+                                                    <div>
+                                                        <strong>@yolcu.FullName</strong>
+                                                        <br><small class="text-muted">@yolcu.TCNo</small>
+                                                        @if (!string.IsNullOrEmpty(yolcu.TelNo))
+                                                        {
+                                                            <br><small class="text-muted">@yolcu.TelNo</small>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">Yolcu Bilgisi Yok</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (bilet.Sefer != null)
+                                                {
+                                                    <div>
+                                                        @if (bilet.Sefer.Guzergah != null)
+                                                        {
+                                                            <strong>@bilet.Sefer.Guzergah.Nereden → @bilet.Sefer.Guzergah.Nereye</strong>
+                                                        }
+                                                        <br><small class="text-muted">Sefer #@bilet.Sefer.SeferID</small>
+                                                        @if (bilet.Sefer.Otobus != null)
+                                                        {
+                                                            <br><small class="text-muted">@bilet.Sefer.Otobus.Plaka</small>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">Sefer Bilgisi Yok</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (bilet.Koltuk != null)
+                                                {
+                                                    <span class="badge bg-info">@bilet.Koltuk.KoltukNo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Koltuk #@bilet.KoltukID</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (bilet.Sefer != null)
+                                                {
+                                                    <strong>@bilet.Sefer.Tarih.ToString("dd.MM.yyyy")</strong>
+                                                    <br><small class="text-muted">@bilet.Sefer.Saat</small>
+                                                }
+                                                @if (bilet.BiletTarihi.HasValue)
+                                                {
+                                                    <br><small class="text-muted">Oluşturuldu: @bilet.BiletTarihi.Value.ToString("dd.MM.yyyy")</small>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (bilet.Sefer != null)
+                                                {
+                                                    <strong class="text-success">@bilet.Sefer.Fiyat.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                                                    <br><small class="text-muted">Sefer fiyatı</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (bilet.BiletDurumu)
+                                                {
+                                                    case "Aktif":
+                                                        <span class="badge bg-success">Aktif</span>
+                                                        break;
+                                                    case "İptal":
+                                                        <span class="badge bg-danger">İptal</span>
+                                                        break;
+                                                    case "Kullanıldı":
+                                                        <span class="badge bg-secondary">Kullanıldı</span>
+                                                        break;
+                                                    case "Beklemede":
+                                                        <span class="badge bg-warning">Beklemede</span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-light text-dark">@bilet.BiletDurumu</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="/Admin/Bilet/Details/@bilet.BiletID" 
+                                                       class="btn btn-info btn-sm" title="Detay">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/Admin/Bilet/Edit/@bilet.BiletID" 
+                                                       class="btn btn-warning btn-sm" title="Düzenle">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    @if (bilet.BiletDurumu != "İptal")
+                                                    {
+                                                        <a href="/Admin/Bilet/Delete/@bilet.BiletID" 
+                                                           class="btn btn-danger btn-sm" title="İptal Et">
+                                                            <i class="fas fa-ban"></i>
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-ticket-alt fa-3x text-gray-300 mb-3"></i>
+                            @if (!string.IsNullOrEmpty(ViewBag.SearchBiletNo as string) || 
+                                 !string.IsNullOrEmpty(ViewBag.SearchYolcu as string) || 
+                                 !string.IsNullOrEmpty(ViewBag.SearchSefer as string) ||
+                                 !string.IsNullOrEmpty(ViewBag.FilterDurum as string) ||
+                                 ViewBag.FilterTarih != null ||
+                                 ViewBag.FilterGuzergah != null)
                             {
-                                <tr>
-                                    <td>
-                                        <strong class="text-primary">#@bilet.BiletID</strong>
-                                    </td>
-                                    <td>
-                                        @if (bilet.Yolcu != null)
-                                        {
-                                            <div>
-                                                <strong>@bilet.Yolcu.FullName</strong>
-                                                <br>
-                                                <small class="text-muted">@bilet.Yolcu.TCNo</small>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-danger">Yolcu Bilgisi Yok</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (bilet.Sefer != null)
-                                        {
-                                            <div>
-                                                <strong>@(bilet.Sefer.Guzergah?.Nereden ?? "N/A") → @(bilet.Sefer.Guzergah?.Nereye ?? "N/A")</strong>
-                                                <br>
-                                                <small class="text-muted">Sefer #@bilet.Sefer.SeferID</small>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-danger">Sefer Bilgisi Yok</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (bilet.Koltuk != null)
-                                        {
-                                            <div class="koltuk-badge">
-                                                <i class="fas fa-chair me-1"></i>
-                                                <strong>@bilet.Koltuk.KoltukNo</strong>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-danger">Koltuk Yok</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (bilet.Sefer != null)
-                                        {
-                                            <div>
-                                                <strong>@bilet.Sefer.Tarih.ToString("dd.MM.yyyy")</strong>
-                                                <br>
-                                                <small class="text-muted">@bilet.Sefer.Saat</small>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">-</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <span class="price-badge">₺@bilet.Fiyat.ToString("N2")</span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Details" asp-route-id="@bilet.BiletID" class="btn btn-info btn-sm" title="Detay">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@bilet.BiletID" class="btn btn-danger btn-sm" title="İptal Et">
-                                                <i class="fas fa-ban"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <h5 class="text-gray-500">Arama kriterlerinize uygun bilet bulunamadı</h5>
+                                <p class="text-gray-400">Arama kriterlerinizi değiştirerek tekrar deneyin.</p>
+                                <a href="/Admin/Bilet" class="btn btn-primary">
+                                    <i class="fas fa-undo me-1"></i>Filtreleri Temizle
+                                </a>
                             }
-                        </tbody>
-                    </table>
+                            else
+                            {
+                                <h5 class="text-gray-500">Henüz hiç bilet bulunmuyor</h5>
+                                <p class="text-gray-400">Yeni bilet oluşturarak başlayın.</p>
+                                <a href="/Admin/Bilet/Create" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>İlk Bileti Oluştur
+                                </a>
+                            }
+                        </div>
+                    }
                 </div>
-            }
-            else
-            {
-                <div class="text-center py-5">
-                    <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">Henüz Bilet Satılmamış</h5>
-                    <p class="text-muted">Sistem henüz hiç bilet satışı yapmamış. İlk satışlar burada görünecektir.</p>
-                </div>
-            }
+            </div>
         </div>
     </div>
 </div>
 
-<style>
-.stat-card-mini {
-    border: none;
-    border-radius: 10px;
-    transition: transform 0.2s ease;
-}
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            if ($('#dataTable tbody tr').length > 0) {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                    },
+                    "pageLength": 25,
+                    "order": [[ 0, "desc" ]],
+                    "columnDefs": [
+                        { "orderable": false, "targets": -1 }
+                    ]
+                });
+            }
+        });
 
-.stat-card-mini:hover {
-    transform: translateY(-2px);
-}
-
-.stat-label-mini {
-    font-size: 0.75rem;
-    opacity: 0.9;
-    font-weight: 500;
-}
-
-.stat-value-mini {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.stat-icon-mini {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.2);
-}
-
-.koltuk-badge {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    display: inline-block;
-}
-
-.price-badge {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-}
-</style> 
- 
+        function exportToExcel() {
+            // Excel export functionality
+            alert('Excel export özelliği henüz hazır değil.');
+        }
+    </script>
+} 

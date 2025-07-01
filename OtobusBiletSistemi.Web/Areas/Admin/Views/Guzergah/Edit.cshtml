@@ -1,0 +1,242 @@
+@model OtobusBiletSistemi.Core.Entities.Guzergah
+
+@{
+    ViewData["Title"] = "Güzergah Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-edit me-2"></i>Güzergah Düzenle
+                </h1>
+                <div>
+                    <a href="/Admin/Guzergah/Details/@Model.GuzergahID" class="btn btn-info btn-sm shadow-sm me-2">
+                        <i class="fas fa-eye fa-sm text-white-50 me-1"></i>
+                        Detay
+                    </a>
+                    <a href="/Admin/Guzergah" class="btn btn-secondary btn-sm shadow-sm">
+                        <i class="fas fa-arrow-left fa-sm text-white-50 me-1"></i>
+                        Geri Dön
+                    </a>
+                </div>
+            </div>
+
+            <!-- Current Info -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-left-warning shadow mb-4">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Mevcut Güzergah Bilgisi
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <i class="fas fa-map-marker-alt text-success me-1"></i>@Model.Nereden
+                                        <i class="fas fa-arrow-right mx-2 text-primary"></i>
+                                        <i class="fas fa-map-marker-alt text-danger me-1"></i>@Model.Nereye
+                                        <span class="badge bg-info ms-2">@Model.Mesafe km</span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-route fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-10">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-edit me-1"></i>
+                                Güzergah Bilgilerini Düzenle
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if (ViewData.ModelState.IsValid == false)
+                            {
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+                            <form method="post" action="/Admin/Guzergah/Edit/@Model.GuzergahID">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="GuzergahID" value="@Model.GuzergahID" />
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="Nereden" class="form-label">
+                                                <i class="fas fa-map-marker-alt me-1 text-success"></i>
+                                                Kalkış Şehri <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="Nereden" id="Nereden" class="form-select" required>
+                                                <option value="">Kalkış şehri seçin...</option>
+                                                @foreach (var city in ViewBag.Cities as List<string>)
+                                                {
+                                                    <option value="@city" @(Model.Nereden == city ? "selected" : "")>@city</option>
+                                                }
+                                            </select>
+                                            <div class="form-text">Güzergahın başladığı şehri seçin.</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="Nereye" class="form-label">
+                                                <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                                Varış Şehri <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="Nereye" id="Nereye" class="form-select" required>
+                                                <option value="">Varış şehri seçin...</option>
+                                                @foreach (var city in ViewBag.Cities as List<string>)
+                                                {
+                                                    <option value="@city" @(Model.Nereye == city ? "selected" : "")>@city</option>
+                                                }
+                                            </select>
+                                            <div class="form-text">Güzergahın bittiği şehri seçin.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="Mesafe" class="form-label">
+                                                <i class="fas fa-road me-1 text-info"></i>
+                                                Mesafe (km) <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" 
+                                                   name="Mesafe" 
+                                                   id="Mesafe" 
+                                                   class="form-control" 
+                                                   value="@Model.Mesafe"
+                                                   min="1" 
+                                                   max="2000" 
+                                                   required>
+                                            <div class="form-text">Şehirler arası yaklaşık mesafe (1-2000 km).</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-info-circle me-1 text-warning"></i>
+                                                Güzergah Önizleme
+                                            </label>
+                                            <div class="card bg-light">
+                                                <div class="card-body py-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <span id="preview-nereden" class="text-muted">@Model.Nereden</span>
+                                                        <i class="fas fa-arrow-right mx-2 text-primary"></i>
+                                                        <span id="preview-nereye" class="text-muted">@Model.Nereye</span>
+                                                        <span class="ms-auto">
+                                                            <span id="preview-mesafe" class="badge bg-info">@Model.Mesafe km</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <a href="/Admin/Guzergah" class="btn btn-secondary">
+                                            <i class="fas fa-times me-1"></i>İptal
+                                        </a>
+                                        <a href="/Admin/Guzergah/Details/@Model.GuzergahID" class="btn btn-info ms-2">
+                                            <i class="fas fa-eye me-1"></i>Detay Görüntüle
+                                        </a>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-save me-1"></i>Değişiklikleri Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Şehir seçimi değiştiğinde önizlemeyi güncelle
+            function updatePreview() {
+                var nereden = $('#Nereden').val() || 'Kalkış';
+                var nereye = $('#Nereye').val() || 'Varış';
+                var mesafe = $('#Mesafe').val() || '0';
+                
+                $('#preview-nereden').text(nereden);
+                $('#preview-nereye').text(nereye);
+                $('#preview-mesafe').text(mesafe + ' km');
+                
+                // Aynı şehir seçilirse uyarı ver
+                if (nereden !== 'Kalkış' && nereye !== 'Varış' && nereden === nereye) {
+                    $('#preview-mesafe').removeClass('bg-info').addClass('bg-danger').text('Hata!');
+                } else {
+                    $('#preview-mesafe').removeClass('bg-danger').addClass('bg-info');
+                }
+            }
+            
+            $('#Nereden, #Nereye, #Mesafe').on('change keyup', updatePreview);
+            
+            // Form validation
+            $('form').on('submit', function(e) {
+                var nereden = $('#Nereden').val();
+                var nereye = $('#Nereye').val();
+                var mesafe = parseInt($('#Mesafe').val());
+                
+                if (!nereden || !nereye || !mesafe) {
+                    e.preventDefault();
+                    alert('Lütfen tüm alanları doldurun.');
+                    return false;
+                }
+                
+                if (nereden === nereye) {
+                    e.preventDefault();
+                    alert('Kalkış ve varış şehri aynı olamaz.');
+                    return false;
+                }
+                
+                if (mesafe < 1 || mesafe > 2000) {
+                    e.preventDefault();
+                    alert('Mesafe 1-2000 km arasında olmalıdır.');
+                    return false;
+                }
+                
+                // Değişiklik kontrolü
+                var originalNereden = '@Model.Nereden';
+                var originalNereye = '@Model.Nereye';
+                var originalMesafe = @Model.Mesafe;
+                
+                if (nereden === originalNereden && nereye === originalNereye && mesafe === originalMesafe) {
+                    e.preventDefault();
+                    alert('Hiçbir değişiklik yapılmadı.');
+                    return false;
+                }
+            });
+        });
+    </script>
+} 

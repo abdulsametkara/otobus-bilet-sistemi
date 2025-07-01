@@ -125,7 +125,6 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Bilet>().Property(x => x.OdemeID).HasColumnName("ODEMEID");
             modelBuilder.Entity<Bilet>().Property(x => x.BiletTarihi).HasColumnName("BILETTARIHI");
             modelBuilder.Entity<Bilet>().Property(x => x.BiletDurumu).HasColumnName("BILETDURUMU");
-            modelBuilder.Entity<Bilet>().Property(x => x.Fiyat).HasColumnName("FIYAT");
             
             // BiletNo computed property'sini ignore et
             modelBuilder.Entity<Bilet>().Ignore(x => x.BiletNo);
@@ -142,7 +141,7 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Odeme>().Property(x => x.OdemeID).HasColumnName("ODEMEID").ValueGeneratedOnAdd();
             modelBuilder.Entity<Odeme>().Property(x => x.YolcuID).HasColumnName("YOLCUID");
             modelBuilder.Entity<Odeme>().Property(x => x.OdemeTarihi).HasColumnName("ODEMETARIHI");
-            modelBuilder.Entity<Odeme>().Property(x => x.OdemeTutari).HasColumnName("TOPLAMTUTAR");
+            modelBuilder.Entity<Odeme>().Property(x => x.OdemeTutari).HasColumnName("TOPLAMTUTAR").HasColumnType("NUMBER(10,2)");
             modelBuilder.Entity<Odeme>().Property(x => x.OdemeYontemi).HasColumnName("ODEMETIPI");
             modelBuilder.Entity<Odeme>().Property(x => x.OdemeDurumu).HasColumnName("ONAYDURUMU");
             modelBuilder.Entity<Odeme>().Property(x => x.KartSahibiAdi).HasColumnName("KARTSAHIBIADI");
@@ -166,6 +165,7 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Sefer>().Property(x => x.Saat).HasColumnName("SAAT");
             modelBuilder.Entity<Sefer>().Property(x => x.Kalkis).HasColumnName("KALKMATERMINALI");
             modelBuilder.Entity<Sefer>().Property(x => x.Varis).HasColumnName("VARISTERMINALI");
+            modelBuilder.Entity<Sefer>().Property(x => x.Fiyat).HasColumnName("FIYAT").HasColumnType("NUMBER(10,2)");
 
 
         }

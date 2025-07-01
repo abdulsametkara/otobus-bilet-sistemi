@@ -1,0 +1,178 @@
+@model OtobusBiletSistemi.Core.Entities.Guzergah
+
+@{
+    ViewData["Title"] = "Güzergah Sil";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-trash me-2 text-danger"></i>Güzergah Sil
+                </h1>
+                <div>
+                    <a href="/Admin/Guzergah/Details/@Model.GuzergahID" class="btn btn-info btn-sm shadow-sm me-2">
+                        <i class="fas fa-eye fa-sm text-white-50 me-1"></i>
+                        Detay
+                    </a>
+                    <a href="/Admin/Guzergah" class="btn btn-secondary btn-sm shadow-sm">
+                        <i class="fas fa-arrow-left fa-sm text-white-50 me-1"></i>
+                        Geri Dön
+                    </a>
+                </div>
+            </div>
+
+            <!-- Warning Alert -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger border-left-danger" role="alert">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h4 class="alert-heading">Dikkat!</h4>
+                                <p class="mb-2">Bu güzergahı silmek üzeresiniz. Bu işlem <strong>geri alınamaz</strong>!</p>
+                                <hr>
+                                <p class="mb-0">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Bu güzergaha bağlı aktif seferler varsa silme işlemi gerçekleştirilemez.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Info -->
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-10">
+                    <div class="card shadow mb-4 border-danger">
+                        <div class="card-header py-3 bg-danger">
+                            <h6 class="m-0 font-weight-bold text-white">
+                                <i class="fas fa-trash me-1"></i>
+                                Silinecek Güzergah Bilgileri
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Güzergah Detayları -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="text-center">
+                                                        <div class="h1 text-primary mb-2">
+                                                            <i class="fas fa-hashtag"></i>@Model.GuzergahID
+                                                        </div>
+                                                        <small class="text-muted">Güzergah ID</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="text-center">
+                                                        <div class="h4 mb-2">
+                                                            <i class="fas fa-map-marker-alt text-success me-1"></i>
+                                                            <strong>@Model.Nereden</strong>
+                                                            <i class="fas fa-arrow-right mx-3 text-primary"></i>
+                                                            <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                                            <strong>@Model.Nereye</strong>
+                                                        </div>
+                                                        <small class="text-muted">Güzergah Rotası</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="text-center">
+                                                        <div class="h2 text-info mb-2">
+                                                            @Model.Mesafe <small>km</small>
+                                                        </div>
+                                                        <small class="text-muted">Mesafe</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Onay Sorusu -->
+                            <div class="text-center mb-4">
+                                <h5 class="text-danger">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    Bu güzergahı silmek istediğinizden emin misiniz?
+                                </h5>
+                                <p class="text-muted">
+                                    <strong>@Model.Nereden → @Model.Nereye</strong> güzergahı kalıcı olarak silinecektir.
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="/Admin/Guzergah" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times me-2"></i>İptal Et
+                                </a>
+                                
+                                <a href="/Admin/Guzergah/Details/@Model.GuzergahID" class="btn btn-info btn-lg">
+                                    <i class="fas fa-eye me-2"></i>Detayları Görüntüle
+                                </a>
+                                
+                                <form method="post" action="/Admin/Guzergah/DeleteConfirmed/@Model.GuzergahID" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-lg" 
+                                            onclick="return confirm('Bu güzergahı silmek istediğinizden emin misiniz?')">
+                                        <i class="fas fa-trash me-2"></i>Güzergahı Sil
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-10">
+                    <div class="card border-left-info shadow mb-4">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Silme İşlemi Hakkında
+                                    </div>
+                                    <div class="text-gray-800">
+                                        <ul class="mb-0">
+                                            <li>Bu güzergaha bağlı aktif seferler varsa silme işlemi engellenecektir.</li>
+                                            <li>Güzergah silindikten sonra bu işlem geri alınamaz.</li>
+                                            <li>Silinen güzergah bilgileri tamamen kaybolacaktır.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-info-circle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Silme butonu için ekstra onay
+            $('form button[type="submit"]').on('click', function(e) {
+                var confirmed = confirm('Son kez soruyorum: @Model.Nereden - @Model.Nereye güzergahını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!');
+                if (!confirmed) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+} 

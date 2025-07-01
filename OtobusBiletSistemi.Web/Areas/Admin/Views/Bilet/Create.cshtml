@@ -1,0 +1,266 @@
+@model OtobusBiletSistemi.Core.Entities.Bilet
+
+@{
+    ViewData["Title"] = "Yeni Bilet Oluştur";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h1 class="h3 mb-0 text-gray-800">
+                        <i class="fas fa-plus me-2"></i>
+                        Yeni Bilet Oluştur
+                    </h1>
+                    <p class="text-muted mb-0">Yolcu için yeni bilet oluşturun</p>
+                </div>
+                <a href="/Admin/Bilet" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                </a>
+            </div>
+
+            <div class="row">
+                <!-- Ana Form -->
+                <div class="col-lg-8">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-ticket-alt me-1"></i>
+                                Bilet Bilgileri
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="/Admin/Bilet/Create" id="biletForm">
+                                @Html.AntiForgeryToken()
+                                
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                            {
+                                                <li>@error.ErrorMessage</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="SeferID" class="form-label fw-bold">
+                                                <i class="fas fa-route me-1"></i>Sefer Seçimi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="SeferID" name="SeferID" required>
+                                                <option value="">Sefer seçiniz...</option>
+                                                @if (ViewBag.Seferler != null)
+                                                {
+                                                    @foreach (var sefer in ViewBag.Seferler as List<OtobusBiletSistemi.Core.Entities.Sefer>)
+                                                    {
+                                                        <option value="@sefer.SeferID" 
+                                                                data-fiyat="@sefer.Fiyat">
+                                                            @(sefer.Guzergah?.Nereden) → @(sefer.Guzergah?.Nereye) 
+                                                            (@sefer.Tarih.ToString("dd.MM.yyyy") @sefer.Saat)
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="YolcuID" class="form-label fw-bold">
+                                                <i class="fas fa-user me-1"></i>Yolcu Seçimi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="YolcuID" name="YolcuID" required>
+                                                <option value="">Yolcu seçiniz...</option>
+                                                @if (ViewBag.Yolcular != null)
+                                                {
+                                                    @foreach (var yolcu in ViewBag.Yolcular as List<OtobusBiletSistemi.Core.Data.YolcuUser>)
+                                                    {
+                                                        <option value="@yolcu.Id">
+                                                            @yolcu.FullName (@yolcu.TCNo)
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="KoltukID" class="form-label fw-bold">
+                                                <i class="fas fa-chair me-1"></i>Koltuk Seçimi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="KoltukID" name="KoltukID" required>
+                                                <option value="">Önce sefer seçiniz...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label fw-bold">
+                                                <i class="fas fa-info-circle me-1"></i>Bilet Fiyatı
+                                            </label>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   id="FiyatDisplay" 
+                                                   placeholder="Sefer seçtikten sonra görünecek"
+                                                   readonly>
+                                            <small class="text-muted">Fiyat sefer bilgisinden otomatik alınır</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="BiletDurumu" class="form-label fw-bold">
+                                                <i class="fas fa-info-circle me-1"></i>Bilet Durumu
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="BiletDurumu" name="BiletDurumu" required>
+                                                @if (ViewBag.BiletDurumlari != null)
+                                                {
+                                                    @foreach (var durum in ViewBag.BiletDurumlari as List<string>)
+                                                    {
+                                                        <option value="@durum" @(durum == "Aktif" ? "selected" : "")>@durum</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <a href="/Admin/Bilet" class="btn btn-secondary">
+                                        <i class="fas fa-times me-1"></i>İptal
+                                    </a>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-1"></i>Bilet Oluştur
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Yardım -->
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-warning">
+                                <i class="fas fa-question-circle me-1"></i>
+                                Yardım
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <small class="text-muted">
+                                <strong>Bilet Oluşturma Adımları:</strong><br>
+                                1. Sefer seçin<br>
+                                2. Yolcu seçin<br>
+                                3. Müsait koltuk seçin<br>
+                                4. Bilet durumunu belirleyin<br>
+                                5. Oluştur butonuna tıklayın<br><br>
+                                <strong>Not:</strong> Bilet fiyatı sefer bilgisinden otomatik alınır.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            console.log("Document ready, JavaScript başlıyor.");
+            
+            $('#SeferID').change(function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const seferID = this.value;
+                const koltukSelect = $('#KoltukID');
+                
+                console.log("Sefer değişti, seçilen ID:", seferID);
+                
+                if (seferID) {
+                    // Fiyatı display alanında göster
+                    if (selectedOption.dataset.fiyat) {
+                        $('#FiyatDisplay').val(parseFloat(selectedOption.dataset.fiyat).toFixed(2) + ' TL');
+                        console.log("Fiyat gösterildi:", selectedOption.dataset.fiyat);
+                    }
+                    
+                    // Koltuk dropdown'ını yükleniyor mesajıyla güncelle
+                    koltukSelect.html('<option value="">Koltuklar yükleniyor...</option>');
+                    console.log("Koltuk yükleme başlıyor...");
+                    
+                    // Müsait koltukları yükle
+                    $.ajax({
+                        url: '/Admin/Bilet/GetAvailableSeats',
+                        type: 'GET',
+                        data: { seferID: seferID },
+                        dataType: 'json',
+                        success: function(result) {
+                            console.log("AJAX başarılı, yanıt:", result);
+                            koltukSelect.empty();
+                            
+                            if (result.success && result.seats && result.seats.length > 0) {
+                                console.log("Koltuklar bulundu:", result.seats.length);
+                                koltukSelect.append('<option value="">Koltuk seçiniz...</option>');
+                                
+                                // Debug bilgilerini konsola yazdır
+                                if (result.debug) {
+                                    console.log("DEBUG BİLGİLERİ:", result.debug);
+                                }
+                                
+                                result.seats.forEach(function(seat) {
+                                    console.log("Koltuk ekleniyor:", seat);
+                                    // Her bir koltuğun özelliklerini kontrol et
+                                    console.log("KoltukID:", seat.koltukID || seat.KoltukID, 
+                                               "KoltukNo:", seat.koltukNo || seat.KoltukNo);
+                                    
+                                    // Büyük/küçük harf farklılıklarını dikkate al
+                                    const koltukID = seat.koltukID || seat.KoltukID || "";
+                                    const koltukNo = seat.koltukNo || seat.KoltukNo || "Bilinmiyor";
+                                    
+                                    koltukSelect.append(`<option value="${koltukID}">Koltuk ${koltukNo}</option>`);
+                                });
+                            } else {
+                                console.log("Müsait koltuk yok veya hata oluştu:", result.message);
+                                koltukSelect.append('<option value="">Müsait koltuk yok</option>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("AJAX hatası:", error);
+                            console.error("Durum:", status);
+                            console.error("Yanıt:", xhr.responseText);
+                            
+                            koltukSelect.empty();
+                            koltukSelect.append('<option value="">Koltuk yüklenemedi</option>');
+                        }
+                    });
+                } else {
+                    console.log("Sefer seçilmedi");
+                    koltukSelect.html('<option value="">Önce sefer seçiniz...</option>');
+                    $('#FiyatDisplay').val('');
+                }
+            });
+            
+            // Sayfa yüklendiğinde sefer zaten seçiliyse koltukları yükle
+            if ($('#SeferID').val()) {
+                console.log("Sayfa yüklendiğinde sefer zaten seçili, koltukları yüklüyorum");
+                $('#SeferID').trigger('change');
+            }
+        });
+    </script>
+} 
