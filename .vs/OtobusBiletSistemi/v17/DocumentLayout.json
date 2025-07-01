@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|solutionrelative:otobusbiletsistemi.web\\areas\\admin\\views\\bilet\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|c:\\users\\samet\\desktop\\test-project\\admin-panalleri\\otobusbiletsistemi\\otobusbiletsistemi.web\\areas\\admin\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|solutionrelative:otobusbiletsistemi.web\\areas\\admin\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|c:\\users\\samet\\desktop\\test-project\\admin-panalleri\\otobusbiletsistemi\\otobusbiletsistemi.web\\areas\\admin\\views\\bilet\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|solutionrelative:otobusbiletsistemi.web\\areas\\admin\\views\\bilet\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|c:\\users\\samet\\desktop\\test-project\\admin-panalleri\\otobusbiletsistemi\\otobusbiletsistemi.web\\areas\\admin\\views\\bilet\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|solutionrelative:otobusbiletsistemi.web\\areas\\admin\\views\\bilet\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|c:\\users\\samet\\desktop\\test-project\\admin-panalleri\\otobusbiletsistemi\\otobusbiletsistemi.web\\areas\\admin\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|solutionrelative:otobusbiletsistemi.web\\areas\\admin\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B537C21-7AD7-4F53-94B5-29AEA09DFAD0}|OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj|c:\\users\\samet\\desktop\\test-project\\admin-panalleri\\otobusbiletsistemi\\otobusbiletsistemi.web\\areas\\admin\\controllers\\biletcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,99 +38,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 7,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
-              "ViewState": "AgIAAMsAAAAAAAAAAAAMwL0AAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-01T07:46:42.328Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T07:43:45.736Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGYAAABYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-01T07:30:15.979Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAQwBYAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-01T07:27:29.294Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAowHgAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-01T07:26:53.541Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAowHkAAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-01T07:25:47.483Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "BiletController.cs",
-              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
-              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
-              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
-              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAgwM0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T07:22:43.375Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -146,6 +55,92 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Index.cshtml",
+              "ViewState": "AgIAAMsAAAAAAAAAAAAMwL0AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-01T07:46:42.328Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T07:43:45.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Create.cshtml",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGYAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-01T07:30:15.979Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Details.cshtml",
+              "ViewState": "AgIAAPsAAAAAAAAAAAAQwAwBAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-01T07:27:29.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Delete.cshtml",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAowHgAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-01T07:26:53.541Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Views\\Bilet\\Edit.cshtml",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAowHkAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-01T07:25:47.483Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BiletController.cs",
+              "DocumentMoniker": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
+              "RelativeDocumentMoniker": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
+              "ToolTip": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
+              "RelativeToolTip": "OtobusBiletSistemi.Web\\Areas\\Admin\\Controllers\\BiletController.cs",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAgwM0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T07:22:43.375Z"
             }
           ]
         }

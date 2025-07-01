@@ -48,6 +48,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/HardDelete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcSGFyZERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Bilet/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmlsZXRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

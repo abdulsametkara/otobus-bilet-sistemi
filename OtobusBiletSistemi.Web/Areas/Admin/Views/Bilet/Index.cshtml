@@ -67,7 +67,7 @@
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                         Toplam Gelir
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Where(b => b.BiletDurumu == "Aktif").Sum(b => b.Sefer.Fiyat).ToString("C", new System.Globalization.CultureInfo("tr-TR"))</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Where(b => b.BiletDurumu == "Aktif" || b.BiletDurumu == "Kullanıldı").Sum(b => b.Sefer.Fiyat).ToString("C", new System.Globalization.CultureInfo("tr-TR"))</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-lira-sign fa-2x text-gray-300"></i>
@@ -350,11 +350,19 @@
                                                        class="btn btn-warning btn-sm" title="Düzenle">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    @if (bilet.BiletDurumu != "İptal")
+                                                    @if (bilet.BiletDurumu == "Aktif" || bilet.BiletDurumu == "Beklemede")
                                                     {
                                                         <a href="/Admin/Bilet/Delete/@bilet.BiletID" 
                                                            class="btn btn-danger btn-sm" title="İptal Et">
                                                             <i class="fas fa-ban"></i>
+                                                        </a>
+                                                    }
+                                                    @if (bilet.BiletDurumu == "İptal")
+                                                    {
+                                                        <a href="/Admin/Bilet/HardDelete/@bilet.BiletID" 
+                                                           class="btn btn-dark btn-sm" title="Kalıcı Sil"
+                                                           onclick="return confirm('Bu bileti kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                                                            <i class="fas fa-trash"></i>
                                                         </a>
                                                     }
                                                 </div>

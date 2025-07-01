@@ -166,8 +166,6 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Sefer>().Property(x => x.Kalkis).HasColumnName("KALKMATERMINALI");
             modelBuilder.Entity<Sefer>().Property(x => x.Varis).HasColumnName("VARISTERMINALI");
             modelBuilder.Entity<Sefer>().Property(x => x.Fiyat).HasColumnName("FIYAT").HasColumnType("NUMBER(10,2)");
-
-
         }
     }
 }

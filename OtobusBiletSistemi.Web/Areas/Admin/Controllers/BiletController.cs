@@ -332,19 +332,79 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
                     return RedirectToAction("Index");
                 }
 
-                var deleted = await _biletRepository.DeleteAsync(id);
-                if (deleted)
+                // Bilet zaten iptal mi kontrol et
+                if (bilet.BiletDurumu == "İptal")
                 {
-                    TempData["SuccessMessage"] = $"Bilet #{bilet.BiletNo} başarıyla iptal edildi.";
+                    TempData["ErrorMessage"] = "Bilet zaten iptal edilmiş.";
+                    return RedirectToAction("Index");
                 }
-                else
-                {
-                    TempData["ErrorMessage"] = "Bilet iptal edilemedi.";
-                }
+
+                // Bileti iptal et (silme, sadece durumu değiştir)
+                bilet.BiletDurumu = "İptal";
+                await _biletRepository.UpdateAsync(bilet);
+
+                TempData["SuccessMessage"] = $"Bilet #{bilet.BiletNo} başarıyla iptal edildi.";
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Bilet iptal edilirken hata oluştu: {ex.Message}";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        // Gerçek silme işlemi için ayrı method
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            var bilet = await _context.Biletler
+                .Include(b => b.Yolcu)
+                .Include(b => b.Sefer)
+                    .ThenInclude(s => s.Guzergah)
+                .Include(b => b.Sefer)
+                    .ThenInclude(s => s.Otobus)
+                .Include(b => b.Koltuk)
+                .FirstOrDefaultAsync(b => b.BiletID == id);
+
+            if (bilet == null)
+            {
+                return NotFound();
+            }
+            return View(bilet);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HardDeleteConfirmed(int id)
+        {
+            try
+            {
+                var bilet = await _biletRepository.GetByIdAsync(id);
+                if (bilet == null)
+                {
+                    TempData["ErrorMessage"] = "Bilet bulunamadı.";
+                    return RedirectToAction("Index");
+                }
+
+                // Sadece iptal edilmiş biletler kalıcı olarak silinebilir
+                if (bilet.BiletDurumu != "İptal")
+                {
+                    TempData["ErrorMessage"] = "Sadece iptal edilmiş biletler kalıcı olarak silinebilir.";
+                    return RedirectToAction("Index");
+                }
+
+                var deleted = await _biletRepository.DeleteAsync(id);
+                if (deleted)
+                {
+                    TempData["SuccessMessage"] = $"Bilet #{bilet.BiletNo} kalıcı olarak silindi.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Bilet silinemedi.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Bilet silinirken hata oluştu: {ex.Message}";
             }
 
             return RedirectToAction("Index");
