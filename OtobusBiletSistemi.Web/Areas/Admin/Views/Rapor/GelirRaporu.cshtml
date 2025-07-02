@@ -1,0 +1,543 @@
+@using OtobusBiletSistemi.Web.Models
+@model GelirRaporuViewModel
+@{
+    ViewData["Title"] = "Gelir Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--card-color, #28a745);
+    }
+
+    .summary-card.total { --card-color: #28a745; }
+    .summary-card.daily { --card-color: #17a2b8; }
+    .summary-card.average { --card-color: #ffc107; }
+    .summary-card.growth { --card-color: #dc3545; }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-height: 450px !important;
+        height: 450px !important;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 100px 40px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    .chart-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 6px;
+        transition: width 0.6s ease;
+        min-width: 2px;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<a href="@Url.Action("Index", "Rapor", new { area = "Admin", baslangicTarihi = Context.Request.Query["baslangicTarihi"], bitisTarihi = Context.Request.Query["bitisTarihi"], guzergahId = Context.Request.Query["guzergahId"] })" class="btn-back">
+    <i class="fas fa-arrow-left me-2"></i>Raporlara Dön
+</a>
+
+<div class="report-header">
+    <h1><i class="fas fa-dollar-sign me-3"></i>Gelir Raporu</h1>
+    <p class="mb-0">@ViewBag.BaslangicTarihi - @ViewBag.BitisTarihi tarihleri arası</p>
+</div>
+
+<!-- Özet Kartları -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card total">
+            <div class="stat-number">₺@Model.ToplamGelir.ToString("0")</div>
+            <div class="stat-label">Toplam Gelir</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card daily">
+            <div class="stat-number">₺@Model.GunlukGelir.ToString("0")</div>
+            <div class="stat-label">Günlük Gelir</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card average">
+            <div class="stat-number">₺@Model.OrtalamaBiletFiyati.ToString("0")</div>
+            <div class="stat-label">Ortalama Bilet Fiyatı</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card growth">
+            <div class="stat-number">
+                @if (Model.GelirArtisOrani > 0)
+                {
+                    <span class="text-success">+@Model.GelirArtisOrani.ToString("0.0")%</span>
+                }
+                else
+                {
+                    <span class="text-danger">@Model.GelirArtisOrani.ToString("0.0")%</span>
+                }
+            </div>
+            <div class="stat-label">Gelir Artış Oranı</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Gelir Trendi Grafiği -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h5 class="chart-title">Gelir Trendi</h5>
+            <div class="loading" id="chartLoading">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+            </div>
+            <canvas id="gelirChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Sefer Bazlı Gelir -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="chart-title">Sefer Bazlı Gelir (Top 5)</h5>
+            @if (Model.SeferBazliGelir != null && Model.SeferBazliGelir.Any())
+            {
+                @foreach (var sefer in Model.SeferBazliGelir.Take(5))
+                {
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>@sefer.SeferAdi</span>
+                            <span><strong>₺@sefer.Gelir.ToString("0")</strong></span>
+                        </div>
+                                                 <div class="progress">
+                             <div class="progress-bar bg-success" 
+                                  style="width: @(Model.SeferBazliGelir.Any() && Model.SeferBazliGelir.Max(s => s.Gelir) > 0 ? ((sefer.Gelir / Model.SeferBazliGelir.Max(s => s.Gelir)) * 100).ToString("F1", System.Globalization.CultureInfo.InvariantCulture) : "0")%"
+                                  role="progressbar"></div>
+                         </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">Veri bulunamadı</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Detay Tablosu -->
+<div class="row">
+    <div class="col-12">
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Detaylı Gelir Verileri</h5>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-striped" id="detailTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Sefer</th>
+                            <th>Bilet Sayısı</th>
+                            <th>Gelir</th>
+                            <th>Ortalama Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.GelirTrendi != null && Model.GelirTrendi.Any())
+                        {
+                            @foreach (var item in Model.GelirTrendi.OrderByDescending(x => x.Tarih))
+                            {
+                                <tr>
+                                    <td data-order="@item.Tarih.ToString("yyyy-MM-dd")">@item.Tarih.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        @if (ViewBag.SeciliGuzergahAdi != null)
+                                        {
+                                            @ViewBag.SeciliGuzergahAdi
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Tüm Seferler</span>
+                                        }
+                                    </td>
+                                    <td><span class="badge bg-info">@(Model.OrtalamaBiletFiyati > 0 ? (int)(item.Deger / Model.OrtalamaBiletFiyati) : 0)</span></td>
+                                    <td class="fw-semibold">₺@item.Deger.ToString("0")</td>
+                                    <td>₺@Model.OrtalamaBiletFiyati.ToString("0")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Veri bulunamadı</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Butonları -->
+<div class="text-center mt-4">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-success me-2" onclick="exportData('excel')">
+        <i class="fas fa-file-excel me-2"></i>Excel'e Aktar
+    </button>
+    <button class="btn btn-info me-2" onclick="exportData('json')">
+        <i class="fas fa-file-code me-2"></i>JSON'a Aktar
+    </button>
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Yazdır
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gelir trendi grafiği
+        initGelirTrendiChart();
+        
+        // DataTable başlat
+        $('#detailTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+            },
+            pageLength: 25,
+            order: [[0, 'desc']]
+        });
+    });
+
+    function initGelirTrendiChart() {
+        const ctx = document.getElementById('gelirChart').getContext('2d');
+        
+        // Loading spinner'ı gizle
+        const loadingElement = document.getElementById('chartLoading');
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+        
+        // Model'den veri al
+        const trendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GelirTrendi));
+        
+        console.log('Gelir trend verisi:', trendData);
+        console.log('Gelir trend veri sayısı:', trendData ? trendData.length : 0);
+        
+        // Eğer veri yoksa grafiği gizle
+        if (!trendData || trendData.length === 0) {
+            console.log('Hiç gelir trend verisi yok');
+            document.getElementById('gelirChart').style.display = 'none';
+            ctx.getContext('2d').clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            return;
+        }
+        
+        const labels = trendData.map(item => {
+            const date = new Date(item.Tarih || item.tarih);
+            return date.toLocaleDateString('tr-TR');
+        });
+        
+        const data = trendData.map(item => item.Deger || item.deger);
+        
+        console.log('İşlenmiş labels:', labels);
+        console.log('İşlenmiş data:', data);
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Gelir (₺)',
+                    data: data,
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#28a745',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverBackgroundColor: '#1e7e34',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        cornerRadius: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Gelir: ₺' + context.parsed.y.toLocaleString('tr-TR');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 10,
+                            color: '#666'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5],
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#666',
+                            callback: function(value) {
+                                if (value >= 1000) {
+                                    return '₺' + (value / 1000).toFixed(0) + 'K';
+                                }
+                                return '₺' + value.toLocaleString('tr-TR');
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    line: {
+                        borderJoinStyle: 'round'
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const date = labels[index];
+                        const value = data[index];
+                        alert(`Tarih: ${date}\nGelir: ₺${value.toLocaleString('tr-TR')}`);
+                    }
+                }
+            }
+        });
+        
+        // Animasyon tamamlandıktan sonra loading'i tamamen kaldır
+        chart.options.animation = {
+            onComplete: function() {
+                const loadingElement = document.getElementById('chartLoading');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+            }
+        };
+    }
+
+    function exportToExcel() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("ExportGelirRaporuExcel", "Rapor", new { area = "Admin" })';
+        
+        // Tarih parametrelerini ekle
+        const startDate = '@ViewBag.BaslangicTarihi';
+        const endDate = '@ViewBag.BitisTarihi';
+        const guzergahId = '@ViewBag.SeciliGuzergah';
+        
+        if (startDate) {
+            const input1 = document.createElement('input');
+            input1.type = 'hidden';
+            input1.name = 'baslangicTarihi';
+            input1.value = startDate;
+            form.appendChild(input1);
+        }
+        
+        if (endDate) {
+            const input2 = document.createElement('input');
+            input2.type = 'hidden';
+            input2.name = 'bitisTarihi';
+            input2.value = endDate;
+            form.appendChild(input2);
+        }
+        
+        if (guzergahId) {
+            const input3 = document.createElement('input');
+            input3.type = 'hidden';
+            input3.name = 'guzergahId';
+            input3.value = guzergahId;
+            form.appendChild(input3);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    function exportToPdf() {
+        // PDF export (şimdilik alert)
+        alert('PDF export özelliği yakında eklenecek!');
+    }
+
+    function exportData(format) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        if (format === 'excel') {
+            form.action = '/Admin/Rapor/ExportToExcel';
+        } else if (format === 'json') {
+            form.action = '/Admin/Rapor/ExportToJson';
+        }
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        // Parametreleri ekle
+        const params = {
+            raporTipi: 'gelir',
+            baslangicTarihi: '@ViewBag.BaslangicTarihi',
+            bitisTarihi: '@ViewBag.BitisTarihi',
+            guzergahId: '@ViewBag.SeciliGuzergah'
+        };
+        
+        Object.keys(params).forEach(key => {
+            if (params[key]) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = params[key];
+                form.appendChild(input);
+            }
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+</script> 

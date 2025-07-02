@@ -36,7 +36,8 @@ namespace OtobusBiletSistemi.Web.Controllers
                     Ad = model.Ad,
                     Soyad = model.Soyad,
                     TelNo = model.TelNo,
-                    EmailConfirmed = true 
+                    EmailConfirmed = true,
+                    CreateDate = DateTime.Now  // CreateDate'i set et
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);

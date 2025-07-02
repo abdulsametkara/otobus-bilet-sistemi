@@ -1,0 +1,595 @@
+@using OtobusBiletSistemi.Web.Models
+@model SatisRaporuViewModel
+@{
+    ViewData["Title"] = "Satış Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--card-color, #007bff);
+    }
+
+    .summary-card.total { --card-color: #007bff; }
+    .summary-card.daily { --card-color: #28a745; }
+    .summary-card.weekly { --card-color: #ffc107; }
+    .summary-card.growth { --card-color: #17a2b8; }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-height: 400px !important;
+        height: 400px !important;
+    }
+
+    .chart-container#saatlikChartContainer canvas {
+        max-height: 300px !important;
+        height: 300px !important;
+    }
+
+    .chart-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .progress-label .route-name {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+    
+    .progress-label .count-badge {
+        background: #e9ecef;
+        color: #495057;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        min-width: 35px;
+        text-align: center;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 6px;
+        transition: width 0.6s ease;
+        min-width: 2px; /* Minimum görünürlük için */
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        display: none;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<a href="@Url.Action("Index", "Rapor", new { area = "Admin", baslangicTarihi = Context.Request.Query["baslangicTarihi"], bitisTarihi = Context.Request.Query["bitisTarihi"], guzergahId = Context.Request.Query["guzergahId"] })" class="btn-back">
+    <i class="fas fa-arrow-left me-2"></i>Raporlara Dön
+</a>
+
+<div class="report-header">
+    <h1><i class="fas fa-chart-line me-3"></i>Satış Raporu</h1>
+    <p class="mb-0">@ViewBag.BaslangicTarihi - @ViewBag.BitisTarihi tarihleri arası</p>
+</div>
+
+<!-- Özet Kartları -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card total">
+            <div class="stat-number">@Model.ToplamSatis</div>
+            <div class="stat-label">Toplam Satış</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card daily">
+            <div class="stat-number">@Model.GunlukOrtalama.ToString("0")</div>
+            <div class="stat-label">Günlük Ortalama</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card weekly">
+            <div class="stat-number">@Model.HaftalikOrtalama.ToString("0")</div>
+            <div class="stat-label">Haftalık Ortalama</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card growth">
+            <div class="stat-number">
+                @if (Model.ArtisOrani > 0)
+                {
+                    <span class="text-success">+@Model.ArtisOrani.ToString("0.0")%</span>
+                }
+                else
+                {
+                    <span class="text-danger">@Model.ArtisOrani.ToString("0.0")%</span>
+                }
+            </div>
+            <div class="stat-label">Artış Oranı</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Satış Trendi Grafiği -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h5 class="chart-title">Satış Trendi</h5>
+            <div class="loading" id="chartLoading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+            </div>
+            <canvas id="satisChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Güzergah Bazlı Satış -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="chart-title">Güzergah Bazlı Satış</h5>
+            @if (Model.GuzergahBazliSatis != null && Model.GuzergahBazliSatis.Any())
+            {
+                @foreach (var guzergah in Model.GuzergahBazliSatis.Take(5))
+                {
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span class="route-name" title="@guzergah.GuzergahAdi">@guzergah.GuzergahAdi</span>
+                            <span class="count-badge">@guzergah.SatisSayisi</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" 
+                                 style="width: @guzergah.YuzdeOrani.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)%"
+                                 role="progressbar"
+                                 title="@guzergah.SatisSayisi bilet (%@guzergah.YuzdeOrani.ToString("F1"))"></div>
+                        </div>
+                        <small class="text-muted">%@guzergah.YuzdeOrani.ToString("F1") oranında</small>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">Veri bulunamadı</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Saatlik Satış Dağılımı -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container" id="saatlikChartContainer">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="chart-title mb-0">Saatlik Satış Dağılımı</h5>
+                <div class="d-flex align-items-center">
+                    <label for="saatlikTarihSecici" class="me-2">Tarih Seç:</label>
+                    <input type="date" id="saatlikTarihSecici" class="form-control" style="width: auto;" 
+                           value="@(DateTime.Today >= DateTime.Parse(ViewBag.BaslangicTarihi.ToString()) && DateTime.Today <= DateTime.Parse(ViewBag.BitisTarihi.ToString()) ? DateTime.Today.ToString("yyyy-MM-dd") : ViewBag.BaslangicTarihi)" 
+                           min="@ViewBag.BaslangicTarihi" 
+                           max="@ViewBag.BitisTarihi">
+                </div>
+            </div>
+            <div id="saatlikYukleniyor" class="text-center py-3" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <p class="mt-2">Saatlik veriler yükleniyor...</p>
+            </div>
+            <canvas id="saatlikChart" width="400" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Export Butonları -->
+<div class="text-center mt-4">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-success me-2" onclick="exportData('excel')">
+        <i class="fas fa-file-excel me-2"></i>Excel'e Aktar
+    </button>
+    <button class="btn btn-info me-2" onclick="exportData('json')">
+        <i class="fas fa-file-code me-2"></i>JSON'a Aktar
+    </button>
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Yazdır
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script>
+    let saatlikChart; // Global chart instance
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Satış trendi grafiği
+        initSatisTrendiChart();
+        
+        // Saatlik dağılım grafiği
+        initSaatlikChart();
+        
+        // DataTable başlat
+        $('#detailTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+            },
+            pageLength: 25,
+            order: [[0, 'desc']]
+        });
+        
+        // Tarih seçici değiştiğinde saatlik grafiği güncelle
+        document.getElementById('saatlikTarihSecici').addEventListener('change', function() {
+            const selectedDate = this.value;
+            if (selectedDate) {
+                updateSaatlikChart(selectedDate);
+            }
+        });
+    });
+
+    function initSatisTrendiChart() {
+        const ctx = document.getElementById('satisChart').getContext('2d');
+        
+        // Model'den veri al
+        const trendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SatisTrendi));
+        
+        console.log('Trend verisi:', trendData);
+        console.log('Trend veri sayısı:', trendData ? trendData.length : 0);
+        
+        // Eğer veri yoksa veya boşsa minimum grafik için 2 nokta oluştur
+        if (!trendData || trendData.length === 0) {
+            console.log('Hiç trend verisi yok');
+            document.getElementById('satisChart').style.display = 'none';
+            return;
+        }
+        
+        const labels = trendData.map(item => {
+            const date = new Date(item.Tarih || item.tarih);
+            return date.toLocaleDateString('tr-TR');
+        });
+        
+        const data = trendData.map(item => item.Deger || item.deger);
+        
+        console.log('İşlenmiş labels:', labels);
+        console.log('İşlenmiş data:', data);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Satış Sayısı',
+                    data: data,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        }
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const date = labels[index];
+                        const value = data[index];
+                        alert(`Tarih: ${date}\nSatış: ${value} adet`);
+                    }
+                }
+            }
+        });
+    }
+
+    function initSaatlikChart() {
+        const ctx = document.getElementById('saatlikChart').getContext('2d');
+        
+        // Model'den gerçek saatlik veri al
+        const saatlikSatisData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SaatlikSatis));
+        
+        // 24 saatlik dizi oluştur (0-23)
+        const saatlikData = Array.from({length: 24}, (_, i) => {
+            const saat = i;
+            const veri = saatlikSatisData.find(s => (s.Saat || s.saat) === saat);
+            return veri ? (veri.BiletSayisi || veri.biletSayisi || 0) : 0;
+        });
+        
+        const saatler = Array.from({length: 24}, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+
+        saatlikChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: saatler,
+                datasets: [{
+                    label: 'Satış Sayısı',
+                    data: saatlikData,
+                    backgroundColor: '#17a2b8',
+                    borderColor: '#117a8b',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 3,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    async function updateSaatlikChart(selectedDate) {
+        try {
+            // Loading göster
+            document.getElementById('saatlikYukleniyor').style.display = 'block';
+            document.getElementById('saatlikChart').style.opacity = '0.5';
+            
+            // URL parametrelerini al
+            const urlParams = new URLSearchParams(window.location.search);
+            const guzergahId = urlParams.get('guzergahId');
+            
+            // AJAX ile yeni saatlik veri çek
+            const response = await fetch(`/Admin/Rapor/GetSaatlikSatisData?tarih=${selectedDate}${guzergahId ? '&guzergahId=' + guzergahId : ''}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                // 24 saatlik dizi oluştur (0-23)
+                const saatlikData = Array.from({length: 24}, (_, i) => {
+                    const saat = i;
+                    const veri = result.data.find(s => s.saat === saat);
+                    return veri ? veri.biletSayisi : 0;
+                });
+                
+                // Chart'ı güncelle
+                saatlikChart.data.datasets[0].data = saatlikData;
+                saatlikChart.update();
+                
+                // Grafik başlığını güncelle
+                const formattedDate = new Date(selectedDate).toLocaleDateString('tr-TR');
+                document.querySelector('#saatlikChartContainer .chart-title').textContent = 
+                    `Saatlik Satış Dağılımı (${formattedDate})`;
+            } else {
+                console.error('Saatlik veri alınamadı:', result.message);
+                alert('Saatlik satış verileri alınamadı. Lütfen tekrar deneyin.');
+            }
+        } catch (error) {
+            console.error('AJAX hatası:', error);
+            alert('Veri alınırken bir hata oluştu. Lütfen tekrar deneyin.');
+        } finally {
+            // Loading gizle
+            document.getElementById('saatlikYukleniyor').style.display = 'none';
+            document.getElementById('saatlikChart').style.opacity = '1';
+        }
+    }
+
+    function exportToExcel() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("ExportSatisRaporuExcel", "Rapor", new { area = "Admin" })';
+        
+        // Tarih parametrelerini ekle
+        const startDate = '@ViewBag.BaslangicTarihi';
+        const endDate = '@ViewBag.BitisTarihi';
+        const guzergahId = '@ViewBag.SeciliGuzergah';
+        
+        if (startDate) {
+            const input1 = document.createElement('input');
+            input1.type = 'hidden';
+            input1.name = 'baslangicTarihi';
+            input1.value = startDate;
+            form.appendChild(input1);
+        }
+        
+        if (endDate) {
+            const input2 = document.createElement('input');
+            input2.type = 'hidden';
+            input2.name = 'bitisTarihi';
+            input2.value = endDate;
+            form.appendChild(input2);
+        }
+        
+        if (guzergahId) {
+            const input3 = document.createElement('input');
+            input3.type = 'hidden';
+            input3.name = 'guzergahId';
+            input3.value = guzergahId;
+            form.appendChild(input3);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    function exportToPdf() {
+        // PDF export (şimdilik alert)
+        alert('PDF export özelliği yakında eklenecek!');
+    }
+
+    function exportData(format) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        if (format === 'excel') {
+            form.action = '/Admin/Rapor/ExportToExcel';
+        } else if (format === 'json') {
+            form.action = '/Admin/Rapor/ExportToJson';
+        }
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        // Parametreleri ekle
+        const params = {
+            raporTipi: 'satis',
+            baslangicTarihi: '@ViewBag.BaslangicTarihi',
+            bitisTarihi: '@ViewBag.BitisTarihi',
+            guzergahId: '@ViewBag.SeciliGuzergah'
+        };
+        
+        Object.keys(params).forEach(key => {
+            if (params[key]) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = params[key];
+                form.appendChild(input);
+            }
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+</script> 

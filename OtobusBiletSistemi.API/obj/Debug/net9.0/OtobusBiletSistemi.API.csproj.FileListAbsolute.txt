@@ -144,3 +144,4 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.API\obj\Debug\net9.0\OtobusBiletSistemi.API.pdb
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.API\obj\Debug\net9.0\OtobusBiletSistemi.API.genruntimeconfig.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.API\obj\Debug\net9.0\ref\OtobusBiletSistemi.API.dll
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

@@ -352,14 +352,6 @@
             $('#confirmHardDelete').change(function() {
                 $('#confirmButton').prop('disabled', !this.checked);
             });
-            
-            // Form submit edildiğinde ek onay iste
-            $('#hardDeleteForm').submit(function(e) {
-                if (!confirm('SON UYARI: Bu bileti kalıcı olarak silmek istediğinizden %100 emin misiniz? Bu işlem GERİ ALINAMAZ!')) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
         });
     </script>
 } 

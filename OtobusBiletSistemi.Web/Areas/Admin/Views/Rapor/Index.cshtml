@@ -1,208 +1,410 @@
+@using OtobusBiletSistemi.Web.Models
+@model DashboardViewModel
 @{
-    ViewData["Title"] = "Raporlar";
+    ViewData["Title"] = "Raporlar ve Analizler";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container-fluid">
-    <!-- Sayfa Başlığı -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-                <i class="fas fa-chart-bar text-primary me-2"></i>
-                Raporlar ve Analizler
-            </h1>
-            <p class="text-muted mb-0">Satış ve performans raporlarını görüntüleyin</p>
+<style>
+    .report-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        color: white;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .report-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-card.satis {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+
+    .report-card.gelir {
+        background: linear-gradient(135deg, #28a745 0%, #155724 100%);
+    }
+
+    .report-card.performans {
+        background: linear-gradient(135deg, #17a2b8 0%, #0c5460 100%);
+    }
+
+    .report-card.musteri {
+        background: linear-gradient(135deg, #ffc107 0%, #856404 100%);
+    }
+
+    .report-card.iptal {
+        background: linear-gradient(135deg, #dc3545 0%, #721c24 100%);
+    }
+
+    .report-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: shimmer 3s infinite;
+    }
+
+    @@keyframes shimmer {
+        0% { transform: translate(-100%, -100%) rotate(0deg); }
+        100% { transform: translate(100%, 100%) rotate(360deg); }
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        opacity: 0.3;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .btn-custom {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-custom:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .filter-form {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .loading .spinner-border {
+        color: #007bff;
+    }
+</style>
+
+<div class="page-header">
+    <h1><i class="fas fa-chart-bar me-3"></i>Raporlar ve Analizler</h1>
+    <p class="mb-0">Satış ve performans raporlarını görüntüleyin</p>
+</div>
+
+<!-- Filtreleme Formu -->
+<div class="filter-form">
+    <form asp-action="Index" method="get" id="filterForm">
+        <div class="row align-items-end">
+            <div class="col-md-3">
+                <label for="baslangicTarihi" class="form-label fw-semibold">Başlangıç Tarihi</label>
+                <input type="date" class="form-control" name="baslangicTarihi" id="baslangicTarihi"
+                       value="@ViewBag.BaslangicTarihi" required>
+            </div>
+            <div class="col-md-3">
+                <label for="bitisTarihi" class="form-label fw-semibold">Bitiş Tarihi</label>
+                <input type="date" class="form-control" name="bitisTarihi" id="bitisTarihi"
+                       value="@ViewBag.BitisTarihi" required>
+            </div>
+            <div class="col-md-3">
+                <label for="guzergahId" class="form-label fw-semibold">Güzergah (Opsiyonel)</label>
+                <select class="form-select" name="guzergahId" id="guzergahId">
+                    <option value="">Tüm Güzergahlar</option>
+                    @if (ViewBag.Guzergahlar != null)
+                    {
+                        @foreach (var guzergah in ViewBag.Guzergahlar)
+                        {
+                            <option value="@guzergah.Value">
+                                @guzergah.Text
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrele
+                </button>
+            </div>
         </div>
+    </form>
+</div>
+
+<div class="loading" id="loading">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Yükleniyor...</span>
+    </div>
+    <p class="mt-2">Veriler yükleniyor...</p>
     </div>
 
     <!-- Rapor Kartları -->
-    <div class="row mb-4">
-        <div class="col-lg-6 mb-4">
-            <div class="card report-card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-chart-line me-2"></i>
-                        Satış Raporu
-                    </h6>
+<div class="row" id="reportCards">
+    <!-- Satış Raporu -->
+    <div class="col-lg-6">
+        <div class="report-card satis">
+            <i class="fas fa-shopping-cart card-icon"></i>
+            <h4><i class="fas fa-chart-line me-2"></i>Satış Raporu</h4>
+            <p>Günlük, haftalık ve aylık satış verilerini görüntüleyin.</p>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="stat-value">@Model.ToplamSatis</div>
+                    <div class="stat-label">BUGÜN</div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Günlük, haftalık ve aylık satış verilerini görüntüleyin.</p>
-                    <div class="row">
                         <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">156</div>
-                                <div class="stat-label">Bugün</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">1,248</div>
-                                <div class="stat-label">Bu Ay</div>
-                            </div>
+                    <div class="stat-value">@Model.BuAySatis</div>
+                    <div class="stat-label">BU AY</div>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-primary btn-sm">
-                            <i class="fas fa-eye me-1"></i>
-                            Detaylı Rapor
+                <a href="@Url.Action("SatisRaporu", "Rapor", new { area = "Admin" })" 
+                   class="btn btn-custom report-link" data-report="SatisRaporu">
+                    <i class="fas fa-eye me-2"></i>Detaylı Rapor
+                </a>
+                <button class="btn btn-custom" onclick="exportExcel('satis')">
+                    <i class="fas fa-file-excel me-2"></i>Excel
                         </button>
-                        <button class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-download me-1"></i>
-                            Excel
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-lg-6 mb-4">
-            <div class="card report-card h-100">
-                <div class="card-header bg-success text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-lira-sign me-2"></i>
-                        Gelir Raporu
-                    </h6>
+    <!-- Gelir Raporu -->
+    <div class="col-lg-6">
+        <div class="report-card gelir">
+            <i class="fas fa-dollar-sign card-icon"></i>
+            <h4><i class="fas fa-money-bill-wave me-2"></i>Gelir Raporu</h4>
+            <p>Günlük, haftalık ve aylık gelir analizleri.</p>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="stat-value">₺@Model.ToplamGelir.ToString("N0")</div>
+                    <div class="stat-label">BUGÜN</div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Günlük, haftalık ve aylık gelir analizleri.</p>
-                    <div class="row">
                         <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">₺12,450</div>
-                                <div class="stat-label">Bugün</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">₺98,760</div>
-                                <div class="stat-label">Bu Ay</div>
-                            </div>
+                    <div class="stat-value">₺@Model.BuAyGelir.ToString("N0")</div>
+                    <div class="stat-label">BU AY</div>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-success btn-sm">
-                            <i class="fas fa-eye me-1"></i>
-                            Detaylı Rapor
+                <a href="@Url.Action("GelirRaporu", "Rapor", new { area = "Admin" })" 
+                   class="btn btn-custom report-link" data-report="GelirRaporu">
+                    <i class="fas fa-eye me-2"></i>Detaylı Rapor
+                </a>
+                <button class="btn btn-custom" onclick="exportExcel('gelir')">
+                    <i class="fas fa-file-excel me-2"></i>Excel
                         </button>
-                        <button class="btn btn-outline-success btn-sm">
-                            <i class="fas fa-download me-1"></i>
-                            Excel
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-lg-6 mb-4">
-            <div class="card report-card h-100">
-                <div class="card-header bg-info text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-route me-2"></i>
-                        Sefer Performansı
-                    </h6>
+    <!-- Sefer Performansı -->
+    <div class="col-lg-6">
+        <div class="report-card performans">
+            <i class="fas fa-bus card-icon"></i>
+            <h4><i class="fas fa-tachometer-alt me-2"></i>Sefer Performansı</h4>
+            <p>En popüler güzergahlar ve sefer doluluk oranları.</p>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="stat-value">%@Model.OrtalamaDoluluk.ToString("F0")</div>
+                    <div class="stat-label">DOLULUK</div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">En popüler güzergahlar ve sefer doluluk oranları.</p>
-                    <div class="row">
                         <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">%87</div>
-                                <div class="stat-label">Doluluk</div>
+                    <div class="stat-value">@Model.AktifSeferSayisi</div>
+                    <div class="stat-label">AKTİF SEFER</div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">24</div>
-                                <div class="stat-label">Aktif Sefer</div>
+            <div class="mt-3">
+                <a href="@Url.Action("SeferPerformans", "Rapor", new { area = "Admin" })" 
+                   class="btn btn-custom report-link" data-report="SeferPerformans">
+                    <i class="fas fa-eye me-2"></i>Detaylı Rapor
+                </a>
+                <button class="btn btn-custom" onclick="exportExcel('performans')">
+                    <i class="fas fa-file-excel me-2"></i>Excel
+                </button>
                             </div>
+        </div>
+    </div>
+
+    <!-- Müşteri Analizi -->
+    <div class="col-lg-6">
+        <div class="report-card musteri">
+            <i class="fas fa-users card-icon"></i>
+            <h4><i class="fas fa-user-friends me-2"></i>Müşteri Analizi</h4>
+            <p>Müşteri davranışları ve sadakat analizi.</p>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="stat-value">@Model.ToplamMusteriSayisi</div>
+                    <div class="stat-label">KAYITLI</div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-value">@Model.YeniMusteriler</div>
+                    <div class="stat-label">YENİ (BU AY)</div>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-info btn-sm">
-                            <i class="fas fa-eye me-1"></i>
-                            Detaylı Rapor
-                        </button>
-                        <button class="btn btn-outline-info btn-sm">
-                            <i class="fas fa-download me-1"></i>
-                            Excel
+                <a href="@Url.Action("MusteriAnalizi", "Rapor", new { area = "Admin" })" 
+                   class="btn btn-custom report-link" data-report="MusteriAnalizi">
+                    <i class="fas fa-eye me-2"></i>Detaylı Rapor
+                </a>
+                <button class="btn btn-custom" onclick="exportExcel('musteri')">
+                    <i class="fas fa-file-excel me-2"></i>Excel
                         </button>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-lg-6 mb-4">
-            <div class="card report-card h-100">
-                <div class="card-header bg-warning text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-users me-2"></i>
-                        Müşteri Analizi
-                    </h6>
+<!-- İptal ve İade Raporu (Tam genişlik) -->
+<div class="row">
+    <div class="col-12">
+        <div class="report-card iptal">
+            <i class="fas fa-times-circle card-icon"></i>
+            <h4><i class="fas fa-ban me-2"></i>İptal ve İade Raporları</h4>
+            <p>İptal sayıları, iade tutarları ve iptal nedenlerinin analizi.</p>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="stat-value">@Model.IptalSayisi</div>
+                    <div class="stat-label">İPTAL (BU AY)</div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Müşteri davranışları ve sadakat analizi.</p>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">1,542</div>
-                                <div class="stat-label">Kayıtlı</div>
+                <div class="col-md-3">
+                    <div class="stat-value">%@Model.IptalOrani.ToString("F1")</div>
+                    <div class="stat-label">İPTAL ORANI</div>
                             </div>
+                <div class="col-md-3">
+                    <div class="stat-value">₺@Model.IadeTutari.ToString("N0")</div>
+                    <div class="stat-label">İADE TUTARI</div>
                         </div>
-                        <div class="col-6">
-                            <div class="stat-mini">
-                                <div class="stat-number">68</div>
-                                <div class="stat-label">Yeni (Bu Ay)</div>
-                            </div>
+                <div class="col-md-3">
+                    <div class="stat-value">@Model.IadeOrani.ToString("F1")%</div>
+                    <div class="stat-label">İADE ORANI</div>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-warning btn-sm">
-                            <i class="fas fa-eye me-1"></i>
-                            Detaylı Rapor
+                <a href="@Url.Action("IptalIadeRaporu", "Rapor", new { area = "Admin" })" 
+                   class="btn btn-custom report-link" data-report="IptalIadeRaporu">
+                    <i class="fas fa-eye me-2"></i>Detaylı Rapor
+                </a>
+                <button class="btn btn-custom" onclick="exportExcel('iptal')">
+                    <i class="fas fa-file-excel me-2"></i>Excel
                         </button>
-                        <button class="btn btn-outline-warning btn-sm">
-                            <i class="fas fa-download me-1"></i>
-                            Excel
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.report-card {
-    border: none;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    transition: all 0.3s ease;
+<script>
+    function exportExcel(raporTipi) {
+        var formData = new FormData(document.getElementById('filterForm'));
+        
+        var url = '';
+        switch(raporTipi) {
+            case 'satis':
+                url = '@Url.Action("ExportSatisRaporuExcel", "Rapor", new { area = "Admin" })';
+                break;
+            case 'gelir':
+                url = '@Url.Action("ExportGelirRaporuExcel", "Rapor", new { area = "Admin" })';
+                break;
+            case 'performans':
+                url = '@Url.Action("ExportSeferPerformansExcel", "Rapor", new { area = "Admin" })';
+                break;
+            case 'musteri':
+                url = '@Url.Action("ExportMusteriAnalizExcel", "Rapor", new { area = "Admin" })';
+                break;
+        }
+        
+        if (url) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            
+            // Form verilerini gizli input'lar olarak ekle
+            for (var pair of formData.entries()) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = pair[0];
+                input.value = pair[1];
+                form.appendChild(input);
 }
 
-.report-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.2);
-}
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    }
 
-.stat-mini {
-    text-align: center;
-    padding: 10px;
-    background: rgba(0,0,0,0.05);
-    border-radius: 8px;
-}
+    // Form gönderiminde loading göster
+    document.getElementById('filterForm').addEventListener('submit', function() {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('reportCards').style.opacity = '0.5';
+    });
 
-.stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
-}
+    // Rapor linklerini dinamik hale getir
+    function updateReportLinks() {
+        const baslangicTarihi = document.getElementById('baslangicTarihi').value;
+        const bitisTarihi = document.getElementById('bitisTarihi').value;
+        const guzergahId = document.getElementById('guzergahId').value;
+        
+        document.querySelectorAll('.report-link').forEach(function(link) {
+            const reportAction = link.getAttribute('data-report');
+            let baseUrl = '/Admin/Rapor/' + reportAction;
+            
+            // Parametreleri ekle
+            const params = new URLSearchParams();
+            if (baslangicTarihi) params.append('baslangicTarihi', baslangicTarihi);
+            if (bitisTarihi) params.append('bitisTarihi', bitisTarihi);
+            if (guzergahId) params.append('guzergahId', guzergahId);
+            
+            if (params.toString()) {
+                baseUrl += '?' + params.toString();
+            }
+            
+            link.href = baseUrl;
+        });
+    }
 
-.stat-label {
-    font-size: 0.8rem;
-    color: #666;
-    text-transform: uppercase;
-    font-weight: 500;
-}
-</style> 
- 
+    // Tarih alanları değiştiğinde linkleri güncelle
+    document.getElementById('baslangicTarihi').addEventListener('change', updateReportLinks);
+    document.getElementById('bitisTarihi').addEventListener('change', updateReportLinks);
+    document.getElementById('guzergahId').addEventListener('change', updateReportLinks);
+    
+    // Sayfa yüklendiğinde linkleri güncelle
+    document.addEventListener('DOMContentLoaded', updateReportLinks);
+</script> 

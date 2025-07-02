@@ -14,6 +14,7 @@ namespace OtobusBiletSistemi.Core.Data
         public string Soyad { get; set; }
         public string TelNo { get; set; }
         public override string Email { get; set; }
+        public DateTime? CreateDate { get; set; }
         
         public string FullName => $"{Ad} {Soyad}";
     }
@@ -44,6 +45,7 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<YolcuUser>().Property(x => x.Soyad).HasColumnName("SOYAD");
             modelBuilder.Entity<YolcuUser>().Property(x => x.TelNo).HasColumnName("TELNO");
             modelBuilder.Entity<YolcuUser>().Property(x => x.Email).HasColumnName("EMAIL");
+            modelBuilder.Entity<YolcuUser>().Property(x => x.CreateDate).HasColumnName("CREATEDATE");
             modelBuilder.Entity<YolcuUser>().Property(x => x.UserName).HasColumnName("USERNAME");
             
             modelBuilder.Entity<YolcuUser>().Ignore(x => x.PhoneNumber);

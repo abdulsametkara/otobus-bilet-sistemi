@@ -112,8 +112,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3RvYnVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/GelirRaporu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcR2VsaXJSYXBvcnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/IptalIadeRaporu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcSXB0YWxJYWRlUmFwb3J1LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/MusteriAnalizi.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcTXVzdGVyaUFuYWxpemkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/SatisRaporu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcU2F0aXNSYXBvcnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Rapor/SeferPerformans.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmFwb3JcU2VmZXJQZXJmb3JtYW5zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/samet/Desktop/test-project/admin-panalleri/OtobusBiletSistemi/OtobusBiletSistemi.Web/Areas/Admin/Views/Sefer/Create.cshtml]

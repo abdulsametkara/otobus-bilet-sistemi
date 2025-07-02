@@ -1,0 +1,522 @@
+@using OtobusBiletSistemi.Web.Models
+@model MusteriAnaliziViewModel
+@{
+    ViewData["Title"] = "Müşteri Analizi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--card-color, #ffc107);
+    }
+
+    .summary-card.toplam { --card-color: #007bff; }
+    .summary-card.yeni { --card-color: #28a745; }
+    .summary-card.aktif { --card-color: #17a2b8; }
+    .summary-card.sik { --card-color: #6f42c1; }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-height: 400px !important;
+        height: 400px !important;
+    }
+
+    .chart-container #musteriTrendChart {
+        max-height: 400px !important;
+        height: 400px !important;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        display: none;
+    }
+
+    .chart-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 6px;
+        transition: width 0.6s ease;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .customer-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .customer-vip { background: #ffd700; color: #856404; }
+    .customer-loyal { background: #d1ecf1; color: #0c5460; }
+    .customer-regular { background: #d4edda; color: #155724; }
+    .customer-new { background: #f8d7da; color: #721c24; }
+
+    .filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+
+
+    .customer-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.7;
+    }
+</style>
+
+<a href="@Url.Action("Index", "Rapor", new { area = "Admin", baslangicTarihi = Context.Request.Query["baslangicTarihi"], bitisTarihi = Context.Request.Query["bitisTarihi"], guzergahId = Context.Request.Query["guzergahId"] })" class="btn-back">
+    <i class="fas fa-arrow-left me-2"></i>Raporlara Dön
+</a>
+
+<div class="report-header">
+    <h1><i class="fas fa-users me-3"></i>Müşteri Analizi</h1>
+    <p class="mb-0">@ViewBag.BaslangicTarihi - @ViewBag.BitisTarihi tarihleri arası müşteri davranış analizi</p>
+</div>
+
+<!-- Filtre Bölümü -->
+<div class="filter-section">
+    <form method="get" action="@Url.Action("MusteriAnalizi", "Rapor", new { area = "Admin" })">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+                <input type="date" class="form-control" id="baslangicTarihi" name="baslangicTarihi" value="@ViewBag.BaslangicTarihi">
+            </div>
+            <div class="col-md-4">
+                <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
+                <input type="date" class="form-control" id="bitisTarihi" name="bitisTarihi" value="@ViewBag.BitisTarihi">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Filtrele
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Özet Kartları -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card toplam">
+            <div class="text-center">
+                <i class="fas fa-users customer-icon text-primary"></i>
+            </div>
+            <div class="stat-number">@Model.ToplamMusteriSayisi</div>
+            <div class="stat-label">Toplam Müşteri</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card yeni">
+            <div class="text-center">
+                <i class="fas fa-user-plus customer-icon text-success"></i>
+            </div>
+            <div class="stat-number">@Model.YeniMusteriSayisi</div>
+            <div class="stat-label">Yeni Müşteri</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card aktif">
+            <div class="text-center">
+                <i class="fas fa-user-check customer-icon text-info"></i>
+            </div>
+            <div class="stat-number">@Model.AktifMusteriSayisi</div>
+            <div class="stat-label">Aktif Müşteri</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Müşteri Artış Trendi -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h5 class="chart-title">Müşteri Artış Trendi</h5>
+            <div class="loading" id="musteriChartLoading">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+            </div>
+            <canvas id="musteriTrendChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Müşteri Segmentasyonu -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="chart-title">Müşteri Dağılımı</h5>
+            <div class="row text-center">
+                <div class="col-6 mb-3">
+                    <div class="stat-number text-primary">@(Model.ToplamMusteriSayisi > 0 ? ((decimal)Model.AktifMusteriSayisi / Model.ToplamMusteriSayisi * 100).ToString("F1") : "0")%</div>
+                    <div class="stat-label">Aktif</div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="stat-number text-success">@(Model.ToplamMusteriSayisi > 0 ? ((decimal)Model.YeniMusteriSayisi / Model.ToplamMusteriSayisi * 100).ToString("F1") : "0")%</div>
+                    <div class="stat-label">Yeni</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Boşluk ekliyoruz -->
+<div class="mt-5 mb-3"></div>
+
+<!-- En Çok Bilet Alan Müşteriler -->
+<div class="table-container">
+    <h5 class="chart-title">En Çok Bilet Alan Müşteriler (Top 10)</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Müşteri ID</th>
+                    <th>Bilet Sayısı</th>
+                    <th>Toplam Harcama</th>
+                    <th>Müşteri Tipi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.EnCokBiletAlanMusteri != null && Model.EnCokBiletAlanMusteri.Any())
+                {
+                    @for (int i = 0; i < Model.EnCokBiletAlanMusteri.Count; i++)
+                    {
+                        var musteri = Model.EnCokBiletAlanMusteri[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@musteri.YolcuID</td>
+                            <td>
+                                <span class="badge bg-primary">@musteri.BiletSayisi</span>
+                            </td>
+                            <td>
+                                <strong>₺@musteri.ToplamHarcama.ToString("N0")</strong>
+                            </td>
+                            <td>
+                                @if (musteri.BiletSayisi >= 50)
+                                {
+                                    <span class="customer-badge customer-vip">VIP</span>
+                                }
+                                else if (musteri.BiletSayisi >= 20)
+                                {
+                                    <span class="customer-badge customer-loyal">Sadık</span>
+                                }
+                                else if (musteri.BiletSayisi >= 10)
+                                {
+                                    <span class="customer-badge customer-regular">Düzenli</span>
+                                }
+                                else
+                                {
+                                    <span class="customer-badge customer-new">Yeni</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Müşteri verisi bulunamadı</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Müşteri İstatistikleri -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <h5 class="chart-title">Müşteri Aktivite Özeti</h5>
+            <div class="row">
+                <div class="col-6 text-center mb-3">
+                    <div class="stat-number text-info">@Model.AktifMusteriSayisi</div>
+                    <div class="stat-label">Aktif Müşteri (Son 30 Gün)</div>
+                </div>
+                <div class="col-6 text-center mb-3">
+                    <div class="stat-number text-success">@Model.YeniMusteriSayisi</div>
+                    <div class="stat-label">Yeni Kayıt</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <h5 class="chart-title">Ortalama Değerler</h5>
+            <div class="row">
+                <div class="col-6 text-center mb-3">
+                    <div class="stat-number text-warning">@(Model.EnCokBiletAlanMusteri?.Any() == true ? Model.EnCokBiletAlanMusteri.Average(m => m.BiletSayisi).ToString("F1") : "0")</div>
+                    <div class="stat-label">Ortalama Bilet/Müşteri</div>
+                </div>
+                <div class="col-6 text-center mb-3">
+                    <div class="stat-number text-danger">₺@(Model.EnCokBiletAlanMusteri?.Any() == true ? Model.EnCokBiletAlanMusteri.Average(m => m.ToplamHarcama).ToString("N0") : "0")</div>
+                    <div class="stat-label">Ortalama Harcama</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Butonları -->
+<div class="text-center mt-4">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-success me-2" onclick="exportData('excel')">
+        <i class="fas fa-file-excel me-2"></i>Excel'e Aktar
+    </button>
+    <button class="btn btn-info me-2" onclick="exportData('json')">
+        <i class="fas fa-file-code me-2"></i>JSON'a Aktar
+    </button>
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Yazdır
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function exportData(format) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        if (format === 'excel') {
+            form.action = '/Admin/Rapor/ExportToExcel';
+        } else if (format === 'json') {
+            form.action = '/Admin/Rapor/ExportToJson';
+        }
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        // Parametreleri ekle
+        const params = {
+            raporTipi: 'musteri',
+            baslangicTarihi: '@ViewBag.BaslangicTarihi',
+            bitisTarihi: '@ViewBag.BitisTarihi'
+        };
+        
+        Object.keys(params).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = params[key];
+            form.appendChild(input);
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initMusteriTrendiChart();
+    });
+
+    function initMusteriTrendiChart() {
+        const ctx = document.getElementById('musteriTrendChart').getContext('2d');
+        
+        // Loading spinner'ı gizle
+        const loadingElement = document.getElementById('musteriChartLoading');
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+        
+        // Model'den veri al
+        const trendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MusteriArtisiTrendi ?? new List<TrendModel>()));
+        
+        console.log('Müşteri trend verisi:', trendData);
+        console.log('Müşteri trend veri sayısı:', trendData ? trendData.length : 0);
+       
+        
+        const labels = trendData.map(item => {
+            const date = new Date(item.Tarih || item.tarih);
+            return date.toLocaleDateString('tr-TR');
+        });
+        
+        const data = trendData.map(item => item.Deger || item.deger);
+        
+        console.log('İşlenmiş müşteri labels:', labels);
+        console.log('İşlenmiş müşteri data:', data);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yeni Müşteri Sayısı',
+                    data: data,
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#ffc107',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointHoverBackgroundColor: '#ff8c00',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        cornerRadius: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Yeni Müşteri: ' + context.parsed.y + ' kişi';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        }
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const date = labels[index];
+                        const value = data[index];
+                        alert(`Tarih: ${date}\nYeni Müşteri: ${value} kişi`);
+                    }
+                }
+            }
+        });
+    }
+</script> 

@@ -51,6 +51,10 @@ builder.Services.AddScoped<IRepository<Sefer>, Repository<Sefer>>();
 builder.Services.AddScoped<IRepository<Koltuk>, Repository<Koltuk>>();
 builder.Services.AddScoped<IRepository<Bilet>, Repository<Bilet>>();
 builder.Services.AddScoped<IRepository<Odeme>, Repository<Odeme>>();
+
+// Rapor servisleri
+builder.Services.AddScoped<OtobusBiletSistemi.Web.Services.IRaporService, OtobusBiletSistemi.Web.Services.RaporService>();
+
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();

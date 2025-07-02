@@ -161,18 +161,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Silme butonu için ekstra onay
-            $('form button[type="submit"]').on('click', function(e) {
-                var confirmed = confirm('Son kez soruyorum: @Model.Nereden - @Model.Nereye güzergahını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!');
-                if (!confirmed) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-        });
-    </script>
-} 

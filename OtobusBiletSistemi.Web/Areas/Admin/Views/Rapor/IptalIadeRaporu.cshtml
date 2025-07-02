@@ -1,0 +1,431 @@
+@using OtobusBiletSistemi.Web.Models
+@model IptalIadeRaporuViewModel
+@{
+    ViewData["Title"] = "İptal ve İade Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--card-color, #dc3545);
+    }
+
+    .summary-card.iptal-sayi { --card-color: #dc3545; }
+    .summary-card.iptal-oran { --card-color: #fd7e14; }
+    .summary-card.iade-tutar { --card-color: #6f42c1; }
+    .summary-card.iade-oran { --card-color: #e83e8c; }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-height: 400px !important;
+        height: 400px !important;
+    }
+
+    .chart-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 6px;
+        transition: width 0.6s ease;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .cancel-high { background: #f8d7da; color: #721c24; }
+    .cancel-medium { background: #fff3cd; color: #856404; }
+    .cancel-low { background: #d4edda; color: #155724; }
+
+    .filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .trend-chart {
+        height: 300px;
+    }
+
+    .cancel-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.7;
+    }
+
+    .alert-warning {
+        border-left: 4px solid #ffc107;
+        background: #fff3cd;
+        border-radius: 8px;
+    }
+
+    .kpi-card {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .kpi-card.danger { background: #f8d7da; border: 1px solid #f5c6cb; }
+    .kpi-card.warning { background: #fff3cd; border: 1px solid #ffeaa7; }
+    .kpi-card.success { background: #d4edda; border: 1px solid #c3e6cb; }
+</style>
+
+<a href="@Url.Action("Index", "Rapor", new { area = "Admin", baslangicTarihi = Context.Request.Query["baslangicTarihi"], bitisTarihi = Context.Request.Query["bitisTarihi"], guzergahId = Context.Request.Query["guzergahId"] })" class="btn-back">
+    <i class="fas fa-arrow-left me-2"></i>Raporlara Dön
+</a>
+
+<div class="report-header">
+    <h1><i class="fas fa-ban me-3"></i>İptal ve İade Raporu</h1>
+    <p class="mb-0">@ViewBag.BaslangicTarihi - @ViewBag.BitisTarihi tarihleri arası iptal ve iade analizi</p>
+</div>
+
+<!-- Filtre Bölümü -->
+<div class="filter-section">
+    <form method="get" action="@Url.Action("IptalIadeRaporu", "Rapor", new { area = "Admin" })">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+                <input type="date" class="form-control" id="baslangicTarihi" name="baslangicTarihi" value="@ViewBag.BaslangicTarihi">
+            </div>
+            <div class="col-md-3">
+                <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
+                <input type="date" class="form-control" id="bitisTarihi" name="bitisTarihi" value="@ViewBag.BitisTarihi">
+            </div>
+            <div class="col-md-4">
+                <label for="guzergahId" class="form-label">Güzergah</label>
+                <select class="form-select" id="guzergahId" name="guzergahId">
+                    <option value="">Tüm Güzergahlar</option>
+                    @foreach (var guzergah in ViewBag.Guzergahlar as List<SelectListItem>)
+                    {
+                        <option value="@guzergah.Value" @(guzergah.Value == ViewBag.SeciliGuzergah?.ToString() ? "selected" : "")>
+                            @guzergah.Text
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Filtrele
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Uyarı Mesajı -->
+@if (Model.IptalOrani > 15)
+{
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Dikkat!</strong> İptal oranınız %@Model.IptalOrani.ToString("F1") seviyesinde. Bu oran yüksek olarak kabul edilir ve incelenmesi önerilir.
+    </div>
+}
+
+<!-- Özet Kartları -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card iptal-sayi">
+            <div class="text-center">
+                <i class="fas fa-times-circle cancel-icon text-danger"></i>
+            </div>
+            <div class="stat-number">@Model.IptalEdilenBiletSayisi</div>
+            <div class="stat-label">İptal Edilen Bilet</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card iptal-oran">
+            <div class="text-center">
+                <i class="fas fa-percentage cancel-icon text-warning"></i>
+            </div>
+            <div class="stat-number">%@Model.IptalOrani.ToString("F1")</div>
+            <div class="stat-label">İptal Oranı</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card iade-tutar">
+            <div class="text-center">
+                <i class="fas fa-money-bill-wave cancel-icon text-purple"></i>
+            </div>
+            <div class="stat-number">₺@Model.ToplamIadeTutari.ToString("N0")</div>
+            <div class="stat-label">Toplam İade Tutarı</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card iade-oran">
+            <div class="text-center">
+                <i class="fas fa-chart-line cancel-icon text-info"></i>
+            </div>
+            <div class="stat-number">%@Model.IptalOrani.ToString("F1")</div>
+            <div class="stat-label">İade Oranı</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- KPI Kartları -->
+<div class="row">
+    <div class="col-lg-4">
+        <div class="kpi-card @(Model.IptalOrani > 15 ? "danger" : Model.IptalOrani > 10 ? "warning" : "success")">
+            <h6>İptal Oranı Değerlendirmesi</h6>
+            <div class="stat-number">
+                @if (Model.IptalOrani <= 5)
+                {
+                    <span class="text-success">Mükemmel</span>
+                }
+                else if (Model.IptalOrani <= 10)
+                {
+                    <span class="text-info">İyi</span>
+                }
+                else if (Model.IptalOrani <= 15)
+                {
+                    <span class="text-warning">Orta</span>
+                }
+                else
+                {
+                    <span class="text-danger">Yüksek</span>
+                }
+            </div>
+            <small>Sektör ortalaması: %8-12</small>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="kpi-card @(Model.ToplamIadeTutari > 10000 ? "danger" : Model.ToplamIadeTutari > 5000 ? "warning" : "success")">
+            <h6>İade Tutarı Analizi</h6>
+            <div class="stat-number">₺@Model.ToplamIadeTutari.ToString("N0")</div>
+            <small>Toplam gelir kaybı</small>
+        </div>
+    </div>
+</div>
+
+<!-- Export Butonları -->
+<div class="text-center mt-4">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-success me-2" onclick="exportData('excel')">
+        <i class="fas fa-file-excel me-2"></i>Excel'e Aktar
+    </button>
+    <button class="btn btn-info me-2" onclick="exportData('json')">
+        <i class="fas fa-file-code me-2"></i>JSON'a Aktar
+    </button>
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Yazdır
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function exportData(format) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        if (format === 'excel') {
+            form.action = '/Admin/Rapor/ExportToExcel';
+        } else if (format === 'json') {
+            form.action = '/Admin/Rapor/ExportToJson';
+        }
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        // Parametreleri ekle
+        const params = {
+            raporTipi: 'iptal',
+            baslangicTarihi: '@ViewBag.BaslangicTarihi',
+            bitisTarihi: '@ViewBag.BitisTarihi',
+            guzergahId: '@ViewBag.SeciliGuzergah'
+        };
+        
+        Object.keys(params).forEach(key => {
+            if (params[key]) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = params[key];
+                form.appendChild(input);
+            }
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    // İptal trend grafiği
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('iptalTrendChart').getContext('2d');
+        
+        // Model'den trend verisini al
+        const trendData = @Html.Raw(Model.IptalTrendi != null && Model.IptalTrendi.Any() ? 
+            System.Text.Json.JsonSerializer.Serialize(Model.IptalTrendi.Select(t => new { 
+                label = t.Tarih.ToString("dd/MM"), 
+                value = t.Deger 
+            })) : "[]");
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: trendData.map(t => t.label),
+                datasets: [{
+                    label: 'İptal Sayısı',
+                    data: trendData.map(t => t.value),
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Sayfa yüklendiğinde animasyonları başlat
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.transition = 'width 1s ease-in-out';
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            }, index * 100);
+        });
+    });
+</script> 

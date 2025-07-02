@@ -1,0 +1,477 @@
+@using OtobusBiletSistemi.Web.Models
+@model SeferPerformansViewModel
+@{
+    ViewData["Title"] = "Sefer Performansı";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--card-color, #20c997);
+    }
+
+    .summary-card.aktif { --card-color: #28a745; }
+    .summary-card.tamamlanan { --card-color: #007bff; }
+    .summary-card.doluluk { --card-color: #ffc107; }
+    .summary-card.iptal { --card-color: #dc3545; }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-height: 400px !important;
+        height: 400px !important;
+    }
+
+    .chart-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 6px;
+        transition: width 0.6s ease;
+        min-width: 2px; /* Minimum görünürlük için */
+    }
+
+    .btn-back {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .performance-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .performance-excellent { background: #d1ecf1; color: #0c5460; }
+    .performance-good { background: #d4edda; color: #155724; }
+    .performance-average { background: #fff3cd; color: #856404; }
+    .performance-poor { background: #f8d7da; color: #721c24; }
+
+    .filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+</style>
+
+<a href="@Url.Action("Index", "Rapor", new { area = "Admin", baslangicTarihi = Context.Request.Query["baslangicTarihi"], bitisTarihi = Context.Request.Query["bitisTarihi"], guzergahId = Context.Request.Query["guzergahId"] })" class="btn-back">
+    <i class="fas fa-arrow-left me-2"></i>Raporlara Dön
+</a>
+
+<div class="report-header">
+    <h1><i class="fas fa-tachometer-alt me-3"></i>Sefer Performansı</h1>
+    <p class="mb-0">@ViewBag.BaslangicTarihi - @ViewBag.BitisTarihi tarihleri arası sefer analizi</p>
+</div>
+
+<!-- Filtre Bölümü -->
+<div class="filter-section">
+    <form method="get" action="@Url.Action("SeferPerformans", "Rapor", new { area = "Admin" })">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+                <input type="date" class="form-control" id="baslangicTarihi" name="baslangicTarihi" value="@ViewBag.BaslangicTarihi">
+            </div>
+            <div class="col-md-3">
+                <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
+                <input type="date" class="form-control" id="bitisTarihi" name="bitisTarihi" value="@ViewBag.BitisTarihi">
+            </div>
+            <div class="col-md-4">
+                <label for="guzergahId" class="form-label">Güzergah</label>
+                <select class="form-select" id="guzergahId" name="guzergahId">
+                    <option value="">Tüm Güzergahlar</option>
+                    @foreach (var guzergah in ViewBag.Guzergahlar as List<SelectListItem>)
+                    {
+                        <option value="@guzergah.Value" @(guzergah.Value == ViewBag.SeciliGuzergah?.ToString() ? "selected" : "")>
+                            @guzergah.Text
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Filtrele
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Özet Kartları -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card aktif">
+            <div class="stat-number">@Model.AktifSeferSayisi</div>
+            <div class="stat-label">Aktif Sefer</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card tamamlanan">
+            <div class="stat-number">@Model.TamamlananSeferSayisi</div>
+            <div class="stat-label">Tamamlanan Sefer</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card doluluk">
+            <div class="stat-number">%@Model.OrtalamaDolulukOrani.ToString("F1")</div>
+            <div class="stat-label">Ortalama Doluluk</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card iptal">
+            <div class="stat-number">@Model.IptalEdilenSeferSayisi</div>
+            <div class="stat-label">İptal Edilen</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sefer Doluluk Dağılımı -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h5 class="chart-title">En Yüksek Doluluk Oranına Sahip Seferler</h5>
+            @if (Model.SeferDoluluklari != null && Model.SeferDoluluklari.Any())
+            {
+                @foreach (var sefer in Model.SeferDoluluklari.Take(10))
+                {
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>@sefer.SeferAdi - @sefer.SeferTarihi.ToString("dd.MM.yyyy")</span>
+                            <span><strong>%@sefer.DolulukOrani.ToString("F1")</strong> (@sefer.SatilanKoltuk/@sefer.ToplamKoltuk)</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar 
+                                @(sefer.DolulukOrani >= 90 ? "bg-success" : 
+                                  sefer.DolulukOrani >= 70 ? "bg-info" : 
+                                  sefer.DolulukOrani >= 50 ? "bg-warning" : "bg-danger")" 
+                                 style="width: @sefer.DolulukOrani.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)%"
+                                 role="progressbar"></div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">Veri bulunamadı</p>
+            }
+        </div>
+    </div>
+
+    <!-- Güzergah Performansı -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="chart-title">Güzergah Performansı</h5>
+            @if (Model.GuzergahDoluluklari != null && Model.GuzergahDoluluklari.Any())
+            {
+                @foreach (var guzergah in Model.GuzergahDoluluklari.Take(8))
+                {
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>@guzergah.GuzergahAdi</span>
+                            <span><strong>%@guzergah.OrtalamaDoluluk.ToString("F1")</strong></span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar
+                                @(guzergah.OrtalamaDoluluk >= 80 ? "bg-success" : 
+                                  guzergah.OrtalamaDoluluk >= 60 ? "bg-info" : 
+                                  guzergah.OrtalamaDoluluk >= 40 ? "bg-warning" : "bg-danger")" 
+                                 style="width: @guzergah.OrtalamaDoluluk.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)%"
+                                 role="progressbar"></div>
+                        </div>
+                        <small class="text-muted">@guzergah.ToplamSefer sefer</small>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">Veri bulunamadı</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Sefer Detay Tablosu -->
+<div class="table-container">
+    <h5 class="chart-title">Sefer Detay Raporu</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Sefer</th>
+                    <th>Tarih</th>
+                    <th>Toplam Koltuk</th>
+                    <th>Satılan Koltuk</th>
+                    <th>Doluluk Oranı</th>
+                    <th>Performans</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SeferDoluluklari != null && Model.SeferDoluluklari.Any())
+                {
+                    @foreach (var sefer in Model.SeferDoluluklari)
+                    {
+                        <tr>
+                            <td>@sefer.SeferAdi</td>
+                            <td>@sefer.SeferTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@sefer.ToplamKoltuk</td>
+                            <td>@sefer.SatilanKoltuk</td>
+                            <td>%@sefer.DolulukOrani.ToString("F1")</td>
+                            <td>
+                                @if (sefer.DolulukOrani >= 90)
+                                {
+                                    <span class="performance-badge performance-excellent">Mükemmel</span>
+                                }
+                                else if (sefer.DolulukOrani >= 70)
+                                {
+                                    <span class="performance-badge performance-good">İyi</span>
+                                }
+                                else if (sefer.DolulukOrani >= 50)
+                                {
+                                    <span class="performance-badge performance-average">Orta</span>
+                                }
+                                else
+                                {
+                                    <span class="performance-badge performance-poor">Düşük</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Sefer verisi bulunamadı</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Güzergah Detay Tablosu -->
+<div class="table-container">
+    <h5 class="chart-title">Güzergah Performans Detayı</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Güzergah</th>
+                    <th>Toplam Sefer</th>
+                    <th>Ortalama Doluluk</th>
+                    <th>Performans</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.GuzergahDoluluklari != null && Model.GuzergahDoluluklari.Any())
+                {
+                    @foreach (var guzergah in Model.GuzergahDoluluklari)
+                    {
+                        <tr>
+                            <td>@guzergah.GuzergahAdi</td>
+                            <td>@guzergah.ToplamSefer</td>
+                            <td>%@guzergah.OrtalamaDoluluk.ToString("F1")</td>
+                            <td>
+                                @if (guzergah.OrtalamaDoluluk >= 80)
+                                {
+                                    <span class="performance-badge performance-excellent">Mükemmel</span>
+                                }
+                                else if (guzergah.OrtalamaDoluluk >= 60)
+                                {
+                                    <span class="performance-badge performance-good">İyi</span>
+                                }
+                                else if (guzergah.OrtalamaDoluluk >= 40)
+                                {
+                                    <span class="performance-badge performance-average">Orta</span>
+                                }
+                                else
+                                {
+                                    <span class="performance-badge performance-poor">Düşük</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Güzergah verisi bulunamadı</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Export Butonları -->
+<div class="text-center mt-4">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-success me-2" onclick="exportData('excel')">
+        <i class="fas fa-file-excel me-2"></i>Excel'e Aktar
+    </button>
+    <button class="btn btn-info me-2" onclick="exportData('json')">
+        <i class="fas fa-file-code me-2"></i>JSON'a Aktar
+    </button>
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Yazdır
+    </button>
+</div>
+
+<script>
+    function exportData(format) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        if (format === 'excel') {
+            form.action = '/Admin/Rapor/ExportToExcel';
+        } else if (format === 'json') {
+            form.action = '/Admin/Rapor/ExportToJson';
+        }
+        
+        // CSRF token ekle
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        // Parametreleri ekle
+        const params = {
+            raporTipi: 'sefer',
+            baslangicTarihi: '@ViewBag.BaslangicTarihi',
+            bitisTarihi: '@ViewBag.BitisTarihi',
+            guzergahId: '@ViewBag.SeciliGuzergah'
+        };
+        
+        Object.keys(params).forEach(key => {
+            if (params[key]) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = params[key];
+                form.appendChild(input);
+            }
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    // Sayfa yüklendiğinde animasyonları başlat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Progress bar animasyonları
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.transition = 'width 1s ease-in-out';
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            }, index * 100);
+        });
+    });
+</script> 

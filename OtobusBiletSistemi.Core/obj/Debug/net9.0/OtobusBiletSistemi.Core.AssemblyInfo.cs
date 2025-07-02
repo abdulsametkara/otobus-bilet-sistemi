@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OtobusBiletSistemi.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5656dd49428769272f7f3544d3d24cb6ac721c40")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b82626395c6a62ecaa540f9e376e03f1c757b59")]
 [assembly: System.Reflection.AssemblyProductAttribute("OtobusBiletSistemi.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OtobusBiletSistemi.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
