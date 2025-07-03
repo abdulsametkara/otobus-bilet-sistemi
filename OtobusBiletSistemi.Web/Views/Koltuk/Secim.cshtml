@@ -295,15 +295,15 @@
             // Devam et butonunu aktif/pasif yap
             devamEtBtn.disabled = secilenKoltuklar.length !== yolcuSayisi;
 
-            // Hidden inputları güncelle
+            // Hidden inputları güncelle - tek input olarak comma-separated
             seciliKoltuklarInput.innerHTML = '';
-            secilenKoltuklar.forEach(id => {
+            if (secilenKoltuklar.length > 0) {
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'seciliKoltuklar';
-                input.value = id;
+                input.value = secilenKoltuklar.join(',');
                 seciliKoltuklarInput.appendChild(input);
-            });
+            }
         }
 
         // Devam et butonuna tıklayınca formu gönder

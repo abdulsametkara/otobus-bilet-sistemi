@@ -154,7 +154,8 @@
                     {
                         @foreach (var guzergah in ViewBag.Guzergahlar)
                         {
-                            <option value="@guzergah.Value">
+                            <option value="@guzergah.Value" 
+                                    @(Context.Request.Query["guzergahId"] == guzergah.Value ? "selected" : "")>
                                 @guzergah.Text
                             </option>
                         }
@@ -196,8 +197,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                <a href="@Url.Action("SatisRaporu", "Rapor", new { area = "Admin" })" 
-                   class="btn btn-custom report-link" data-report="SatisRaporu">
+                <a href="@Url.Action("SatisRaporu", "Rapor", new { area = "Admin" })" class="btn btn-custom" id="satisRaporLink">
                     <i class="fas fa-eye me-2"></i>Detaylı Rapor
                 </a>
                 <button class="btn btn-custom" onclick="exportExcel('satis')">
@@ -224,8 +224,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                <a href="@Url.Action("GelirRaporu", "Rapor", new { area = "Admin" })" 
-                   class="btn btn-custom report-link" data-report="GelirRaporu">
+                <a href="@Url.Action("GelirRaporu", "Rapor", new { area = "Admin" })" class="btn btn-custom" id="gelirRaporLink">
                     <i class="fas fa-eye me-2"></i>Detaylı Rapor
                 </a>
                 <button class="btn btn-custom" onclick="exportExcel('gelir')">
@@ -252,8 +251,7 @@
                             </div>
                         </div>
             <div class="mt-3">
-                <a href="@Url.Action("SeferPerformans", "Rapor", new { area = "Admin" })" 
-                   class="btn btn-custom report-link" data-report="SeferPerformans">
+                <a href="@Url.Action("SeferPerformans", "Rapor", new { area = "Admin" })" class="btn btn-custom" id="seferPerformansLink">
                     <i class="fas fa-eye me-2"></i>Detaylı Rapor
                 </a>
                 <button class="btn btn-custom" onclick="exportExcel('performans')">
@@ -280,8 +278,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                <a href="@Url.Action("MusteriAnalizi", "Rapor", new { area = "Admin" })" 
-                   class="btn btn-custom report-link" data-report="MusteriAnalizi">
+                <a href="@Url.Action("MusteriAnalizi", "Rapor", new { area = "Admin" })" class="btn btn-custom" id="musteriAnaliziLink">
                     <i class="fas fa-eye me-2"></i>Detaylı Rapor
                 </a>
                 <button class="btn btn-custom" onclick="exportExcel('musteri')">
@@ -318,8 +315,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                <a href="@Url.Action("IptalIadeRaporu", "Rapor", new { area = "Admin" })" 
-                   class="btn btn-custom report-link" data-report="IptalIadeRaporu">
+                <a href="@Url.Action("IptalIadeRaporu", "Rapor", new { area = "Admin" })" class="btn btn-custom" id="iptalIadeRaporLink">
                     <i class="fas fa-eye me-2"></i>Detaylı Rapor
                 </a>
                 <button class="btn btn-custom" onclick="exportExcel('iptal')">
@@ -376,35 +372,30 @@
         document.getElementById('reportCards').style.opacity = '0.5';
     });
 
-    // Rapor linklerini dinamik hale getir
+    // Rapor linklerini tarih parametreleriyle güncelle
     function updateReportLinks() {
-        const baslangicTarihi = document.getElementById('baslangicTarihi').value;
-        const bitisTarihi = document.getElementById('bitisTarihi').value;
-        const guzergahId = document.getElementById('guzergahId').value;
+        var baslangicTarihi = document.getElementById('baslangicTarihi').value;
+        var bitisTarihi = document.getElementById('bitisTarihi').value;
+        var guzergahId = document.getElementById('guzergahId').value;
         
-        document.querySelectorAll('.report-link').forEach(function(link) {
-            const reportAction = link.getAttribute('data-report');
-            let baseUrl = '/Admin/Rapor/' + reportAction;
-            
-            // Parametreleri ekle
-            const params = new URLSearchParams();
-            if (baslangicTarihi) params.append('baslangicTarihi', baslangicTarihi);
-            if (bitisTarihi) params.append('bitisTarihi', bitisTarihi);
-            if (guzergahId) params.append('guzergahId', guzergahId);
-            
-            if (params.toString()) {
-                baseUrl += '?' + params.toString();
-            }
-            
-            link.href = baseUrl;
-        });
+        var baseParams = '';
+        if (baslangicTarihi) baseParams += '&baslangicTarihi=' + baslangicTarihi;
+        if (bitisTarihi) baseParams += '&bitisTarihi=' + bitisTarihi;
+        if (guzergahId) baseParams += '&guzergahId=' + guzergahId;
+        
+        if (baseParams) baseParams = '?' + baseParams.substring(1); // İlk &'yi sil ve ?'ye çevir
+        
+        // Rapor linklerini güncelle
+        document.getElementById('satisRaporLink').href = '@Url.Action("SatisRaporu", "Rapor", new { area = "Admin" })' + baseParams;
+        document.getElementById('gelirRaporLink').href = '@Url.Action("GelirRaporu", "Rapor", new { area = "Admin" })' + baseParams;
+        document.getElementById('seferPerformansLink').href = '@Url.Action("SeferPerformans", "Rapor", new { area = "Admin" })' + baseParams;
+        document.getElementById('musteriAnaliziLink').href = '@Url.Action("MusteriAnalizi", "Rapor", new { area = "Admin" })' + baseParams;
+        document.getElementById('iptalIadeRaporLink').href = '@Url.Action("IptalIadeRaporu", "Rapor", new { area = "Admin" })' + baseParams;
     }
 
-    // Tarih alanları değiştiğinde linkleri güncelle
+    // Sayfa yüklendiğinde ve input değiştiğinde linkleri güncelle
+    document.addEventListener('DOMContentLoaded', updateReportLinks);
     document.getElementById('baslangicTarihi').addEventListener('change', updateReportLinks);
     document.getElementById('bitisTarihi').addEventListener('change', updateReportLinks);
     document.getElementById('guzergahId').addEventListener('change', updateReportLinks);
-    
-    // Sayfa yüklendiğinde linkleri güncelle
-    document.addEventListener('DOMContentLoaded', updateReportLinks);
 </script> 

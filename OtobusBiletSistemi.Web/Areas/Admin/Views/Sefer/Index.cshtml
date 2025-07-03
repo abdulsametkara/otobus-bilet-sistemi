@@ -221,13 +221,27 @@
                                         </div>
                                     </td>
                                     <td>
-                                        @if (sefer.Tarih.Date > DateTime.Today)
-                                        {
-                                            <span class="badge bg-primary">Beklemede</span>
+                                        @{
+                                            // Sefer tarih ve saatini birleştir
+                                            var seferDateTime = sefer.Tarih.Date;
+                                            if (TimeSpan.TryParse(sefer.Saat, out TimeSpan saat))
+                                            {
+                                                seferDateTime = seferDateTime.Add(saat);
+                                            }
+                                            
+                                            var now = DateTime.Now;
                                         }
-                                        else if (sefer.Tarih.Date == DateTime.Today)
+                                        
+                                        @if (seferDateTime > now)
                                         {
-                                            <span class="badge bg-success">Bugün</span>
+                                            @if (seferDateTime.Date > now.Date)
+                                            {
+                                                <span class="badge bg-primary">Beklemede</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Bugün</span>
+                                            }
                                         }
                                         else
                                         {

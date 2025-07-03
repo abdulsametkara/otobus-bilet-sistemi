@@ -44,7 +44,7 @@
                                     @Html.DropDownListFor(m => m.Nereden, 
                                         nereden, 
                                         "Kalkış şehri seçiniz", 
-                                        new { @class = "form-control city-input", @required = "required" })
+                                        new { @class = "form-control city-input", @required = "required", @name = "Nereden" })
                                     @Html.ValidationMessageFor(m => m.Nereden, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                                     @Html.DropDownListFor(m => m.Nereye, 
                                         nereye, 
                                         "Varış şehri seçiniz", 
-                                        new { @class = "form-control city-input", @required = "required" })
+                                        new { @class = "form-control city-input", @required = "required", @name = "Nereye" })
                                     @Html.ValidationMessageFor(m => m.Nereye, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -72,10 +72,14 @@
                                             @class = "form-control", 
                                             @type = "date", 
                                             @min = DateTime.Today.ToString("yyyy-MM-dd"),
-                                            @required = "required"
+                                            @required = "required",
+                                            @title = "Önce kalkış ve varış şehirlerini seçin",
+                                            @name = "Tarih"
                                         } 
                                     })
                                     @Html.ValidationMessageFor(m => m.Tarih, "", new { @class = "text-danger" })
+                                    <!-- Tarih bilgi alanı -->
+                                    <div id="date-info" class="mt-2"></div>
                                 </div>
                             </div>
                             
@@ -178,6 +182,28 @@
                     behavior: 'smooth'
                 });
             });
+
+            // Initialize city selection and date picker functionality
+            if (typeof initializeCitySelection === 'function') {
+                initializeCitySelection();
+            }
+            
+            // Initialize date pickers
+            if (typeof initializeDatePickers === 'function') {
+                initializeDatePickers();
+            }
+            
+            // Set initial date info message
+            const dateInfo = document.getElementById('date-info');
+            if (dateInfo) {
+                dateInfo.innerHTML = `
+                    <div class="date-info-box info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Önce şehirleri seçin</strong><br>
+                        <small>Sefer olan günler otomatik olarak gösterilecek</small>
+                    </div>
+                `;
+            }
         });
     </script>
 }

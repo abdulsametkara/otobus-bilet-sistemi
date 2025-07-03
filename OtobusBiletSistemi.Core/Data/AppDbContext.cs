@@ -71,7 +71,6 @@ namespace OtobusBiletSistemi.Core.Data
                 .HasColumnName("LOCKOUTENABLED")
                 .HasConversion<int>();
             
-            // Identity tablolarının mapping'i
             modelBuilder.Entity<IdentityRole<int>>().ToTable("ASPNET_ROLES");
             modelBuilder.Entity<IdentityRole<int>>().Property(x => x.Id).HasColumnName("ID");
             modelBuilder.Entity<IdentityRole<int>>().Property(x => x.Name).HasColumnName("NAME");
@@ -128,7 +127,6 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Bilet>().Property(x => x.BiletTarihi).HasColumnName("BILETTARIHI");
             modelBuilder.Entity<Bilet>().Property(x => x.BiletDurumu).HasColumnName("BILETDURUMU");
             
-            // BiletNo computed property'sini ignore et
             modelBuilder.Entity<Bilet>().Ignore(x => x.BiletNo);
 
             modelBuilder.Entity<Guzergah>().Property(x => x.GuzergahID).HasColumnName("GUZERGAHID").ValueGeneratedOnAdd();
@@ -150,7 +148,6 @@ namespace OtobusBiletSistemi.Core.Data
             modelBuilder.Entity<Odeme>().Property(x => x.KartNumarasi).HasColumnName("KARTNUMARASI");
             modelBuilder.Entity<Odeme>().Property(x => x.BiletSayisi).HasColumnName("BILETSAYISI");
             
-            // Backward compatibility - ignore the wrapper properties
             modelBuilder.Entity<Odeme>().Ignore(x => x.ToplamTutar);
             modelBuilder.Entity<Odeme>().Ignore(x => x.OdemeTipi);
             modelBuilder.Entity<Odeme>().Ignore(x => x.OnayDurumu);

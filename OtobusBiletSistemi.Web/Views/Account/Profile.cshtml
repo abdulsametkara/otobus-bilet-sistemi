@@ -1,0 +1,433 @@
+@model OtobusBiletSistemi.Core.Data.YolcuUser
+
+@{
+    ViewData["Title"] = "Profil Bilgileri";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <!-- Profil Header -->
+            <div class="profile-header mb-4">
+                <div class="card border-0 shadow-lg bg-gradient-primary">
+                    <div class="card-body text-white p-4">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="avatar-circle">
+                                    <i class="fas fa-user fa-2x"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h3 class="mb-1">@Model.Ad @Model.Soyad</h3>
+                                <p class="mb-0 opacity-75">@Model.Email</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Profil Bilgileri -->
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 pb-0">
+                            <h5 class="card-title text-primary">
+                                <i class="fas fa-edit me-2"></i>Profil Bilgileri
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    @TempData["SuccessMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            }
+
+                            @if (TempData["ErrorMessage"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    @TempData["ErrorMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            }
+
+                            <form asp-action="UpdateProfile" method="post" id="profileForm">
+                                <div class="row g-3">
+                                    <!-- Ad -->
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Ad" class="form-control border-2" placeholder="Ad" readonly />
+                                            <label asp-for="Ad">
+                                                <i class="fas fa-user me-1 text-primary"></i>Ad
+                                            </label>
+                                        </div>
+                                        <span asp-validation-for="Ad" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Soyad -->
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Soyad" class="form-control border-2" placeholder="Soyad" readonly />
+                                            <label asp-for="Soyad">
+                                                <i class="fas fa-user me-1 text-primary"></i>Soyad
+                                            </label>
+                                        </div>
+                                        <span asp-validation-for="Soyad" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Email" class="form-control border-2" placeholder="E-posta" readonly />
+                                            <label asp-for="Email">
+                                                <i class="fas fa-envelope me-1 text-primary"></i>E-posta
+                                            </label>
+                                        </div>
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Telefon -->
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="TelNo" class="form-control border-2" placeholder="Telefon" readonly />
+                                            <label asp-for="TelNo">
+                                                <i class="fas fa-phone me-1 text-primary"></i>Telefon
+                                            </label>
+                                        </div>
+                                        <span asp-validation-for="TelNo" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Sabit Alanlar -->
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="TCNo" class="form-control bg-light" placeholder="T.C. Kimlik No" readonly disabled />
+                                            <label asp-for="TCNo">
+                                                <i class="fas fa-id-card me-1 text-muted"></i>T.C. Kimlik No
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Bu alan değiştirilemez</small>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="UserName" class="form-control bg-light" placeholder="Kullanıcı Adı" readonly disabled />
+                                            <label asp-for="UserName">
+                                                <i class="fas fa-at me-1 text-muted"></i>Kullanıcı Adı
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Bu alan değiştirilemez</small>
+                                    </div>
+                                </div>
+
+                                <!-- Butonlar -->
+                                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                                    <div>
+                                        <button type="button" id="editBtn" class="btn btn-outline-primary btn-lg px-4">
+                                            <i class="fas fa-edit me-2"></i>Düzenle
+                                        </button>
+                                        <button type="submit" id="saveBtn" class="btn btn-success btn-lg px-4 d-none">
+                                            <i class="fas fa-save me-2"></i>Kaydet
+                                        </button>
+                                        <button type="button" id="cancelBtn" class="btn btn-outline-secondary btn-lg px-4 d-none">
+                                            <i class="fas fa-times me-2"></i>İptal
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-warning btn-lg px-4" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                            <i class="fas fa-key me-2"></i>Şifre Değiştir
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hesap İstatistikleri -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-0 pb-0">
+                            <h5 class="card-title text-primary">
+                                <i class="fas fa-chart-pie me-2"></i>Hesap Özeti
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="stat-card bg-gradient-primary text-white rounded-3 p-3 text-center">
+                                        <div class="stat-icon mb-2">
+                                            <i class="fas fa-ticket-alt fa-2x"></i>
+                                        </div>
+                                        <h3 class="mb-1" id="totalTickets">0</h3>
+                                        <p class="mb-0 opacity-75">Toplam Bilet</p>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="stat-card bg-gradient-success text-white rounded-3 p-3 text-center">
+                                        <div class="stat-icon mb-2">
+                                            <i class="fas fa-check-circle fa-2x"></i>
+                                        </div>
+                                        <h3 class="mb-1" id="activeTickets">0</h3>
+                                        <p class="mb-0 opacity-75">Aktif Bilet</p>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="stat-card bg-gradient-info text-white rounded-3 p-3 text-center">
+                                        <div class="stat-icon mb-2">
+                                            <i class="fas fa-lira-sign fa-2x"></i>
+                                        </div>
+                                        <h3 class="mb-1" id="totalSpent">₺0</h3>
+                                        <p class="mb-0 opacity-75">Toplam Harcama</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Şifre Değiştirme Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-key me-2"></i>Şifre Değiştir
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="ChangePassword" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="password" name="CurrentPassword" class="form-control border-2" placeholder="Mevcut Şifre" required />
+                            <label><i class="fas fa-lock me-1 text-warning"></i>Mevcut Şifre</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="password" name="NewPassword" class="form-control border-2" placeholder="Yeni Şifre" required />
+                            <label><i class="fas fa-key me-1 text-warning"></i>Yeni Şifre</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="password" name="ConfirmPassword" class="form-control border-2" placeholder="Yeni Şifre Tekrar" required />
+                            <label><i class="fas fa-check me-1 text-warning"></i>Yeni Şifre Tekrar</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-lg px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-warning btn-lg px-4 text-white">
+                        <i class="fas fa-save me-2"></i>Şifreyi Değiştir
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.getElementById('editBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const form = document.getElementById('profileForm');
+            
+            // Düzenlenebilir alanlar
+            const editableFields = ['Ad', 'Soyad', 'Email', 'TelNo'];
+            let originalValues = {};
+
+            // Edit butonuna tıklandığında
+            editBtn.addEventListener('click', function() {
+                // Orijinal değerleri kaydet
+                editableFields.forEach(field => {
+                    const input = document.querySelector(`input[name="${field}"]`);
+                    originalValues[field] = input.value;
+                    input.removeAttribute('readonly');
+                    input.classList.add('border-primary', 'bg-light');
+                });
+
+                editBtn.classList.add('d-none');
+                saveBtn.classList.remove('d-none');
+                cancelBtn.classList.remove('d-none');
+            });
+
+            // Cancel butonuna tıklandığında
+            cancelBtn.addEventListener('click', function() {
+                // Orijinal değerleri geri yükle
+                editableFields.forEach(field => {
+                    const input = document.querySelector(`input[name="${field}"]`);
+                    input.value = originalValues[field];
+                    input.setAttribute('readonly', true);
+                    input.classList.remove('border-primary', 'bg-light');
+                });
+
+                editBtn.classList.remove('d-none');
+                saveBtn.classList.add('d-none');
+                cancelBtn.classList.add('d-none');
+            });
+
+            // İstatistikleri yükle
+            loadUserStats();
+        });
+
+        function loadUserStats() {
+            // Loading state göster
+            document.getElementById('totalTickets').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            document.getElementById('activeTickets').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            document.getElementById('totalSpent').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // AJAX ile kullanıcı istatistiklerini getir
+            fetch('/Account/GetUserStats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Animasyonlu sayı güncelleme
+                        animateNumber('totalTickets', data.totalTickets);
+                        animateNumber('activeTickets', data.activeTickets);
+                        
+                        // Para formatı (Türk Lirası)
+                        const formattedMoney = new Intl.NumberFormat('tr-TR', {
+                            style: 'currency',
+                            currency: 'TRY'
+                        }).format(data.totalSpent);
+                        
+                        animateText('totalSpent', formattedMoney);
+                    } else {
+                        document.getElementById('totalTickets').textContent = '0';
+                        document.getElementById('activeTickets').textContent = '0';
+                        document.getElementById('totalSpent').textContent = '₺0,00';
+                    }
+                })
+                .catch(error => {
+                    console.error('İstatistik yükleme hatası:', error);
+                    document.getElementById('totalTickets').textContent = '0';
+                    document.getElementById('activeTickets').textContent = '0';
+                    document.getElementById('totalSpent').textContent = '₺0,00';
+                });
+        }
+
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = targetValue / 30; // 30 frame'de tamamla
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(currentValue);
+                }
+            }, 50); // 50ms interval
+        }
+
+        function animateText(elementId, text) {
+            const element = document.getElementById(elementId);
+            element.style.opacity = '0';
+            setTimeout(() => {
+                element.textContent = text;
+                element.style.opacity = '1';
+            }, 200);
+        }
+    </script>
+
+    <style>
+        .profile-header {
+            margin-bottom: 2rem;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+                 .stat-card {
+             transition: all 0.3s ease;
+             border-radius: 15px !important;
+             position: relative;
+             overflow: hidden;
+         }
+         
+         .stat-card h3 {
+             transition: opacity 0.3s ease;
+         }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .form-floating > .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .card {
+            border-radius: 15px;
+        }
+        
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .btn-lg {
+            border-radius: 12px;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+} 

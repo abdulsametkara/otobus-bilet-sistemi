@@ -133,9 +133,7 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\scopedcss\bundle\OtobusBiletSistemi.Web.styles.css
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\scopedcss\projectbundle\OtobusBiletSistemi.Web.bundle.scp.css
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\gj20ty8snj-b9sayid5wm.gz
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\rc53nt32rf-5sna31jv41.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\1eel4kgp56-61n19gt1b8.gz
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\4fh7h7efg4-irt2bt15si.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\9u44bwjmd1-xtxxf3hu2r.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\2i2sy5g2jd-bqjiyaj88i.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\3yagyoh09j-c2jlpeoesf.gz
@@ -208,3 +206,5 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.pdb
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.genruntimeconfig.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\ref\OtobusBiletSistemi.Web.dll
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\rc53nt32rf-4sicpcdbxb.gz
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\4fh7h7efg4-xwu3olqc0o.gz

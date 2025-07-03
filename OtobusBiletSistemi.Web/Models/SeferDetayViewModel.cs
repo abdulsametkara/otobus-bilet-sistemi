@@ -10,7 +10,11 @@ namespace OtobusBiletSistemi.Web.Models
         public int ToplamKoltukSayisi { get; set; }
         public int DoluKoltukSayisi { get; set; }
         public int BosKoltukSayisi => ToplamKoltukSayisi - DoluKoltukSayisi;
-        public decimal BiletFiyati { get; set; } = 120; // Şimdilik sabit, sonra dinamik yapacağız
+        public decimal BiletFiyati { get; set; } // Sefer tablosundan alınır
+        
+        // Yeni eklenen istatistik özellikleri
+        public int SatilanBiletSayisi { get; set; }
+        public decimal DolulukOrani { get; set; }
         
         public string KalkisSaati => Sefer?.Saat ?? "";
         public string SeferTarihi => Sefer?.Tarih.ToShortDateString() ?? "";

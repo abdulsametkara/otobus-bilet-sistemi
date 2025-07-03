@@ -53,9 +53,9 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
             ViewData["Title"] = "Satış Raporu";
             
             if (!baslangicTarihi.HasValue)
-                baslangicTarihi = new DateTime(2025, 6, 1);
+                baslangicTarihi = DateTime.Now.AddDays(-15);
             if (!bitisTarihi.HasValue)
-                bitisTarihi = new DateTime(2025, 7, 31);
+                bitisTarihi = DateTime.Now.AddDays(15);
 
             var satisRaporu = await _raporService.GetSatisRaporuAsync(baslangicTarihi, bitisTarihi, guzergahId);
             
@@ -93,9 +93,9 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
             ViewData["Title"] = "Gelir Raporu";
             
             if (!baslangicTarihi.HasValue)
-                baslangicTarihi = new DateTime(2025, 6, 1);
+                baslangicTarihi = DateTime.Now.AddDays(-15);
             if (!bitisTarihi.HasValue)
-                bitisTarihi = new DateTime(2025, 7, 31);
+                bitisTarihi = DateTime.Now.AddDays(15);
 
             var gelirRaporu = await _raporService.GetGelirRaporuAsync(baslangicTarihi, bitisTarihi, guzergahId);
             

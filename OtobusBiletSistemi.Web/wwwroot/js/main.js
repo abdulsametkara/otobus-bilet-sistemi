@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeDatePickers();
     initializeNavbar();
     initializeTicketSearch();
+    initializeCitySelection();
     
 });
 
@@ -248,65 +249,288 @@ function initializeDatePickers() {
 
 // ===== TICKET SEARCH =====
 function initializeTicketSearch() {
+    // Bu fonksiyon şu anda sadece select dropdown'lar için basit işlevsellik sağlar
     
-    // Auto-complete for city inputs
-    const cityInputs = document.querySelectorAll('.city-input');
-    const turkishCities = [
-        'İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep',
-        'Mersin', 'Diyarbakır', 'Kayseri', 'Eskişehir', 'Urfa', 'Malatya', 'Erzurum',
-        'Van', 'Batman', 'Elazığ', 'Tokat', 'Isparta', 'Sivas', 'Kahramanmaraş',
-        'Trabzon', 'Denizli', 'Ordu', 'Balıkesir', 'Kırıkkale', 'Afyon', 'Yozgat'
-    ];
-    
-    cityInputs.forEach(input => {
-        setupAutoComplete(input, turkishCities);
-    });
-    
-    // Swap origin and destination
+    // Swap origin and destination (eğer varsa)
     const swapButton = document.querySelector('.swap-cities');
     if (swapButton) {
         swapButton.addEventListener('click', function() {
-            const originInput = document.querySelector('input[name="Origin"]');
-            const destinationInput = document.querySelector('input[name="Destination"]');
+            const neredenSelect = document.querySelector('select[name="Nereden"]');
+            const nereyeSelect = document.querySelector('select[name="Nereye"]');
             
-            if (originInput && destinationInput) {
-                const temp = originInput.value;
-                originInput.value = destinationInput.value;
-                destinationInput.value = temp;
+            if (neredenSelect && nereyeSelect) {
+                const temp = neredenSelect.value;
+                neredenSelect.value = nereyeSelect.value;
+                nereyeSelect.value = temp;
                 
                 // Add animation
                 this.style.transform = 'rotate(180deg)';
                 setTimeout(() => {
                     this.style.transform = 'rotate(0deg)';
                 }, 300);
+                
+                // Trigger change event
+                neredenSelect.dispatchEvent(new Event('change'));
             }
         });
+    }
+}
+
+// ===== ŞEHİR SEÇİMİ VE TARİH FİLTRELEME =====
+function initializeCitySelection() {
+    const neredenSelect = document.querySelector('select[name="Nereden"]');
+    const nereyeSelect = document.querySelector('select[name="Nereye"]');
+    const tarihInput = document.querySelector('input[name="Tarih"]');
+    
+    if (!neredenSelect || !nereyeSelect || !tarihInput) return;
+    
+    let mevcutTarihler = [];
+    
+    // Şehir seçimi değiştiğinde
+    function handleCityChange() {
+        const nereden = neredenSelect.value;
+        const nereye = nereyeSelect.value;
+        
+        // Aynı şehir seçimini engelle
+        if (nereden && nereye && nereden === nereye) {
+            showNotification('Kalkış ve varış şehri aynı olamaz!', 'warning', 3000);
+            resetDatePicker();
+            return;
+        }
+        
+        // Her iki şehir de seçildiyse sefer tarihlerini getir
+        if (nereden && nereye && nereden !== nereye) {
+            getMevcutSeferTarihleri(nereden, nereye);
+        } else {
+            // Seçim eksikse tarih alanını varsayılana döndür
+            resetDatePicker();
+        }
+    }
+    
+    // Event listener'ları ekle
+    neredenSelect.addEventListener('change', handleCityChange);
+    nereyeSelect.addEventListener('change', handleCityChange);
+    
+    // API çağrısı fonksiyonu
+    async function getMevcutSeferTarihleri(nereden, nereye) {
+        try {
+            // Loading göster
+            showDatePickerLoading(true);
+            
+            const response = await fetch(`/Home/GetMevcutSeferTarihleri?nereden=${encodeURIComponent(nereden)}&nereye=${encodeURIComponent(nereye)}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                mevcutTarihler = data.dates || [];
+                updateDatePicker(mevcutTarihler);
+                showNotification(data.message, 'success', 3000);
+            } else {
+                mevcutTarihler = [];
+                resetDatePicker();
+                showNotification(data.message, 'warning', 5000);
+            }
+        } catch (error) {
+            console.error('Sefer tarihleri getirilirken hata:', error);
+            mevcutTarihler = [];
+            resetDatePicker();
+            showNotification('Sefer tarihleri yüklenirken bir hata oluştu.', 'error');
+        } finally {
+            showDatePickerLoading(false);
+        }
+    }
+    
+    // Tarih picker'ı güncelle
+    function updateDatePicker(dates) {
+        // Tarihi sıfırla
+        tarihInput.value = '';
+        
+        // Özel tarih validasyonu ekle
+        tarihInput.removeEventListener('input', validateSelectedDate);
+        tarihInput.addEventListener('input', validateSelectedDate);
+        
+        // Min tarih olarak bugünü ayarla
+        const today = new Date().toISOString().split('T')[0];
+        tarihInput.min = today;
+        
+        // CSS sınıflarını güncelle
+        tarihInput.classList.remove('has-trips', 'no-trips');
+        if (dates.length > 0) {
+            tarihInput.classList.add('has-trips');
+        } else {
+            tarihInput.classList.add('no-trips');
+        }
+        
+        // Info mesajını ve sefer tarihlerini güncelle
+        updateDateInfo(dates);
+        
+        // Eğer mevcut tarihler varsa, ilk mevcut tarihi varsayılan olarak seç
+        if (dates.length > 0) {
+            const firstAvailableDate = dates[0];
+            if (firstAvailableDate >= today) {
+                tarihInput.value = firstAvailableDate;
+            }
+        }
+        
+        // CSS ile disable edilmiş görünüm için data attribute ekle
+        tarihInput.setAttribute('data-available-dates', JSON.stringify(dates));
+    }
+    
+    // Tarih bilgi kutusunu güncelle
+    function updateDateInfo(dates) {
+        const dateInfo = document.getElementById('date-info');
+        if (!dateInfo) return;
+        
+        // Mevcut içeriği temizle
+        dateInfo.innerHTML = '';
+        
+        if (dates.length > 0) {
+            // Ana bilgi mesajı
+            const infoBox = document.createElement('div');
+            infoBox.className = 'date-info-box success';
+            infoBox.innerHTML = `
+                <i class="fas fa-calendar-check me-2"></i>
+                <strong>${dates.length} farklı tarihte sefer mevcut</strong>
+            `;
+            dateInfo.appendChild(infoBox);
+            
+            // Sefer tarihlerini chip olarak göster
+            const datesContainer = document.createElement('div');
+            datesContainer.className = 'available-dates';
+            
+            dates.forEach(date => {
+                const dateChip = document.createElement('span');
+                dateChip.className = 'date-chip';
+                
+                // Tarih formatını güzelleştir
+                const formattedDate = formatTurkishDate(date);
+                dateChip.textContent = formattedDate;
+                dateChip.title = `${date} tarihinde sefer mevcut - tıklayın`;
+                
+                // Chip'e tıklandığında tarihi seç
+                dateChip.addEventListener('click', function() {
+                    tarihInput.value = date;
+                    
+                    // Diğer chip'leri normal yap, bu chip'i seçili yap
+                    datesContainer.querySelectorAll('.date-chip').forEach(chip => {
+                        chip.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Change event'ini trigger et
+                    tarihInput.dispatchEvent(new Event('change'));
+                });
+                
+                // İlk tarih varsayılan seçili
+                if (date === dates[0]) {
+                    dateChip.classList.add('selected');
+                }
+                
+                datesContainer.appendChild(dateChip);
+            });
+            
+            dateInfo.appendChild(datesContainer);
+            
+        } else {
+            // Sefer yok mesajı
+            const infoBox = document.createElement('div');
+            infoBox.className = 'date-info-box warning';
+            infoBox.innerHTML = `
+                <i class="fas fa-calendar-times me-2"></i>
+                <strong>Bu güzergahta sefer bulunamadı</strong><br>
+                <small>Lütfen farklı bir güzergah seçin</small>
+            `;
+            dateInfo.appendChild(infoBox);
+        }
+    }
+    
+    // Türkçe tarih formatla
+    function formatTurkishDate(dateString) {
+        const date = new Date(dateString);
+        const options = { 
+            day: 'numeric', 
+            month: 'short',
+            weekday: 'short'
+        };
+        return date.toLocaleDateString('tr-TR', options);
+    }
+    
+    // Seçilen tarihi validate et
+    function validateSelectedDate(event) {
+        const selectedDate = event.target.value;
+        
+        if (selectedDate && mevcutTarihler.length > 0) {
+            if (!mevcutTarihler.includes(selectedDate)) {
+                showFieldError(tarihInput, 'Bu tarihte sefer bulunmamaktadır. Lütfen mevcut tarihlerden birini seçin.');
+                return false;
+            } else {
+                clearFieldError(tarihInput);
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    // Tarih picker'ı sıfırla
+    function resetDatePicker() {
+        const today = new Date().toISOString().split('T')[0];
+        tarihInput.min = today;
+        tarihInput.value = today;
+        tarihInput.removeAttribute('data-available-dates');
+        tarihInput.removeEventListener('input', validateSelectedDate);
+        mevcutTarihler = [];
+        clearFieldError(tarihInput);
+        
+        // CSS sınıflarını temizle
+        tarihInput.classList.remove('has-trips', 'no-trips');
+        
+        // Info mesajını sıfırla
+        const dateInfo = document.getElementById('date-info');
+        if (dateInfo) {
+            dateInfo.innerHTML = '';
+            const infoBox = document.createElement('div');
+            infoBox.className = 'date-info-box info';
+            infoBox.innerHTML = `
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Önce şehirleri seçin</strong><br>
+                <small>Sefer olan günler otomatik olarak gösterilecek</small>
+            `;
+            dateInfo.appendChild(infoBox);
+        }
+    }
+    
+    // Loading göster/gizle
+    function showDatePickerLoading(show) {
+        const formGroup = tarihInput.closest('.form-group');
+        let loadingElement = formGroup.querySelector('.date-loading');
+        
+        if (show) {
+            if (!loadingElement) {
+                loadingElement = document.createElement('div');
+                loadingElement.className = 'date-loading text-muted small mt-1';
+                loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Müsait tarihler yükleniyor...';
+                formGroup.appendChild(loadingElement);
+            }
+            tarihInput.disabled = true;
+        } else {
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            tarihInput.disabled = false;
+        }
     }
 }
 
 // ===== NOTIFICATIONS =====
 function showNotification(message, type = 'info', duration = 4000) {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
+    notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-message">${message}</span>
-            <button class="notification-close">&times;</button>
-        </div>
+        ${message}
+        <button class="close-btn" type="button" aria-label="Close">&times;</button>
     `;
     
     // Add to page
-    let container = document.querySelector('.notification-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'notification-container';
-        document.body.appendChild(container);
-    }
-    
-    container.appendChild(notification);
-    
-    // Show animation
-    setTimeout(() => notification.classList.add('show'), 100);
+    document.body.appendChild(notification);
     
     // Auto remove
     setTimeout(() => {
@@ -314,13 +538,13 @@ function showNotification(message, type = 'info', duration = 4000) {
     }, duration);
     
     // Close button
-    notification.querySelector('.notification-close').addEventListener('click', () => {
+    notification.querySelector('.close-btn').addEventListener('click', () => {
         removeNotification(notification);
     });
 }
 
 function removeNotification(notification) {
-    notification.classList.remove('show');
+    notification.style.animation = 'slideOutRight 0.3s ease-out forwards';
     setTimeout(() => {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);

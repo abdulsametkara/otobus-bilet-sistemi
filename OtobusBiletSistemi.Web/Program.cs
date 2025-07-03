@@ -7,6 +7,7 @@ using OtobusBiletSistemi.Core.Entities;
 using OtobusBiletSistemi.Core.Interfaces;
 using OtobusBiletSistemi.Core.Repositories;
 using OtobusBiletSistemi.Web;
+using OtobusBiletSistemi.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,9 @@ builder.Services.AddScoped<IRepository<Odeme>, Repository<Odeme>>();
 
 // Rapor servisleri
 builder.Services.AddScoped<OtobusBiletSistemi.Web.Services.IRaporService, OtobusBiletSistemi.Web.Services.RaporService>();
+
+// Email servisi
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddEndpointsApiExplorer();
 

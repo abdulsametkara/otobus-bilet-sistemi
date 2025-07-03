@@ -61,13 +61,37 @@ namespace OtobusBiletSistemi.Web.Areas.Admin.Controllers
             var sefer = await _context.Seferler
                 .Include(s => s.Otobus)
                 .Include(s => s.Guzergah)
+                .Include(s => s.Biletler)
                 .FirstOrDefaultAsync(s => s.SeferID == id);
             
             if (sefer == null)
             {
                 return NotFound();
             }
-            return View(sefer);
+
+            // Satılan bilet sayısını hesapla (iptal edilenler hariç)
+            var satilanBiletSayisi = sefer.Biletler?.Count(b => b.BiletDurumu != "İptal") ?? 0;
+            
+            // Toplam koltuk sayısı
+            var toplamKoltuk = sefer.Otobus?.KoltukSayısı ?? 50;
+            
+            // Doluluk oranını hesapla
+            var dolulukOrani = toplamKoltuk > 0 ? (satilanBiletSayisi / (decimal)toplamKoltuk) * 100 : 0;
+
+            // View model oluştur
+            var viewModel = new OtobusBiletSistemi.Web.Models.SeferDetayViewModel
+            {
+                Sefer = sefer,
+                Otobus = sefer.Otobus,
+                Guzergah = sefer.Guzergah,
+                ToplamKoltukSayisi = toplamKoltuk,
+                DoluKoltukSayisi = satilanBiletSayisi,
+                SatilanBiletSayisi = satilanBiletSayisi,
+                DolulukOrani = Math.Round(dolulukOrani, 1),
+                BiletFiyati = sefer.Fiyat
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Create()

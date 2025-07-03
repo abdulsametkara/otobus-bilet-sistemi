@@ -10,11 +10,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IRepository<Guzergah> _guzergahRepository;
+    private readonly IRepository<Sefer> _seferRepository;
 
-    public HomeController(ILogger<HomeController> logger, IRepository<Guzergah> guzergahRepository)
+    public HomeController(ILogger<HomeController> logger, IRepository<Guzergah> guzergahRepository, IRepository<Sefer> seferRepository)
     {
         _logger = logger;
         _guzergahRepository = guzergahRepository;
+        _seferRepository = seferRepository;
     }
 
     public async Task<IActionResult> Index()
@@ -60,6 +62,65 @@ public class HomeController : Controller
         
         return View("Index", model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetMevcutSeferTarihleri(string nereden, string nereye)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(nereden) || string.IsNullOrEmpty(nereye))
+            {
+                return Json(new { success = false, message = "Lütfen kalkış ve varış şehirlerini seçin." });
+            }
+
+            // İlgili güzergahı bul
+            var guzergahlar = await _guzergahRepository.GetAllAsync();
+            var uygunGuzergah = guzergahlar.FirstOrDefault(g => 
+                g.Nereden.Equals(nereden, StringComparison.OrdinalIgnoreCase) && 
+                g.Nereye.Equals(nereye, StringComparison.OrdinalIgnoreCase));
+
+            if (uygunGuzergah == null)
+            {
+                return Json(new { success = false, message = $"{nereden} - {nereye} güzergahı için tanımlı rota bulunamadı." });
+            }
+
+            // Bu güzergaha ait bugünden itibaren olan seferleri getir
+            var seferler = await _seferRepository.GetAllAsync();
+            var bugundenSonrakiSeferler = seferler
+                .Where(s => s.GuzergahID == uygunGuzergah.GuzergahID && s.Tarih.Date >= DateTime.Today)
+                .OrderBy(s => s.Tarih)
+                .ToList();
+
+            if (!bugundenSonrakiSeferler.Any())
+            {
+                return Json(new { 
+                    success = false, 
+                    message = $"{nereden} - {nereye} güzergahı için yakın tarihte sefer bulunmamaktadır." 
+                });
+            }
+
+            // Benzersiz tarihleri çıkar ve string formatına çevir
+            var mevcutTarihler = bugundenSonrakiSeferler
+                .Select(s => s.Tarih.Date)
+                .Distinct()
+                .OrderBy(t => t)
+                .Select(t => t.ToString("yyyy-MM-dd"))
+                .ToList();
+
+            return Json(new { 
+                success = true, 
+                dates = mevcutTarihler,
+                message = $"{mevcutTarihler.Count} farklı tarihte sefer bulunmaktadır."
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Sefer tarihleri getirilirken hata oluştu");
+            return Json(new { success = false, message = "Sefer tarihleri yüklenirken bir hata oluştu." });
+        }
+    }
+
+
 
     public IActionResult Privacy()
     {

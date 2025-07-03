@@ -41,18 +41,27 @@ namespace OtobusBiletSistemi.Web.Controllers
             var koltuklar = await _koltukRepository.GetAllAsync();
             var biletler = await _biletRepository.GetAllAsync();
             
-            // Arama filtresi
+            // Arama filtresi - Tam eşleşme ile güzergah kontrolü
             if (!string.IsNullOrEmpty(nereden) && !string.IsNullOrEmpty(nereye))
             {
+                // Tam eşleşme ile güzergah bul
                 var uygunGuzergah = guzergahlar.FirstOrDefault(g => 
-                    g.Nereden.Contains(nereden) && g.Nereye.Contains(nereye));
+                    g.Nereden.Equals(nereden, StringComparison.OrdinalIgnoreCase) && 
+                    g.Nereye.Equals(nereye, StringComparison.OrdinalIgnoreCase));
                 
                 if (uygunGuzergah != null)
                 {
+                    // Bu güzergaha ait seferleri filtrele
                     seferler = seferler.Where(s => s.GuzergahID == uygunGuzergah.GuzergahID).ToList();
+                }
+                else
+                {
+                    // Eğer güzergah bulunamazsa, hiç sefer döndürme
+                    seferler = new List<Sefer>();
                 }
             }
 
+            // Tarih filtresi
             if (!string.IsNullOrEmpty(tarih))
             {
                 if (DateTime.TryParse(tarih, out DateTime seferTarihi))
@@ -83,7 +92,10 @@ namespace OtobusBiletSistemi.Web.Controllers
                     Otobus = otobus,
                     Guzergah = guzergah,
                     ToplamKoltukSayisi = toplamKoltuk > 0 ? toplamKoltuk : (otobus?.KoltukSayısı ?? 45),
-                    DoluKoltukSayisi = doluKoltuk
+                    DoluKoltukSayisi = doluKoltuk,
+                    BiletFiyati = sefer.Fiyat, // Gerçek sefer fiyatını kullan
+                    SatilanBiletSayisi = doluKoltuk,
+                    DolulukOrani = toplamKoltuk > 0 ? Math.Round((doluKoltuk / (decimal)toplamKoltuk) * 100, 1) : 0
                 });
             }
 

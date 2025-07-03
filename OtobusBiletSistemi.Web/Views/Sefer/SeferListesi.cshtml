@@ -23,9 +23,6 @@
                 <div class="col-md-3">
                     <strong>Tarih:</strong> @ViewBag.Tarih
                 </div>
-                <div class="col-md-3">
-                    <strong>Yolcu Sayısı:</strong> @ViewBag.YolcuSayisi
-                </div>
             </div>
             <div class="mt-3">
                 <a href="/" class="btn btn-outline-primary btn-sm">
@@ -73,28 +70,20 @@
                                             <td>
                                                 <i class="fas fa-map-marker-alt text-success me-1"></i>
                                                 @{
-                                                    var kalkisYeri = seferDetay.Guzergah?.Nereden ?? seferDetay.Sefer.Kalkis;
-                                                    var kalkisTerminal = kalkisYeri;
-                                                    if (kalkisYeri == "Ankara") kalkisTerminal = "Ankara Otogarı";
-                                                    else if (kalkisYeri == "İstanbul") kalkisTerminal = "İstanbul Büyük Otogarı";
-                                                    else if (kalkisYeri == "İzmir") kalkisTerminal = "İzmir Otogarı";
-                                                    else if (kalkisYeri == "Bursa") kalkisTerminal = "Bursa Terminali";
-                                                    else if (!kalkisYeri.Contains("Terminal") && !kalkisYeri.Contains("Otogar") && !kalkisYeri.Contains("Havalimanı"))
-                                                        kalkisTerminal = kalkisYeri + " Terminali";
+                                                    // Admin panelinde girilen kalkış terminal bilgisini kullan
+                                                    var kalkisTerminal = !string.IsNullOrEmpty(seferDetay.Sefer.Kalkis) 
+                                                        ? seferDetay.Sefer.Kalkis 
+                                                        : (seferDetay.Guzergah?.Nereden + " Terminali");
                                                 }
                                                 @kalkisTerminal
                                             </td>
                                             <td>
                                                 <i class="fas fa-map-marker-alt text-danger me-1"></i>
                                                 @{
-                                                    var varisYeri = seferDetay.Guzergah?.Nereye ?? seferDetay.Sefer.Varis;
-                                                    var varisTerminal = varisYeri;
-                                                    if (varisYeri == "Ankara") varisTerminal = "Ankara Otogarı";
-                                                    else if (varisYeri == "İstanbul") varisTerminal = "İstanbul Büyük Otogarı";
-                                                    else if (varisYeri == "İzmir") varisTerminal = "İzmir Otogarı";
-                                                    else if (varisYeri == "Bursa") varisTerminal = "Bursa Terminali";
-                                                    else if (!varisYeri.Contains("Terminal") && !varisYeri.Contains("Otogar") && !varisYeri.Contains("Havalimanı"))
-                                                        varisTerminal = varisYeri + " Terminali";
+                                                    // Admin panelinde girilen varış terminal bilgisini kullan
+                                                    var varisTerminal = !string.IsNullOrEmpty(seferDetay.Sefer.Varis) 
+                                                        ? seferDetay.Sefer.Varis 
+                                                        : (seferDetay.Guzergah?.Nereye + " Terminali");
                                                 }
                                                 @varisTerminal
                                             </td>
@@ -148,12 +137,6 @@
                                                         Yetersiz Koltuk
                                                     </button>
                                                 }
-                                                <br>
-                                                <a href="/Sefer/Detay/@seferDetay.Sefer.SeferID" 
-                                                   class="btn btn-outline-info btn-sm mt-1">
-                                                    <i class="fas fa-info-circle me-1"></i>
-                                                    Detay
-                                                </a>
                                             </td>
                                         </tr>
                                     }
@@ -176,31 +159,6 @@
             </div>
         </div>
     </div>
-
-    @if (Model.Any())
-    {
-        <!-- Bilgilendirme -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <h6><i class="fas fa-info-circle me-2"></i>Bilgi:</h6>
-                    <ul class="mb-0">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li>Koltuk seçimi için "Koltuk Seç" butonuna tıklayın</li>
-                        }
-                        else
-                        {
-                            <li>Bilet satın almak için önce giriş yapmanız gerekmektedir</li>
-                            <li>Koltuk seçimi için "Giriş Yap" butonuna tıklayın</li>
-                        }
-                        <li>Sefer detayları için "Detay" linkini kullanabilirsiniz</li>
-                        <li>Fiyatlar sefer başına gösterilmektedir</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    }
 </div>
 
 <div class="modal fade" id="yeniAramaModal" tabindex="-1">

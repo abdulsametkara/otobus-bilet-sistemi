@@ -5,6 +5,7 @@ using OtobusBiletSistemi.Core.Interfaces;
 using OtobusBiletSistemi.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using OtobusBiletSistemi.Core.Data;
+using OtobusBiletSistemi.Web.Extensions;
 
 namespace OtobusBiletSistemi.Web.Controllers
 {
@@ -189,7 +190,7 @@ namespace OtobusBiletSistemi.Web.Controllers
             
             // Sefer bilgisini al ve güncel fiyatı kullan
             var sefer = await _seferRepository.GetByIdAsync(seferId.Value);
-            decimal biletFiyati = sefer?.Fiyat ?? 120m; // Sefer tablosundan fiyat, yoksa default
+            decimal biletFiyati = sefer?.Fiyat ?? 0m; // Sefer tablosundan fiyat
             if (decimal.TryParse(biletFiyatiStr, out decimal sessionFiyat))
             {
                 biletFiyati = sessionFiyat; // Session'daki fiyat varsa onu kullan
@@ -254,13 +255,17 @@ namespace OtobusBiletSistemi.Web.Controllers
 
                 // Kullanıcı bilgisini al
                 var user = await _userManager.GetUserAsync(User);
-                var yolcuId = user?.Id ?? 1; // Fallback to guest user
+                if (user == null)
+                {
+                    TempData["Error"] = "Giriş yapmanız gerekiyor.";
+                    return RedirectToAction("Login", "Account");
+                }
+                var yolcuId = user.Id;
 
                 // Fiyat bilgisini session'dan al ve hesapla (tekrar hesapla güncel verilerle)
                 toplamTutar = yolcuBilgileri.Count * biletFiyati;
 
-                // Debug: Console'a bilgileri yazdır
-                Console.WriteLine($"Ödeme işlemi başlıyor - YolcuID: {yolcuId}, Tutar: {toplamTutar}, Bilet Fiyatı: {biletFiyati}, Yolcu Sayısı: {yolcuBilgileri.Count}");
+
 
                 // Önce ödeme kaydı oluştur
                 var odeme = new Odeme
@@ -277,9 +282,7 @@ namespace OtobusBiletSistemi.Web.Controllers
                     BiletSayisi = seciliKoltuklar.Count
                 };
 
-                Console.WriteLine($"Ödeme nesnesi oluşturuldu: {odeme.OdemeYontemi}, {odeme.OdemeDurumu}");
                 await _odemeRepository.AddAsync(odeme);
-                Console.WriteLine($"Ödeme veritabanına eklendi - OdemeID: {odeme.OdemeID}");
 
                 // Her koltuk için bilet oluştur (ödeme ID'si ile)
                 var biletler = new List<Bilet>();
@@ -504,20 +507,5 @@ namespace OtobusBiletSistemi.Web.Controllers
     public class SilRequest
     {
         public int BiletId { get; set; }
-    }
-}
-
-// Session helper extensions
-public static class SessionExtensions
-{
-    public static void SetObject<T>(this ISession session, string key, T value)
-    {
-        session.SetString(key, System.Text.Json.JsonSerializer.Serialize(value));
-    }
-
-    public static T? GetObject<T>(this ISession session, string key)
-    {
-        var value = session.GetString(key);
-        return value == null ? default(T) : System.Text.Json.JsonSerializer.Deserialize<T>(value);
     }
 } 

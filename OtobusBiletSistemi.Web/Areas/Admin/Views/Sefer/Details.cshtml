@@ -1,4 +1,4 @@
-@model OtobusBiletSistemi.Core.Entities.Sefer
+@model OtobusBiletSistemi.Web.Models.SeferDetayViewModel
 
 @{
     ViewData["Title"] = "Sefer Detayları";
@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="d-flex gap-2">
-            <a href="/Admin/Sefer/Edit/@Model.SeferID" class="btn btn-warning">
+            <a href="/Admin/Sefer/Edit/@Model.Sefer.SeferID" class="btn btn-warning">
                 <i class="fas fa-edit me-1"></i>
                 Düzenle
             </a>
@@ -44,7 +44,7 @@
                                     <i class="fas fa-hashtag me-1"></i>
                                     Sefer No
                                 </h6>
-                                <p class="h5 text-dark mb-0">#@Model.SeferID</p>
+                                <p class="h5 text-dark mb-0">#@Model.Sefer.SeferID</p>
                             </div>
                             
                             <div class="info-group mb-4">
@@ -85,10 +85,10 @@
                                 </h6>
                                 <div class="datetime-display">
                                     <div class="date-part">
-                                        <span class="h5 text-dark">@Model.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                        <span class="h5 text-dark">@Model.Sefer.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
                                     </div>
                                     <div class="time-part">
-                                        <span class="badge bg-info fs-6">@Model.Saat</span>
+                                        <span class="badge bg-info fs-6">@Model.Sefer.Saat</span>
                                     </div>
                                 </div>
                             </div>
@@ -101,11 +101,11 @@
                                 <div class="terminal-info">
                                     <div class="mb-2">
                                         <strong class="text-success">Kalkış:</strong>
-                                        <span>@Model.Kalkis</span>
+                                        <span>@Model.Sefer.Kalkis</span>
                                     </div>
                                     <div>
                                         <strong class="text-danger">Varış:</strong>
-                                        <span>@Model.Varis</span>
+                                        <span>@Model.Sefer.Varis</span>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                 <div class="card-body text-center">
                     @{
                         var now = DateTime.Now;
-                        var seferZamani = Model.Tarih.Date.Add(TimeSpan.Parse(Model.Saat));
+                        var seferZamani = Model.Sefer.Tarih.Date.Add(TimeSpan.Parse(Model.Sefer.Saat));
                         var timeDiff = seferZamani - now;
                     }
                     
@@ -236,7 +236,7 @@
                         </div>
                         <div class="col-6">
                             <div class="stat-mini mb-3">
-                                <h4 class="text-success mb-0">0</h4>
+                                <h4 class="text-success mb-0">@Model.SatilanBiletSayisi</h4>
                                 <small class="text-muted">Satılan Bilet</small>
                             </div>
                         </div>
@@ -248,7 +248,7 @@
                         </div>
                         <div class="col-6">
                             <div class="stat-mini">
-                                <h4 class="text-info mb-0">%0</h4>
+                                <h4 class="text-info mb-0">%@Model.DolulukOrani</h4>
                                 <small class="text-muted">Doluluk</small>
                             </div>
                         </div>

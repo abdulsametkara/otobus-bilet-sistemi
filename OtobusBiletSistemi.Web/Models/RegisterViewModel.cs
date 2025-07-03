@@ -8,10 +8,6 @@ namespace OtobusBiletSistemi.Web.Models
         [StringLength(11, MinimumLength = 11, ErrorMessage = "TC Kimlik No 11 haneli olmalıdır")]
         public string TCNo { get; set; }
 
-        [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Kullanıcı adı 3-50 karakter arasında olmalıdır")]
-        public string UserName { get; set; }
-
         [Required(ErrorMessage = "Ad zorunludur")]
         public string Ad { get; set; }
 
