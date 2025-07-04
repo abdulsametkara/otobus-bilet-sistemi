@@ -1,3 +1,13 @@
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.csproj.AssemblyReference.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.AssemblyInfoInputs.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.AssemblyInfo.cs
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.csproj.CoreCompileInputs.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cache
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cs
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.sourcelink.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\appsettings.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\OtobusBiletSistemi.Web.staticwebassets.runtime.json
@@ -116,16 +126,6 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\runtimes\win\lib\net8.0\System.DirectoryServices.Protocols.dll
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\OtobusBiletSistemi.Core.dll
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\bin\Debug\net9.0\OtobusBiletSistemi.Core.pdb
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.csproj.AssemblyReference.cache
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rpswa.dswa.cache.json
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.AssemblyInfoInputs.cache
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.AssemblyInfo.cs
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.csproj.CoreCompileInputs.cache
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cache
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.RazorAssemblyInfo.cs
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.sourcelink.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
@@ -133,7 +133,9 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\scopedcss\bundle\OtobusBiletSistemi.Web.styles.css
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\scopedcss\projectbundle\OtobusBiletSistemi.Web.bundle.scp.css
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\gj20ty8snj-b9sayid5wm.gz
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\rc53nt32rf-4sicpcdbxb.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\1eel4kgp56-61n19gt1b8.gz
+C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\4fh7h7efg4-xwu3olqc0o.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\9u44bwjmd1-xtxxf3hu2r.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\2i2sy5g2jd-bqjiyaj88i.gz
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\3yagyoh09j-c2jlpeoesf.gz
@@ -206,5 +208,3 @@ C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBil
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.pdb
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\OtobusBiletSistemi.Web.genruntimeconfig.cache
 C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\ref\OtobusBiletSistemi.Web.dll
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\rc53nt32rf-4sicpcdbxb.gz
-C:\Users\samet\Desktop\test-project\admin-panalleri\OtobusBiletSistemi\OtobusBiletSistemi.Web\obj\Debug\net9.0\compressed\4fh7h7efg4-xwu3olqc0o.gz

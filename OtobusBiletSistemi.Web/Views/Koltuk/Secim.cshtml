@@ -4,37 +4,91 @@
     ViewData["Title"] = "Koltuk Seçimi";
 }
 
+<!-- Progress Indicator -->
+<div class="container-fluid bg-light py-3">
+    <div class="container">
+        <div class="progress-indicator">
+            <div class="step active">
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <span>Sefer Seçimi</span>
+            </div>
+            <div class="step active">
+                <div class="step-icon">
+                    <i class="fas fa-chair"></i>
+                </div>
+                <span>Koltuk Seçimi</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>Yolcu Bilgileri</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <span>Ödeme</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
     <!-- Sefer Bilgileri -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
+    <div class="card modern-card mb-4" data-aos="fade-up">
+        <div class="card-header bg-gradient-primary text-white">
             <h5 class="mb-0">
                 <i class="fas fa-bus me-2"></i>Sefer Bilgileri
             </h5>
         </div>
         <div class="card-body">
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-md-3">
-                    <strong>Güzergah:</strong><br>
-                    <span class="text-success">@(Model.Guzergah?.Nereden ?? "Başlangıç")</span>
-                    <i class="fas fa-arrow-right mx-2"></i>
-                    <span class="text-danger">@(Model.Guzergah?.Nereye ?? "Varış")</span>
+                    <div class="info-item">
+                        <label>Güzergah</label>
+                        <div class="route-display">
+                            <span class="city from">@(Model.Guzergah?.Nereden ?? "Başlangıç")</span>
+                            <div class="arrow-container">
+                                <i class="fas fa-arrow-right route-arrow"></i>
+                            </div>
+                            <span class="city to">@(Model.Guzergah?.Nereye ?? "Varış")</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <strong>Tarih:</strong><br>
-                    @Model.SeferTarihi
+                    <div class="info-item">
+                        <label>Tarih</label>
+                        <div class="value">
+                            <i class="fas fa-calendar-alt me-2"></i>@Model.SeferTarihi
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <strong>Saat:</strong><br>
-                    @Model.KalkisSaati
+                    <div class="info-item">
+                        <label>Saat</label>
+                        <div class="value">
+                            <i class="fas fa-clock me-2"></i>@Model.KalkisSaati
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <strong>Otobüs:</strong><br>
-                    @(Model.Otobus?.Plaka ?? "Bilinmiyor")
+                    <div class="info-item">
+                        <label>Otobüs</label>
+                        <div class="value">
+                            <i class="fas fa-bus me-2"></i>@(Model.Otobus?.Plaka ?? "Bilinmiyor")
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <strong>Yolcu Sayısı:</strong><br>
-                    <span class="badge bg-info fs-6">@Model.YolcuSayisi kişi</span>
+                    <div class="info-item">
+                        <label>Yolcu Sayısı</label>
+                        <div class="value">
+                            <span class="passenger-badge">@Model.YolcuSayisi <i class="fas fa-user ms-1"></i></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,28 +96,82 @@
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show modern-alert" role="alert" data-aos="fade-in">
             <i class="fas fa-exclamation-triangle me-2"></i>
             @TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row">
+    <div class="row g-4">
         <!-- Koltuk Düzeni -->
         <div class="col-lg-8">
-            <div class="card">
+            <div class="card modern-card seat-selection-card" data-aos="fade-right">
                 <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chair me-2"></i>Koltuk Düzeni
-                        <span class="badge bg-secondary ms-2">@Model.BosKoltukSayisi boş koltuk</span>
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chair me-2"></i>Koltuk Düzeni
+                        </h5>
+                        <div class="seat-info">
+                            <span class="badge bg-success me-2">@Model.BosKoltukSayisi Boş</span>
+                            <span class="badge bg-danger me-1">@Model.DoluKoltukSayisi Dolu</span>
+                            <span class="badge bg-@Model.DolulukRengi">%@Model.DolulukOrani.ToString("F0") @Model.DolulukDurumu</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
+                    <!-- Koltuk Önerileri -->
+                    @{
+                        var oneriler = Model.GetKoltukOnerileri();
+                    }
+                    @if (oneriler.Any())
+                    {
+                        <div class="seat-suggestions mb-4">
+                            <h6 class="suggestions-title">
+                                <i class="fas fa-lightbulb me-2"></i>Sizin İçin Öneriler
+                            </h6>
+                            <div class="suggestions-container">
+                                @foreach (var oneri in oneriler)
+                                {
+                                    <div class="suggestion-item" data-suggestion="@string.Join(",", oneri.KoltukIdleri)">
+                                        <div class="suggestion-header">
+                                            <span class="suggestion-title">@oneri.Başlık</span>
+                                            <small class="suggestion-desc">@oneri.Açıklama</small>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-primary suggestion-btn">
+                                            <i class="fas fa-magic me-1"></i>Seç
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Koltuk Durumu Göstergeleri -->
+                    <div class="seat-legend mb-4">
+                        <div class="legend-item">
+                            <div class="legend-box available"></div>
+                            <span>Boş</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box selected"></div>
+                            <span>Seçili</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box occupied"></div>
+                            <span>Dolu</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box suggested"></div>
+                            <span>Önerilen</span>
+                        </div>
+                    </div>
+
                     <!-- Otobüs Şoför Alanı -->
-                    <div class="text-center mb-3">
-                        <div class="d-inline-block p-2 bg-dark text-white rounded">
-                            <i class="fas fa-steering-wheel me-1"></i> Şoför
+                    <div class="driver-section">
+                        <div class="driver-seat">
+                            <i class="fas fa-steering-wheel"></i>
+                            <span>Şoför</span>
                         </div>
                     </div>
 
@@ -71,62 +179,70 @@
                     <form id="koltukForm" method="post" action="/Koltuk/KoltukOnayla">
                         <input type="hidden" name="seferId" value="@Model.Sefer.SeferID" />
                         
-                        <div class="bus-layout">
-                            @{
-                                var koltukLayout = Model.GetKoltukLayout();
-                            }
-                            
-                            @foreach (var sira in koltukLayout)
-                            {
-                                <div class="row mb-2 justify-content-center">
-                                    <div class="col-auto">
+                        <div class="bus-container">
+                            <div class="bus-layout">
+                                @{
+                                    var koltukLayout = Model.GetKoltukLayout();
+                                }
+                                
+                                @foreach (var sira in koltukLayout)
+                                {
+                                    <div class="seat-row">
                                         <!-- Sol taraf koltukları (A) -->
-                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("A")))
-                                        {
-                                            <button type="button" 
-                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
-                                                    data-koltuk-id="@koltuk.KoltukID"
-                                                    data-koltuk-no="@koltuk.KoltukNo"
-                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
-                                                @koltuk.KoltukNo
-                                            </button>
-                                        }
-                                    </div>
-                                    
-                                    <!-- Orta koltukları (B) -->
-                                    <div class="col-auto">
-                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("B")))
-                                        {
-                                            <button type="button" 
-                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
-                                                    data-koltuk-id="@koltuk.KoltukID"
-                                                    data-koltuk-no="@koltuk.KoltukNo"
-                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
-                                                @koltuk.KoltukNo
-                                            </button>
-                                        }
-                                    </div>
+                                        <div class="seat-section left">
+                                            @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("A")))
+                                            {
+                                                <button type="button" 
+                                                        class="seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "occupied" : "available")" 
+                                                        data-koltuk-id="@koltuk.KoltukID"
+                                                        data-koltuk-no="@koltuk.KoltukNo"
+                                                        @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")
+                                                        data-tooltip="Koltuk @koltuk.KoltukNo">
+                                                    <span class="seat-number">@koltuk.KoltukNo</span>
+                                                    <div class="seat-hover-effect"></div>
+                                                </button>
+                                            }
+                                        </div>
+                                        
+                                        <!-- Orta koltukları (B) -->
+                                        <div class="seat-section center">
+                                            @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("B")))
+                                            {
+                                                <button type="button" 
+                                                        class="seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "occupied" : "available")" 
+                                                        data-koltuk-id="@koltuk.KoltukID"
+                                                        data-koltuk-no="@koltuk.KoltukNo"
+                                                        @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")
+                                                        data-tooltip="Koltuk @koltuk.KoltukNo">
+                                                    <span class="seat-number">@koltuk.KoltukNo</span>
+                                                    <div class="seat-hover-effect"></div>
+                                                </button>
+                                            }
+                                        </div>
 
-                                    <!-- Koridor -->
-                                    <div class="col-auto corridor">
-                                        <!-- Boşluk -->
-                                    </div>
+                                        <!-- Koridor -->
+                                        <div class="corridor">
+                                            <div class="corridor-line"></div>
+                                        </div>
 
-                                    <!-- Sağ taraf koltukları (C) -->
-                                    <div class="col-auto">
-                                        @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("C")))
-                                        {
-                                            <button type="button" 
-                                                    class="btn seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "seat-occupied" : "seat-available")" 
-                                                    data-koltuk-id="@koltuk.KoltukID"
-                                                    data-koltuk-no="@koltuk.KoltukNo"
-                                                    @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")>
-                                                @koltuk.KoltukNo
-                                            </button>
-                                        }
+                                        <!-- Sağ taraf koltukları (C) -->
+                                        <div class="seat-section right">
+                                            @foreach (var koltuk in sira.Where(k => k.KoltukNo.EndsWith("C")))
+                                            {
+                                                <button type="button" 
+                                                        class="seat-btn @(Model.IsKoltukDolu(koltuk.KoltukID) ? "occupied" : "available")" 
+                                                        data-koltuk-id="@koltuk.KoltukID"
+                                                        data-koltuk-no="@koltuk.KoltukNo"
+                                                        @(Model.IsKoltukDolu(koltuk.KoltukID) ? "disabled" : "")
+                                                        data-tooltip="Koltuk @koltuk.KoltukNo">
+                                                    <span class="seat-number">@koltuk.KoltukNo</span>
+                                                    <div class="seat-hover-effect"></div>
+                                                </button>
+                                            }
+                                        </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
 
                         <!-- Seçilen koltukları gönderecek hidden inputlar -->
@@ -138,46 +254,77 @@
 
         <!-- Seçim Özeti -->
         <div class="col-lg-4">
-            <div class="card">
+            <div class="card modern-card summary-card sticky-summary" data-aos="fade-left">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fas fa-receipt me-2"></i>Seçim Özeti
+                        <i class="fas fa-receipt me-2"></i>Rezervasyon Özeti
                     </h5>
                 </div>
                 <div class="card-body">
                     <!-- Seçilen Koltuklar -->
-                    <div class="mb-3">
-                        <h6>Seçilen Koltuklar:</h6>
-                        <div id="secilenKoltukList" class="text-muted">
-                            Henüz koltuk seçilmedi
+                    <div class="summary-section mb-4">
+                        <h6 class="summary-title">
+                            <i class="fas fa-chair me-2"></i>Seçilen Koltuklar
+                        </h6>
+                        <div id="secilenKoltukList" class="selected-seats">
+                            <div class="empty-state">
+                                <i class="fas fa-chair"></i>
+                                <span>Henüz koltuk seçilmedi</span>
+                            </div>
+                        </div>
+                        <div class="seat-count mt-2">
+                            <span id="secilenYolcuSayisi">0</span> / @Model.YolcuSayisi koltuk seçildi
                         </div>
                     </div>
 
                     <!-- Fiyat Bilgisi -->
-                    <div class="mb-3">
-                        <h6>Fiyat Bilgisi:</h6>
-                        <div class="d-flex justify-content-between">
-                            <span>Bilet Fiyatı:</span>
-                            <span>₺@Model.BiletFiyati</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Yolcu Sayısı:</span>
-                            <span id="secilenYolcuSayisi">0</span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between fw-bold">
-                            <span>Toplam:</span>
-                            <span id="toplamFiyat">₺0</span>
+                    <div class="summary-section mb-4">
+                        <h6 class="summary-title">
+                            <i class="fas fa-tags me-2"></i>Fiyat Detayı
+                        </h6>
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>Bilet Fiyatı</span>
+                                <span class="price">₺@Model.BiletFiyati</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Seçilen Koltuk</span>
+                                <span id="secilenKoltukSayisiPrice">0</span>
+                            </div>
+                            <hr class="price-divider">
+                            <div class="price-row total">
+                                <span>Toplam Tutar</span>
+                                <span id="toplamFiyat" class="total-price">₺0</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Devam Et Butonu -->
-                    <button type="button" id="devamEtBtn" class="btn btn-primary w-100" disabled>
-                        <i class="fas fa-arrow-right me-2"></i>Devam Et
-                    </button>
-                    
-                    <div class="mt-2 text-center">
-                        <small class="text-muted">@Model.YolcuSayisi koltuk seçmelisiniz</small>
+                    <div class="action-section">
+                        <button type="button" id="devamEtBtn" class="btn btn-primary btn-lg w-100 modern-btn" disabled>
+                            <div class="btn-content">
+                                <i class="fas fa-arrow-right me-2"></i>
+                                <span>Devam Et</span>
+                            </div>
+                            <div class="btn-loader d-none">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                <span>İşleniyor...</span>
+                            </div>
+                        </button>
+                        
+                        <div class="selection-hint mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small class="text-muted">
+                                @if (Model.YolcuSayisi == 1)
+                                {
+                                    <span>Bir koltuk seçmelisiniz</span>
+                                }
+                                else
+                                {
+                                    <span>@Model.YolcuSayisi koltuk seçmelisiniz</span>
+                                }
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -185,135 +332,1010 @@
     </div>
 </div>
 
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
 <style>
+/* ===== PROGRESS INDICATOR ===== */
+.progress-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    width: 2rem;
+    height: 2px;
+    background: #dee2e6;
+    z-index: 1;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step.active::after {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.step.active .step-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.1);
+}
+
+.step span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.step.active span {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* ===== MODERN CARDS ===== */
+.modern-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ===== SEFER BİLGİLERİ ===== */
+.info-item {
+    text-align: center;
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.route-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.city {
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.city.from {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.city.to {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.arrow-container {
+    background: #f8f9fa;
+    border-radius: 50%;
+    padding: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.route-arrow {
+    color: #667eea;
+    animation: bounce-horizontal 2s infinite;
+}
+
+.passenger-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ===== KOLTUK SEÇİM ===== */
+.seat-selection-card {
+    position: relative;
+}
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.legend-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+}
+
+.legend-box.available {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.legend-box.selected {
+    background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+}
+
+.legend-box.occupied {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+}
+
+.legend-box.suggested {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    border: 2px solid #f39c12;
+}
+
+/* ===== KOLTUK ÖNERİLERİ ===== */
+.seat-suggestions {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffc107;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.suggestions-title {
+    color: #856404;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.suggestions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.suggestion-item {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(252, 184, 39, 0.3);
+    transition: all 0.3s ease;
+}
+
+.suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #ffc107;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(252, 184, 39, 0.2);
+}
+
+.suggestion-header {
+    flex: 1;
+}
+
+.suggestion-title {
+    font-weight: 600;
+    color: #495057;
+    display: block;
+}
+
+.suggestion-desc {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.suggestion-btn {
+    border-color: #ffc107;
+    color: #856404;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.suggestion-btn:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: white;
+}
+
+.seat-btn.suggested {
+    background: linear-gradient(145deg, #ffc107 0%, #fd7e14 100%);
+    color: white;
+    border: 2px solid #f39c12;
+    animation: glow-suggestion 2s infinite;
+}
+
+@@keyframes glow-suggestion {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(252, 184, 39, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 16px rgba(252, 184, 39, 0.6);
+    }
+}
+
+.driver-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.driver-seat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #343a40;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.bus-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.bus-layout {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: 3px solid #e9ecef;
+    border-radius: 24px;
+    padding: 2rem 1.5rem;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+}
+
+.seat-section {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.seat-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.seat-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.seat-btn.available {
+    background: linear-gradient(145deg, #28a745 0%, #20c997 100%);
+    color: white;
+    transform: scale(1);
+}
+
+.seat-btn.available:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.seat-btn.selected {
+    background: linear-gradient(145deg, #007bff 0%, #6610f2 100%);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    animation: pulse-selection 0.6s ease-out;
+}
+
+.seat-btn.occupied {
+    background: linear-gradient(145deg, #dc3545 0%, #e83e8c 100%);
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.seat-btn.occupied::after {
+    content: '✗';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.seat-number {
+    position: relative;
+    z-index: 2;
+}
+
+.seat-hover-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+}
+
+.seat-btn:hover .seat-hover-effect {
+    opacity: 1;
+}
+
+.corridor {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.corridor-line {
+    width: 2px;
+    height: 30px;
+    background: repeating-linear-gradient(
+        to bottom,
+        #dee2e6 0px,
+        #dee2e6 4px,
+        transparent 4px,
+        transparent 8px
+    );
+}
+
+/* ===== ÖZETİ KARTI ===== */
+.summary-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.sticky-summary {
+    position: sticky;
+    top: 2rem;
+}
+
+.summary-section {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+.summary-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.summary-title {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.selected-seats {
+    min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.empty-state i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.seat-count {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-align: center;
+    font-weight: 500;
+}
+
+.price-breakdown {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.price-row:last-child {
+    margin-bottom: 0;
+}
+
+.price-row.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #495057;
+}
+
+.price-divider {
+    margin: 0.75rem 0;
+    border-color: #dee2e6;
+}
+
+.total-price {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+/* ===== MODERN BUTTON ===== */
+.modern-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-btn:enabled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.modern-btn:disabled {
+    background: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-content {
+    transition: opacity 0.3s ease;
+}
+
+.btn-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.selection-hint {
+    text-align: center;
+    background: #e3f2fd;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+/* ===== TOAST ===== */
+.toast-container {
+    z-index: 9999;
+}
+
+.modern-toast {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.modern-toast.success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.modern-toast.error {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+    color: white;
+}
+
+.modern-toast.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: white;
+}
+
+/* ===== ANİMASYONLAR ===== */
+@@keyframes bounce-horizontal {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(0);
+    }
+    40% {
+        transform: translateX(5px);
+    }
+    60% {
+        transform: translateX(-2px);
+    }
+}
+
+@@keyframes pulse-selection {
+    0% {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 8px 30px rgba(0, 123, 255, 0.6);
+    }
+    100% {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    }
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== RESPONSİVE ===== */
+@@media (max-width: 768px) {
+    .progress-indicator {
+        gap: 1rem;
+        overflow-x: auto;
+        padding: 1rem;
+    }
+    
+    .step::after {
+        width: 1rem;
+        left: 30px;
+    }
+    
+    .step span {
+        font-size: 0.7rem;
+    }
+    
+    .route-display {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .arrow-container {
+        transform: rotate(90deg);
+    }
+    
+    .seat-legend {
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
     .bus-layout {
-        background-color: #f8f9fa;
-        border: 2px solid #dee2e6;
-        border-radius: 20px;
-        padding: 20px;
-        max-width: 600px;
-        margin: 0 auto;
+        padding: 1rem;
+        margin: 0 0.5rem;
     }
-
+    
     .seat-btn {
-        width: 45px;
-        height: 45px;
-        margin: 2px;
-        font-size: 12px;
-        font-weight: bold;
-        border-radius: 8px;
-        position: relative;
+        width: 40px;
+        height: 40px;
+        font-size: 0.7rem;
     }
-
-    .seat-available {
-        background-color: #28a745;
-        border-color: #28a745;
-        color: white;
-    }
-
-    .seat-available:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    }
-
-    .seat-occupied {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-        cursor: not-allowed;
-    }
-
-    .seat-selected {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-    }
-
+    
     .corridor {
         width: 30px;
     }
+    
+    .sticky-summary {
+        position: static;
+    }
+}
+
+@@media (max-width: 576px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .seat-row {
+        gap: 0.25rem;
+    }
+    
+    .seat-section {
+        gap: 0.125rem;
+    }
+    
+    .seat-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.6rem;
+    }
+}
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const seatButtons = document.querySelectorAll('.seat-btn:not([disabled])');
-        const secilenKoltukList = document.getElementById('secilenKoltukList');
-        const secilenYolcuSayisi = document.getElementById('secilenYolcuSayisi');
-        const toplamFiyat = document.getElementById('toplamFiyat');
-        const devamEtBtn = document.getElementById('devamEtBtn');
-        const seciliKoltuklarInput = document.getElementById('seciliKoltuklarInput');
-        
-        const yolcuSayisi = @Model.YolcuSayisi;
-        const biletFiyati = @Model.BiletFiyati;
-        let secilenKoltuklar = [];
+document.addEventListener('DOMContentLoaded', function() {
+    const seatButtons = document.querySelectorAll('.seat-btn:not([disabled])');
+    const secilenKoltukList = document.getElementById('secilenKoltukList');
+    const secilenYolcuSayisi = document.getElementById('secilenYolcuSayisi');
+    const secilenKoltukSayisiPrice = document.getElementById('secilenKoltukSayisiPrice');
+    const toplamFiyat = document.getElementById('toplamFiyat');
+    const devamEtBtn = document.getElementById('devamEtBtn');
+    const seciliKoltuklarInput = document.getElementById('seciliKoltuklarInput');
+    
+    const yolcuSayisi = @Model.YolcuSayisi;
+    const biletFiyati = @Model.BiletFiyati;
+    let secilenKoltuklar = [];
+    let isProcessing = false;
 
-        seatButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const koltukId = parseInt(this.dataset.koltukId);
-                const koltukNo = this.dataset.koltukNo;
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        once: true
+    });
 
-                if (secilenKoltuklar.includes(koltukId)) {
-                    // Koltuk zaten seçili, kaldır
-                    secilenKoltuklar = secilenKoltuklar.filter(id => id !== koltukId);
-                    this.classList.remove('seat-selected');
-                    this.classList.add('seat-available');
-                } else {
-                    // Yeni koltuk seç
-                    if (secilenKoltuklar.length < yolcuSayisi) {
-                        secilenKoltuklar.push(koltukId);
-                        this.classList.remove('seat-available');
-                        this.classList.add('seat-selected');
-                    } else {
-                        alert('En fazla ' + yolcuSayisi + ' koltuk seçebilirsiniz.');
-                        return;
-                    }
+    // Suggestion handlers
+    const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+    suggestionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const suggestionItem = this.closest('.suggestion-item');
+            const suggestionIds = suggestionItem.dataset.suggestion.split(',').map(id => parseInt(id));
+            
+            // Önce tüm seçimleri temizle
+            clearAllSelections();
+            
+            // Önerilen koltukları seç
+            suggestionIds.forEach(koltukId => {
+                const seatButton = document.querySelector(`[data-koltuk-id="${koltukId}"]`);
+                if (seatButton && !seatButton.disabled) {
+                    secilenKoltuklar.push(koltukId);
+                    seatButton.classList.remove('available');
+                    seatButton.classList.add('selected');
                 }
-
-                updateSecilenKoltuklar();
+            });
+            
+            updateSecilenKoltuklar();
+            showToast('Önerilen koltuklar seçildi!', 'success');
+            playSound('select');
+            
+            // Suggestion highlight'ını kaldır
+            document.querySelectorAll('.seat-btn.suggested').forEach(btn => {
+                btn.classList.remove('suggested');
             });
         });
+    });
 
-        function updateSecilenKoltuklar() {
-            // Seçilen koltuk listesini güncelle
-            if (secilenKoltuklar.length === 0) {
-                secilenKoltukList.innerHTML = '<span class="text-muted">Henüz koltuk seçilmedi</span>';
+    // Highlight suggestions on page load
+    highlightSuggestions();
+
+    // Seat click handlers
+    seatButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (isProcessing) return;
+            
+            const koltukId = parseInt(this.dataset.koltukId);
+            const koltukNo = this.dataset.koltukNo;
+
+            if (secilenKoltuklar.includes(koltukId)) {
+                // Koltuk zaten seçili, kaldır
+                secilenKoltuklar = secilenKoltuklar.filter(id => id !== koltukId);
+                this.classList.remove('selected');
+                this.classList.add('available');
+                showToast('Koltuk ' + koltukNo + ' seçimden çıkarıldı', 'success');
+                playSound('deselect');
             } else {
-                const koltukNolari = secilenKoltuklar.map(id => {
-                    const button = document.querySelector(`[data-koltuk-id="${id}"]`);
-                    return button ? button.dataset.koltukNo : '';
-                }).filter(no => no);
-                
-                secilenKoltukList.innerHTML = koltukNolari.map(no => 
-                    `<span class="badge bg-primary me-1">${no}</span>`
-                ).join('');
+                // Yeni koltuk seç
+                if (secilenKoltuklar.length < yolcuSayisi) {
+                    secilenKoltuklar.push(koltukId);
+                    this.classList.remove('available');
+                    this.classList.add('selected');
+                    showToast('Koltuk ' + koltukNo + ' seçildi', 'success');
+                    playSound('select');
+                } else {
+                    showToast('En fazla ' + yolcuSayisi + ' koltuk seçebilirsiniz!', 'warning');
+                    playSound('error');
+                    return;
+                }
             }
 
-            // Sayıları güncelle
-            secilenYolcuSayisi.textContent = secilenKoltuklar.length;
-            toplamFiyat.textContent = '₺' + (secilenKoltuklar.length * biletFiyati);
+            updateSecilenKoltuklar();
+        });
 
-            // Devam et butonunu aktif/pasif yap
-            devamEtBtn.disabled = secilenKoltuklar.length !== yolcuSayisi;
-
-            // Hidden inputları güncelle - tek input olarak comma-separated
-            seciliKoltuklarInput.innerHTML = '';
-            if (secilenKoltuklar.length > 0) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'seciliKoltuklar';
-                input.value = secilenKoltuklar.join(',');
-                seciliKoltuklarInput.appendChild(input);
+        // Hover effect
+        button.addEventListener('mouseenter', function() {
+            if (!this.disabled && !this.classList.contains('selected')) {
+                this.style.transform = 'scale(1.05) translateY(-2px)';
             }
-        }
+        });
 
-        // Devam et butonuna tıklayınca formu gönder
-        devamEtBtn.addEventListener('click', function() {
-            if (secilenKoltuklar.length === yolcuSayisi) {
-                document.getElementById('koltukForm').submit();
+        button.addEventListener('mouseleave', function() {
+            if (!this.disabled && !this.classList.contains('selected')) {
+                this.style.transform = 'scale(1)';
             }
         });
     });
-</script> 
+
+    function updateSecilenKoltuklar() {
+        // Seçilen koltuk listesini güncelle
+        if (secilenKoltuklar.length === 0) {
+            secilenKoltukList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-chair"></i>
+                    <span>Henüz koltuk seçilmedi</span>
+                </div>
+            `;
+        } else {
+            const koltukNolari = secilenKoltuklar.map(id => {
+                const button = document.querySelector(`[data-koltuk-id="${id}"]`);
+                return button ? button.dataset.koltukNo : '';
+            }).filter(no => no);
+            
+            secilenKoltukList.innerHTML = koltukNolari.map(no => 
+                `<span class="badge bg-primary me-1 p-2 animate__animated animate__fadeIn">${no}</span>`
+            ).join('');
+        }
+
+        // Sayıları güncelle
+        secilenYolcuSayisi.textContent = secilenKoltuklar.length;
+        secilenKoltukSayisiPrice.textContent = secilenKoltuklar.length + ' koltuk';
+        
+        // Fiyatı animasyonla güncelle
+        const yeniFiyat = secilenKoltuklar.length * biletFiyati;
+        animatePrice(toplamFiyat, yeniFiyat);
+
+        // Devam et butonunu aktif/pasif yap
+        const tumKoltukSecildi = secilenKoltuklar.length === yolcuSayisi;
+        devamEtBtn.disabled = !tumKoltukSecildi;
+        
+        if (tumKoltukSecildi) {
+            devamEtBtn.classList.add('btn-success');
+            devamEtBtn.innerHTML = `
+                <div class="btn-content">
+                    <i class="fas fa-check me-2"></i>
+                    <span>Devam Et</span>
+                </div>
+                <div class="btn-loader d-none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    <span>İşleniyor...</span>
+                </div>
+            `;
+        } else {
+            devamEtBtn.classList.remove('btn-success');
+            devamEtBtn.innerHTML = `
+                <div class="btn-content">
+                    <i class="fas fa-arrow-right me-2"></i>
+                    <span>Devam Et</span>
+                </div>
+                <div class="btn-loader d-none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    <span>İşleniyor...</span>
+                </div>
+            `;
+        }
+
+        // Hidden inputları güncelle
+        seciliKoltuklarInput.innerHTML = '';
+        if (secilenKoltuklar.length > 0) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'seciliKoltuklar';
+            input.value = secilenKoltuklar.join(',');
+            seciliKoltuklarInput.appendChild(input);
+        }
+    }
+
+    function animatePrice(element, newPrice) {
+        element.style.transform = 'scale(1.1)';
+        element.style.color = '#28a745';
+        
+        setTimeout(() => {
+            element.textContent = '₺' + newPrice.toFixed(2);
+            element.style.transform = 'scale(1)';
+        }, 150);
+    }
+
+    function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toastContainer');
+        const toastId = 'toast-' + Date.now();
+        
+        const toastHtml = `
+            <div id="${toastId}" class="toast modern-toast ${type}" role="alert">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'exclamation'} me-2"></i>
+                    <span>${message}</span>
+                </div>
+            </div>
+        `;
+        
+        toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+        
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        
+        toast.show();
+        
+        // Remove toast element after hiding
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            this.remove();
+        });
+    }
+
+    function playSound(type) {
+        // Simple sound feedback using Web Audio API
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'select':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    break;
+                case 'deselect':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    break;
+                case 'error':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    break;
+            }
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        } catch (e) {
+            // Ses çalmada hata olursa sessizce devam et
+        }
+    }
+
+    function clearAllSelections() {
+        secilenKoltuklar.forEach(koltukId => {
+            const button = document.querySelector(`[data-koltuk-id="${koltukId}"]`);
+            if (button) {
+                button.classList.remove('selected');
+                button.classList.add('available');
+            }
+        });
+        secilenKoltuklar = [];
+        updateSecilenKoltuklar();
+    }
+
+    function highlightSuggestions() {
+        // Get all suggestion items and highlight their seats
+        const suggestionItems = document.querySelectorAll('.suggestion-item');
+        suggestionItems.forEach(item => {
+            const suggestionIds = item.dataset.suggestion.split(',').map(id => parseInt(id));
+            suggestionIds.forEach(koltukId => {
+                const seatButton = document.querySelector(`[data-koltuk-id="${koltukId}"]`);
+                if (seatButton && !seatButton.disabled && !seatButton.classList.contains('selected')) {
+                    seatButton.classList.add('suggested');
+                }
+            });
+        });
+    }
+
+    // Devam et butonuna tıklayınca formu gönder
+    devamEtBtn.addEventListener('click', function() {
+        if (secilenKoltuklar.length === yolcuSayisi && !isProcessing) {
+            isProcessing = true;
+            
+            // Butona loading durumu ekle
+            const btnContent = this.querySelector('.btn-content');
+            const btnLoader = this.querySelector('.btn-loader');
+            
+            btnContent.classList.add('d-none');
+            btnLoader.classList.remove('d-none');
+            this.disabled = true;
+            
+            showToast('Koltuk seçiminiz işleniyor...', 'success');
+            
+            // Form gönderimi
+            setTimeout(() => {
+                document.getElementById('koltukForm').submit();
+            }, 1000);
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && secilenKoltuklar.length === yolcuSayisi) {
+            devamEtBtn.click();
+        }
+    });
+});
+</script>
+
+<!-- AOS Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Animate.css for additional animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"> 
  
  
  

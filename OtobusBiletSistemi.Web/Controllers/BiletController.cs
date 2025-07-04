@@ -365,7 +365,7 @@ namespace OtobusBiletSistemi.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult OdemeBasarisiz(string hataMesaji = null)
+        public IActionResult OdemeBasarisiz(string? hataMesaji = null)
         {
             // TempData'dan hata bilgilerini al
             ViewBag.HataMesaji = hataMesaji ?? TempData["HataMesaji"] ?? "Bilinmeyen bir hata oluştu.";

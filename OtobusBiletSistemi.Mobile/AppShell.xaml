@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="OtobusBiletSistemi.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:OtobusBiletSistemi.Mobile"
+    xmlns:views="clr-namespace:OtobusBiletSistemi.Mobile.Views"
+    Title="Otobüs Bilet Sistemi"
+    FlyoutBehavior="Disabled">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <!-- Web ile aynı premium renkler -->
+            <LinearGradientBrush x:Key="TabBarGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#667EEA" Offset="0.0" />
+                <GradientStop Color="#764BA2" Offset="1.0" />
+            </LinearGradientBrush>
+            
+            <LinearGradientBrush x:Key="TabBarGradientDark" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#5a6fd8" Offset="0.0" />
+                <GradientStop Color="#6a4190" Offset="1.0" />
+            </LinearGradientBrush>
+            
+            <Color x:Key="TabTextColor">White</Color>
+            <Color x:Key="TabTextColorUnselected">#CCFFFFFF</Color>
+            <Color x:Key="TabBackgroundSelected">#33FFFFFF</Color>
+            
+            <!-- Modern Tab Bar Styling -->
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.BackgroundColor" Value="Transparent" />
+                <Setter Property="Shell.ForegroundColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.TitleColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.DisabledColor" Value="#80FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="{StaticResource TabTextColorUnselected}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="Transparent" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TabTextColorUnselected}" />
+            </Style>
+            
+            <!-- Professional Tab Styling -->
+            <Style TargetType="Tab">
+                <Setter Property="Shell.BackgroundColor" Value="Transparent" />
+                <Setter Property="Shell.ForegroundColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.TitleColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.UnselectedColor" Value="{StaticResource TabTextColorUnselected}" />
+            </Style>
+            
+            <!-- Modern Shell Content Styling -->
+            <Style TargetType="ShellContent">
+                <Setter Property="Shell.BackgroundColor" Value="Transparent" />
+                <Setter Property="Shell.ForegroundColor" Value="{StaticResource TabTextColor}" />
+                <Setter Property="Shell.TitleColor" Value="{StaticResource TabTextColor}" />
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <!-- Custom Tab Bar with Gradient Background -->
+    <Shell.TabBarIsVisible>True</Shell.TabBarIsVisible>
+    
+    <TabBar x:Name="MainTabBar"
+            Shell.TabBarBackgroundColor="#667EEA"
+            Shell.TabBarForegroundColor="White"
+            Shell.TabBarTitleColor="White"
+            Shell.TabBarUnselectedColor="#CCFFFFFF">
+        
+        <!-- Sefer Arama Tab -->
+        <Tab x:Name="SeferTab" Title="Sefer Ara">
+            <Tab.Icon>
+                <FontImageSource 
+                    Glyph="🔍" 
+                    Color="White" 
+                    Size="18" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:SeferListPage}" Route="SeferListPage" />
+        </Tab>
+        
+        <!-- Biletlerim Tab -->
+        <Tab x:Name="BiletTab" Title="Biletlerim">
+            <Tab.Icon>
+                <FontImageSource 
+                    Glyph="🎫" 
+                    Color="White" 
+                    Size="18" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="BiletlerimPage" />
+        </Tab>
+        
+        <!-- Profil Tab -->
+        <Tab x:Name="ProfilTab" Title="Profil">
+            <Tab.Icon>
+                <FontImageSource 
+                    Glyph="👤" 
+                    Color="White" 
+                    Size="18" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="ProfilPage" />
+        </Tab>
+    </TabBar>
+    
+    <!-- Modal sayfalar -->
+    <ShellContent
+        ContentTemplate="{DataTemplate views:KoltukSecimPage}"
+        Route="koltuklarpage"
+        Shell.PresentationMode="Modal" />
+
+</Shell>

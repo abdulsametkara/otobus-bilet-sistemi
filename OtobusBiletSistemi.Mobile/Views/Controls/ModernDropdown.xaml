@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="OtobusBiletSistemi.Mobile.Views.Controls.ModernDropdown"
+             x:Name="DropdownControl">
+    
+    <Grid>
+        <!-- Main Button -->
+        <Border x:Name="MainBorder"
+                BackgroundColor="#F8F9FA"
+                Stroke="#DEE2E6"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
+                HeightRequest="50">
+            
+            <Grid ColumnDefinitions="*,Auto">
+                <Label x:Name="DisplayLabel"
+                       Text="{Binding Source={x:Reference DropdownControl}, Path=SelectedText}"
+                       TextColor="#495057"
+                       FontSize="16"
+                       VerticalOptions="Center"
+                       Margin="15,0"
+                       Grid.Column="0" />
+                
+                <Label Text="▼"
+                       TextColor="#6C757D"
+                       FontSize="12"
+                       VerticalOptions="Center"
+                       Margin="0,0,15,0"
+                       Grid.Column="1" />
+            </Grid>
+            
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnDropdownTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+        
+        <!-- Popup Overlay -->
+        <Grid x:Name="PopupOverlay"
+              IsVisible="False"
+              BackgroundColor="#80000000"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand">
+            
+            <Border x:Name="PopupBorder"
+                    BackgroundColor="White"
+                    Stroke="#DEE2E6"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    HeightRequest="300"
+                    VerticalOptions="Start"
+                    Margin="20,80,20,20">
+                
+                <StackLayout>
+                    <!-- Header -->
+                    <Grid BackgroundColor="#F8F9FA" 
+                          HeightRequest="50"
+                          Padding="15,0">
+                        <Label Text="{Binding Source={x:Reference DropdownControl}, Path=Title}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#495057"
+                               VerticalOptions="Center"
+                               Grid.Column="0" />
+                        
+                        <Button Text="✖"
+                                BackgroundColor="Transparent"
+                                TextColor="#6C757D"
+                                FontSize="16"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                HorizontalOptions="End"
+                                Clicked="OnClosePopup" />
+                    </Grid>
+                    
+                    <!-- Items List -->
+                    <CollectionView x:Name="ItemsCollectionView"
+                                    ItemsSource="{Binding Source={x:Reference DropdownControl}, Path=ItemsSource}"
+                                    HeightRequest="200">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="15,12"
+                                      HeightRequest="48">
+                                    <Label Text="{Binding}"
+                                           FontSize="16"
+                                           TextColor="#495057"
+                                           VerticalOptions="Center" />
+                                    
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnItemSelected"
+                                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Border>
+            
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+    </Grid>
+</ContentView> 

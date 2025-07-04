@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtobusBiletSistemi.Web", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtobusBiletSistemi.Core", "OtobusBiletSistemi.Core\OtobusBiletSistemi.Core.csproj", "{80F5085E-0E07-4AAA-84DB-3CCFD65BAE89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtobusBiletSistemi.Mobile", "OtobusBiletSistemi.Mobile\OtobusBiletSistemi.Mobile.csproj", "{E4090500-BCF0-40EA-B42A-ED6A36788A6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{80F5085E-0E07-4AAA-84DB-3CCFD65BAE89}.Release|x64.Build.0 = Release|Any CPU
 		{80F5085E-0E07-4AAA-84DB-3CCFD65BAE89}.Release|x86.ActiveCfg = Release|Any CPU
 		{80F5085E-0E07-4AAA-84DB-3CCFD65BAE89}.Release|x86.Build.0 = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|x64.Build.0 = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|x64.ActiveCfg = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|x64.Build.0 = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|x86.ActiveCfg = Release|Any CPU
+		{E4090500-BCF0-40EA-B42A-ED6A36788A6C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
