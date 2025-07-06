@@ -39,10 +39,12 @@ public static class MauiProgram
         // ViewModels
         builder.Services.AddTransient<SeferListViewModel>();
         builder.Services.AddTransient<KoltukSecimViewModel>();
+        builder.Services.AddTransient<BiletSahibiBilgileriViewModel>();
 
         // Views
         builder.Services.AddTransient<SeferListPage>();
         builder.Services.AddTransient<KoltukSecimPage>();
+        builder.Services.AddTransient<BiletSahibiBilgileriPage>();
 
         Debug.WriteLine("✅ MauiProgram konfigürasyonu tamamlandı");
 

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using OtobusBiletSistemi.Mobile.Models;
 using OtobusBiletSistemi.Mobile.Services;
 using System.Diagnostics;
+using System.Linq;
 
 namespace OtobusBiletSistemi.Mobile.ViewModels;
 
@@ -46,7 +47,7 @@ public partial class KoltukSecimViewModel : ObservableObject
     public decimal ToplamFiyat => SecilenKoltuklar.Count * (Sefer?.Fiyat ?? 0);
     public bool CanContinue => SecilenKoltuklar.Count == YolcuSayisi;
     public string DevamButtonText => CanContinue ? "Devam Et" : $"{SecilenKoltuklar.Count}/{YolcuSayisi} Koltuk Seçili";
-    public string SelectionHint => YolcuSayisi == 1 ? "Bir koltuk seçmelisiniz" : $"{YolcuSayisi} koltuk seçmelisiniz";
+    public string SelectionHint => YolcuSayisi == 1 ? "Koltuk seçebilirsiniz" : $"{YolcuSayisi} koltuk seçmelisiniz";
     
     // Header Properties
     public string KalkisYeri => Guzergah?.KalkisYeri ?? "";
@@ -357,6 +358,7 @@ public partial class KoltukSecimViewModel : ObservableObject
         MainThread.BeginInvokeOnMainThread(() =>
         {
             OnPropertyChanged(nameof(KoltukRows));
+            OnPropertyChanged(nameof(SecilenKoltuklar));
             OnPropertyChanged(nameof(HasSelectedSeats));
             OnPropertyChanged(nameof(ToplamFiyat));
             OnPropertyChanged(nameof(CanContinue));
@@ -375,9 +377,24 @@ public partial class KoltukSecimViewModel : ObservableObject
             return;
         }
 
-        // Devam işlemi - örneğin ödeme sayfasına git
-        await Shell.Current.DisplayAlert("Başarılı", 
-            $"{SecilenKoltuklar.Count} koltuk seçildi!\nToplam: {ToplamFiyat:C} TL", "Tamam");
+        // Seçilen koltukların ID'lerini al
+        var secilenKoltukIds = SecilenKoltuklar.Select(k => k.KoltukID).ToList();
+        var secilenKoltukNos = SecilenKoltuklar.Select(k => k.KoltukNo).ToList();
+        
+        // Bilet sahibi bilgileri sayfasına git
+        var parametreler = new Dictionary<string, object>
+        {
+            ["SeferId"] = SeferId,
+            ["SecilenKoltukIds"] = secilenKoltukIds,
+            ["SecilenKoltukNos"] = secilenKoltukNos,
+            ["ToplamFiyat"] = ToplamFiyat,
+            ["KalkisYeri"] = KalkisYeri,
+            ["VarisYeri"] = VarisYeri,
+            ["SeferTarihi"] = SeferTarihi.ToString("yyyy-MM-dd"),
+            ["KalkisSaati"] = KalkisSaati.ToString(@"hh\:mm")
+        };
+
+        await Shell.Current.GoToAsync("BiletSahibiBilgileriPage", parametreler);
     }
 
     [RelayCommand]

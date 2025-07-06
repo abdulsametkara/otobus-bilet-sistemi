@@ -10,5 +10,6 @@ public partial class AppShell : Shell
 		
 		// Register navigation routes
 		Routing.RegisterRoute("koltuklarpage", typeof(KoltukSecimPage));
+		Routing.RegisterRoute("BiletSahibiBilgileriPage", typeof(BiletSahibiBilgileriPage));
 	}
 }
