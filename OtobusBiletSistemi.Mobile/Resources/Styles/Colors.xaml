@@ -4,42 +4,184 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
+    <!-- Travel App - Enhanced Design System Colors v3.0 -->
+    
+    <!-- Primary Colors - Modern Blue System -->
+    <Color x:Key="Primary">#667EEA</Color>        <!-- Primary Blue -->
+    <Color x:Key="PrimaryDark">#5A67D8</Color>    <!-- Darker Blue -->
+    <Color x:Key="PrimaryDarker">#4C51BF</Color>  <!-- Deep Blue -->
+    <Color x:Key="PrimaryLight">#7F9CF5</Color>   <!-- Light Blue -->
+    <Color x:Key="PrimaryLighter">#A3BFFA</Color> <!-- Lighter Blue -->
+    <Color x:Key="PrimarySubtle">#EBF4FF</Color>  <!-- Very Light Blue -->
+    
+    <!-- Secondary Colors - Success Green System -->
+    <Color x:Key="Secondary">#48BB78</Color>      <!-- Secondary Green -->
+    <Color x:Key="SecondaryDark">#38A169</Color>  <!-- Dark Green -->
+    <Color x:Key="SecondaryLight">#68D391</Color> <!-- Light Green -->
+    <Color x:Key="SecondaryLighter">#9AE6B4</Color> <!-- Lighter Green -->
+    <Color x:Key="SecondarySubtle">#F0FFF4</Color>   <!-- Very Light Green -->
+    
+    <!-- Accent Colors - Vibrant Orange System -->
+    <Color x:Key="Accent">#ED8936</Color>        <!-- Accent Orange -->
+    <Color x:Key="AccentDark">#DD6B20</Color>    <!-- Dark Orange -->
+    <Color x:Key="AccentLight">#F6AD55</Color>   <!-- Light Orange -->
+    <Color x:Key="AccentLighter">#FBD38D</Color> <!-- Lighter Orange -->
+    <Color x:Key="AccentSubtle">#FFFAF0</Color>  <!-- Very Light Orange -->
+    
+    <!-- Background Colors - Modern Hierarchy -->
+    <Color x:Key="BackgroundMain">#F7FAFC</Color>        <!-- Light Background -->
+    <Color x:Key="BackgroundSecondary">#F7FAFC</Color>   <!-- Same as main -->
+    <Color x:Key="BackgroundTertiary">#EDF2F7</Color>    <!-- Slightly darker -->
+    <Color x:Key="BackgroundHero">#667EEA</Color>        <!-- Primary color hero -->
+    
+    <!-- Text Colors - Enhanced Hierarchy -->
+    <Color x:Key="TextPrimary">#2D3748</Color>      <!-- Primary text color -->
+    <Color x:Key="TextSecondary">#4A5568</Color>    <!-- Secondary text -->
+    <Color x:Key="TextTertiary">#718096</Color>     <!-- Tertiary text -->
+    <Color x:Key="TextAccent">#2D3748</Color>       <!-- Accent text -->
+    <Color x:Key="TextOnPrimary">#FFFFFF</Color>    <!-- White on primary -->
+    <Color x:Key="TextOnDark">#F7FAFC</Color>       <!-- Light on dark -->
+    
+    <!-- Surface Colors - Enhanced Depth -->
+    <Color x:Key="SurfaceCard">#FFFFFF</Color>      <!-- White Cards -->
+    <Color x:Key="SurfaceElevated">#FFFFFF</Color>  <!-- Elevated Cards -->
+    <Color x:Key="SurfaceBorder">#E2E8F0</Color>    <!-- Slate 200 -->
+    <Color x:Key="SurfaceDivider">#F1F5F9</Color>   <!-- Slate 100 -->
+    <Color x:Key="SurfaceOverlay">#00000020</Color> <!-- 12% Black Overlay -->
+    
+    <!-- Status Colors - Enhanced Feedback -->
+    <Color x:Key="StatusSuccess">#38A169</Color>    <!-- Success Green -->
+    <Color x:Key="StatusWarning">#ED8936</Color>    <!-- Warning Orange -->
+    <Color x:Key="StatusError">#E53E3E</Color>      <!-- Error Red -->
+    <Color x:Key="StatusInfo">#667EEA</Color>       <!-- Info Blue -->
+    
+    <!-- Travel Specific Colors -->
+    <Color x:Key="TravelBlue">#0EA5E9</Color>       <!-- Sky Blue -->
+    <Color x:Key="TravelGreen">#22C55E</Color>      <!-- Green -->
+    <Color x:Key="TravelOrange">#F97316</Color>     <!-- Orange -->
+    <Color x:Key="TravelPurple">#8B5CF6</Color>     <!-- Violet -->
+    
+    <!-- Legacy Support -->
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+    
+    <!-- Gray Scale -->
+    <Color x:Key="Gray50">#F9FAFB</Color>
+    <Color x:Key="Gray100">#F3F4F6</Color>
+    <Color x:Key="Gray200">#E5E7EB</Color>
+    <Color x:Key="Gray300">#D1D5DB</Color>
+    <Color x:Key="Gray400">#9CA3AF</Color>
+    <Color x:Key="Gray500">#6B7280</Color>
+    <Color x:Key="Gray600">#4B5563</Color>
+    <Color x:Key="Gray700">#374151</Color>
+    <Color x:Key="Gray800">#1F2937</Color>
+    <Color x:Key="Gray900">#111827</Color>
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <!-- Modern Gradient Brushes -->
+    <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+        <GradientStop Color="{StaticResource PrimaryDark}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="SecondaryGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Secondary}" Offset="0.0" />
+        <GradientStop Color="{StaticResource SecondaryDark}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Accent}" Offset="0.0" />
+        <GradientStop Color="{StaticResource AccentDark}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="HeroGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+        <GradientStop Color="{StaticResource PrimaryDarker}" Offset="0.5" />
+        <GradientStop Color="{StaticResource Secondary}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource SurfaceCard}" Offset="0.0" />
+        <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0" />
+    </LinearGradientBrush>
 
-    <Color x:Key="White">White</Color>
-    <Color x:Key="Black">Black</Color>
-    <Color x:Key="Magenta">#D600AA</Color>
-    <Color x:Key="MidnightBlue">#190649</Color>
-    <Color x:Key="OffBlack">#1f1f1f</Color>
-
-    <Color x:Key="Gray100">#E1E1E1</Color>
-    <Color x:Key="Gray200">#C8C8C8</Color>
-    <Color x:Key="Gray300">#ACACAC</Color>
-    <Color x:Key="Gray400">#919191</Color>
-    <Color x:Key="Gray500">#6E6E6E</Color>
-    <Color x:Key="Gray600">#404040</Color>
-    <Color x:Key="Gray900">#212121</Color>
-    <Color x:Key="Gray950">#141414</Color>
-
+    <!-- SolidColorBrush Resources -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDark}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
-    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    
+    <SolidColorBrush x:Key="BackgroundMainBrush" Color="{StaticResource BackgroundMain}"/>
+    <SolidColorBrush x:Key="BackgroundSecondaryBrush" Color="{StaticResource BackgroundSecondary}"/>
+    
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondary}"/>
+    
+    <SolidColorBrush x:Key="SurfaceBorderBrush" Color="{StaticResource SurfaceBorder}"/>
+    
+    <!-- Status Brushes -->
+    <SolidColorBrush x:Key="StatusSuccessBrush" Color="{StaticResource StatusSuccess}"/>
+    <SolidColorBrush x:Key="StatusWarningBrush" Color="{StaticResource StatusWarning}"/>
+    <SolidColorBrush x:Key="StatusErrorBrush" Color="{StaticResource StatusError}"/>
+    <SolidColorBrush x:Key="StatusInfoBrush" Color="{StaticResource StatusInfo}"/>
+    
+    <!-- Status Gradients -->
+    <LinearGradientBrush x:Key="SuccessGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource StatusSuccess}" Offset="0.0" />
+        <GradientStop Color="{StaticResource Secondary}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="WarningGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource StatusWarning}" Offset="0.0" />
+        <GradientStop Color="{StaticResource AccentDark}" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ErrorGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource StatusError}" Offset="0.0" />
+        <GradientStop Color="#DC2626" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <!-- Material Design 3 - Koltuk Seçim Renkleri -->
+    <Color x:Key="SeatAvailable">#E8F5E9</Color>     <!-- Light Green -->
+    <Color x:Key="SeatAvailableText">#2E7D32</Color> <!-- Dark Green -->
+    <Color x:Key="SeatAvailableBorder">#4CAF50</Color> <!-- Medium Green -->
+    
+    <Color x:Key="SeatSelected">#1976D2</Color>      <!-- Material Blue -->
+    <Color x:Key="SeatSelectedText">#FFFFFF</Color>   <!-- White -->
+    <Color x:Key="SeatSelectedBorder">#1565C0</Color> <!-- Dark Blue -->
+    
+    <Color x:Key="SeatOccupied">#E0E0E0</Color>      <!-- Light Gray -->
+    <Color x:Key="SeatOccupiedText">#757575</Color>  <!-- Medium Gray -->
+    <Color x:Key="SeatOccupiedBorder">#BDBDBD</Color> <!-- Gray Border -->
+    
+    <!-- Modern Header Gradient -->
+    <LinearGradientBrush x:Key="ModernHeaderGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1976D2" Offset="0.0" />
+        <GradientStop Color="#1565C0" Offset="0.5" />
+        <GradientStop Color="#0D47A1" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <!-- Clean Surface Colors -->
+    <Color x:Key="SurfaceClean">#FAFAFA</Color>       <!-- Ultra Clean -->
+    <Color x:Key="SurfaceElevation1">#FFFFFF</Color>  <!-- Level 1 -->
+    <Color x:Key="SurfaceElevation2">#F8F9FA</Color>  <!-- Level 2 -->
+    <Color x:Key="SurfaceElevation3">#F1F3F4</Color>  <!-- Level 3 -->
 
-    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
-    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
-    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
-    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
-    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
-    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
-    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
-    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- Modern Progress Indicator -->
+    <Color x:Key="ProgressActive">#1976D2</Color>
+    <Color x:Key="ProgressInactive">#E0E0E0</Color>
+    <Color x:Key="ProgressBackground">#F5F5F5</Color>
+    
+    <!-- Chip Colors -->
+    <Color x:Key="ChipBackground">#E3F2FD</Color>
+    <Color x:Key="ChipText">#1976D2</Color>
+    <Color x:Key="ChipBorder">#BBDEFB</Color>
+    
+    <!-- Button States -->
+    <Color x:Key="ButtonPrimary">#1976D2</Color>
+    <Color x:Key="ButtonPrimaryPressed">#1565C0</Color>
+    <Color x:Key="ButtonPrimaryDisabled">#BBBBBB</Color>
+    
 </ResourceDictionary>

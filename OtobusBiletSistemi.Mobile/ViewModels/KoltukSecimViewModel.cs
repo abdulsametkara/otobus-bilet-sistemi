@@ -46,7 +46,8 @@ public partial class KoltukSecimViewModel : ObservableObject
     public bool HasSelectedSeats => SecilenKoltuklar.Count > 0;
     public decimal ToplamFiyat => SecilenKoltuklar.Count * (Sefer?.Fiyat ?? 0);
     public bool CanContinue => SecilenKoltuklar.Count == YolcuSayisi;
-    public string DevamButtonText => CanContinue ? "Devam Et" : $"{SecilenKoltuklar.Count}/{YolcuSayisi} Koltuk Seçili";
+    public string DevamButtonText => CanContinue ? "✅ Bilgileri Doldur" : $"{SecilenKoltuklar.Count}/{YolcuSayisi} Koltuk Seçili";
+    public string OzetMetni => $"Koltuklar: {string.Join(", ", SecilenKoltuklar.Select(k => k.KoltukNo))}";
     public string SelectionHint => YolcuSayisi == 1 ? "Koltuk seçebilirsiniz" : $"{YolcuSayisi} koltuk seçmelisiniz";
     
     // Header Properties
@@ -71,7 +72,12 @@ public partial class KoltukSecimViewModel : ObservableObject
             SeferId = seferId;
             YolcuSayisi = yolcuSayisi;
             
-            Debug.WriteLine($"🚌 Veri yükleme başlıyor - SeferId: {seferId}, YolcuSayisi: {yolcuSayisi}");
+            Debug.WriteLine($"🚌 LoadKoltukDataAsync başlıyor - SeferId: {seferId}, YolcuSayisi: {yolcuSayisi}");
+
+            if (seferId <= 0)
+            {
+                throw new ArgumentException($"Geçersiz SeferId: {seferId}");
+            }
 
             // 1. Sefer bilgilerini yükle
             await LoadSeferInfo();
@@ -80,16 +86,29 @@ public partial class KoltukSecimViewModel : ObservableObject
             await LoadKoltukLayout();
 
             Debug.WriteLine("✅ Tüm veriler başarıyla yüklendi");
+            
+            // UI güncellemelerini Main Thread'de yap
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                OnPropertyChanged(nameof(SeferId));
+                OnPropertyChanged(nameof(YolcuSayisi));
+                OnPropertyChanged(nameof(KoltukRows));
+                OnPropertyChanged(nameof(DevamButtonText));
+                OnPropertyChanged(nameof(SelectionHint));
+            });
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"❌ Veri yükleme hatası: {ex.Message}");
             Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
-            ErrorMessage = $"Veri yükleme hatası: {ex.Message}";
+            ErrorMessage = $"Parametreler eksik veya geçersiz!\nSeferId: {seferId}\nYolcuSayisi: {yolcuSayisi}";
             
-            // Kullanıcıya detaylı hata göster
-            await Shell.Current.DisplayAlert("Database Hatası", 
-                $"Veritabanından veri alınırken hata oluştu:\n\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Tamam");
+            // Ana thread'de hata göster
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.DisplayAlert("Veri Yükleme Hatası", 
+                    $"Veriler yüklenirken hata oluştu:\n\n{ex.Message}", "Tamam");
+            });
         }
         finally
         {
@@ -239,17 +258,28 @@ public partial class KoltukSecimViewModel : ObservableObject
             return;
         }
         
-        // Koltuk numaralarını kontrol et
-        foreach (var koltuk in koltuklar.Take(5))
+        // Koltuk numaralarını detaylı kontrol et
+        Debug.WriteLine($"🧪 İlk 10 koltuk için detaylı analiz:");
+        foreach (var koltuk in koltuklar.Take(10))
         {
             var rowNum = GetRowNumber(koltuk.KoltukNo);
             var position = GetSeatPosition(koltuk.KoltukNo);
-            Debug.WriteLine($"   🪑 Koltuk '{koltuk.KoltukNo}' -> Sıra: {rowNum}, Pozisyon: '{position}'");
+            Debug.WriteLine($"   🪑 Koltuk '{koltuk.KoltukNo}' -> ID: {koltuk.KoltukID}, Sıra: {rowNum}, Pozisyon: '{position}'");
+            
+            // Özel kontrol: 10'lu koltuklar
+            if (koltuk.KoltukNo.Contains("10"))
+            {
+                Debug.WriteLine($"      🔍 10'lu koltuk tespit edildi: {koltuk.KoltukNo}");
+                var digits = new string(koltuk.KoltukNo.Where(char.IsDigit).ToArray());
+                var letters = new string(koltuk.KoltukNo.Where(char.IsLetter).ToArray());
+                Debug.WriteLine($"         Digits: '{digits}', Letters: '{letters}'");
+            }
         }
         
         // Koltuk numaralarına göre sırala ve grupla
         var siraGroups = koltuklar
-            .OrderBy(k => k.KoltukNo)
+            .OrderBy(k => GetRowNumber(k.KoltukNo))
+            .ThenBy(k => GetSeatPosition(k.KoltukNo))
             .GroupBy(k => GetRowNumber(k.KoltukNo))
             .OrderBy(g => g.Key);
 
@@ -262,16 +292,26 @@ public partial class KoltukSecimViewModel : ObservableObject
             
             foreach (var koltuk in siraGroup.OrderBy(k => k.KoltukNo))
             {
+                var isDolu = DoluKoltuklar.Contains(koltuk.KoltukID);
                 var koltukVm = new KoltukViewModel
                 {
                     Koltuk = koltuk,
-                    IsOccupied = DoluKoltuklar.Contains(koltuk.KoltukID),
+                    IsOccupied = isDolu,
                     IsSelected = false
                 };
                 
-                // 2+1 düzene göre yerleştir
+                // 2+2 düzene göre yerleştir
                 var position = GetSeatPosition(koltuk.KoltukNo);
-                Debug.WriteLine($"      🪑 '{koltuk.KoltukNo}' pozisyonu: '{position}', Dolu: {koltukVm.IsOccupied}");
+                Debug.WriteLine($"      🪑 '{koltuk.KoltukNo}' (ID: {koltuk.KoltukID}) pozisyonu: '{position}', Dolu: {koltukVm.IsOccupied}");
+                
+                // ÖZEL KONTROL: 3A ve 6B koltukları için debug
+                if (koltuk.KoltukNo == "3A" || koltuk.KoltukNo == "6B")
+                {
+                    Debug.WriteLine($"🔍 ÖZEL KONTROL: Koltuk {koltuk.KoltukNo} (ID: {koltuk.KoltukID})");
+                    Debug.WriteLine($"   - Dolu koltuk listesinde var mı? {DoluKoltuklar.Contains(koltuk.KoltukID)}");
+                    Debug.WriteLine($"   - Dolu koltuk listesi: [{string.Join(", ", DoluKoltuklar)}]");
+                    Debug.WriteLine($"   - ViewModel IsOccupied: {koltukVm.IsOccupied}");
+                }
                 
                 if (position == "A") 
                 {
@@ -288,6 +328,11 @@ public partial class KoltukSecimViewModel : ObservableObject
                     row.SeatC = koltukVm;
                     Debug.WriteLine($"         -> C pozisyonuna yerleştirildi");
                 }
+                else if (position == "D") 
+                {
+                    row.SeatD = koltukVm;
+                    Debug.WriteLine($"         -> D pozisyonuna yerleştirildi");
+                }
                 else
                 {
                     Debug.WriteLine($"         ❌ Bilinmeyen pozisyon: '{position}' - koltuk yerleştirilemedi!");
@@ -295,7 +340,7 @@ public partial class KoltukSecimViewModel : ObservableObject
             }
             
             // Sıranın dolu olup olmadığını kontrol et
-            var seatCount = (row.SeatA != null ? 1 : 0) + (row.SeatB != null ? 1 : 0) + (row.SeatC != null ? 1 : 0);
+            var seatCount = (row.SeatA != null ? 1 : 0) + (row.SeatB != null ? 1 : 0) + (row.SeatC != null ? 1 : 0) + (row.SeatD != null ? 1 : 0);
             Debug.WriteLine($"      ✅ Sıra {row.RowNumber} tamamlandı: {seatCount} koltuk yerleştirildi");
             
             KoltukRows.Add(row);
@@ -313,59 +358,68 @@ public partial class KoltukSecimViewModel : ObservableObject
 
     private int GetRowNumber(string koltukNo)
     {
-        // "1A", "2B" gibi formattan sıra numarasını çıkar
+        // "1A", "2B", "10A" gibi formattan sıra numarasını çıkar
         var numPart = new string(koltukNo.Where(char.IsDigit).ToArray());
-        return int.TryParse(numPart, out int row) ? row : 1;
+        Debug.WriteLine($"🔢 GetRowNumber: '{koltukNo}' -> NumPart: '{numPart}'");
+        
+        if (int.TryParse(numPart, out int row))
+        {
+            Debug.WriteLine($"   ✅ Parsed row: {row}");
+            return row;
+        }
+        else
+        {
+            Debug.WriteLine($"   ❌ Parse failed, returning 1");
+            return 1;
+        }
     }
 
     private string GetSeatPosition(string koltukNo)
     {
-        // "1A", "2B" gibi formattan harf kısmını çıkar  
+        // "1A", "2B", "10A" gibi formattan harf kısmını çıkar  
         var letterPart = new string(koltukNo.Where(char.IsLetter).ToArray());
+        Debug.WriteLine($"🔤 GetSeatPosition: '{koltukNo}' -> LetterPart: '{letterPart}'");
         return letterPart.ToUpper();
     }
 
     [RelayCommand]
-    private async Task SelectKoltukAsync(KoltukViewModel koltukVm)
+    private void SelectKoltuk(KoltukViewModel koltukVm)
     {
-        if (koltukVm?.Koltuk == null || koltukVm.IsOccupied) return;
+        Debug.WriteLine($"🎯 SelectKoltukAsync çağrıldı!");
+        
+        if (koltukVm == null || koltukVm.Koltuk == null) return;
 
-        Debug.WriteLine($"🔘 Koltuk seçimi: {koltukVm.KoltukNo}, Mevcut durum: {(koltukVm.IsSelected ? "Seçili" : "Boş")}");
-
-        if (koltukVm.IsSelected)
-        {
-            // Seçimi kaldır
-            koltukVm.IsSelected = false;
-            SecilenKoltuklar.Remove(koltukVm.Koltuk);
-            Debug.WriteLine($"✅ Koltuk seçimi kaldırıldı: {koltukVm.KoltukNo}");
-        }
-        else
-        {
-            // Yeni seçim
-            if (SecilenKoltuklar.Count >= YolcuSayisi)
-            {
-                await Shell.Current.DisplayAlert("Uyarı", 
-                    $"En fazla {YolcuSayisi} koltuk seçebilirsiniz!", "Tamam");
-                return;
-            }
-            
-            koltukVm.IsSelected = true;
-            SecilenKoltuklar.Add(koltukVm.Koltuk);
-            Debug.WriteLine($"✅ Koltuk seçildi: {koltukVm.KoltukNo}");
-        }
-
-        // Force UI update için KoltukRows'u yeniden tetikle
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            OnPropertyChanged(nameof(KoltukRows));
-            OnPropertyChanged(nameof(SecilenKoltuklar));
+            if (koltukVm.IsSelected)
+            {
+                koltukVm.IsSelected = false;
+                var koltukToRemove = SecilenKoltuklar.FirstOrDefault(k => k.KoltukID == koltukVm.Koltuk.KoltukID);
+                if (koltukToRemove != null)
+                {
+                    SecilenKoltuklar.Remove(koltukToRemove);
+                }
+            }
+            else
+            {
+                if (SecilenKoltuklar.Count < YolcuSayisi)
+                {
+                    koltukVm.IsSelected = true;
+                    SecilenKoltuklar.Add(koltukVm.Koltuk);
+                }
+                else
+                {
+                    Shell.Current.DisplayAlert("Uyarı", $"En fazla {YolcuSayisi} koltuk seçebilirsiniz.", "Tamam");
+                }
+            }
+
+            // Update all computed properties
             OnPropertyChanged(nameof(HasSelectedSeats));
             OnPropertyChanged(nameof(ToplamFiyat));
             OnPropertyChanged(nameof(CanContinue));
             OnPropertyChanged(nameof(DevamButtonText));
+            OnPropertyChanged(nameof(OzetMetni));
         });
-
-        Debug.WriteLine($"📊 Toplam seçilen: {SecilenKoltuklar.Count}/{YolcuSayisi}");
     }
 
     [RelayCommand]
@@ -373,7 +427,10 @@ public partial class KoltukSecimViewModel : ObservableObject
     {
         if (!CanContinue)
         {
-            await Shell.Current.DisplayAlert("Uyarı", SelectionHint, "Tamam");
+            var message = SecilenKoltuklar.Count == 0 ? 
+                $"Lütfen {YolcuSayisi} adet koltuk seçin." : 
+                $"Toplam {YolcuSayisi} koltuk seçmelisiniz. Şu an {SecilenKoltuklar.Count} koltuk seçili.";
+            await Shell.Current.DisplayAlert("Koltuk Seçimi", message, "Tamam");
             return;
         }
 
@@ -411,6 +468,7 @@ public class KoltukRow
     public KoltukViewModel? SeatA { get; set; }
     public KoltukViewModel? SeatB { get; set; }
     public KoltukViewModel? SeatC { get; set; }
+    public KoltukViewModel? SeatD { get; set; }
 }
 
 public partial class KoltukViewModel : ObservableObject
@@ -422,22 +480,73 @@ public partial class KoltukViewModel : ObservableObject
     
     [ObservableProperty]
     private bool isOccupied;
-    
+
+    public bool IsVisible => Koltuk != null;
+
     public string KoltukNo => Koltuk?.KoltukNo ?? "";
+    
+    // Debug için ek property
+    public string DebugInfo 
+    {
+        get
+        {
+            if (Koltuk == null) return "NULL_KOLTUK";
+            if (string.IsNullOrEmpty(Koltuk.KoltukNo)) return $"ID_{Koltuk.KoltukID}_EMPTY_NO";
+            return Koltuk.KoltukNo; // Direkt koltuk numarasını göster
+        }
+    }
+    
+    // Accessibility için ContentDescription
+    public string ContentDescription 
+    {
+        get
+        {
+            var state = IsOccupied ? "Dolu koltuk" : IsSelected ? "Seçili koltuk" : "Boş koltuk";
+            return $"Koltuk {KoltukNo}, {state}";
+        }
+    }
+    
+    private int GetRowNumber()
+    {
+        if (string.IsNullOrEmpty(KoltukNo)) return 0;
+        var numPart = new string(KoltukNo.Where(char.IsDigit).ToArray());
+        return int.TryParse(numPart, out int row) ? row : 0;
+    }
+    
+    private string GetPosition()
+    {
+        if (string.IsNullOrEmpty(KoltukNo)) return "";
+        return new string(KoltukNo.Where(char.IsLetter).ToArray()).ToUpper();
+    }
     public bool IsAvailable => !IsOccupied;
-    public Color BackgroundColor => IsOccupied ? Colors.Red : IsSelected ? Colors.Blue : Colors.LightGreen;
-    public Color TextColor => IsOccupied || IsSelected ? Colors.White : Colors.Black;
+    
+    // UI Color properties - Material Design 3 uyumlu
+    public Color BackgroundColor => IsOccupied ? Color.FromArgb("#E0E0E0") : IsSelected ? Color.FromArgb("#1976D2") : Color.FromArgb("#E8F5E9");
+    public Color TextColor => IsOccupied ? Color.FromArgb("#757575") : IsSelected ? Color.FromArgb("#FFFFFF") : Color.FromArgb("#2E7D32");
 
     partial void OnIsSelectedChanged(bool value)
     {
-        OnPropertyChanged(nameof(BackgroundColor));
-        OnPropertyChanged(nameof(TextColor));
+        Debug.WriteLine($"🔄 Koltuk {KoltukNo} seçim durumu değişti: {value}");
+        
+        // Ana thread'de UI güncellemelerini yap
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            OnPropertyChanged(nameof(BackgroundColor));
+            OnPropertyChanged(nameof(TextColor));
+            OnPropertyChanged(nameof(IsAvailable));
+        });
     }
 
     partial void OnIsOccupiedChanged(bool value)
     {
-        OnPropertyChanged(nameof(BackgroundColor));
-        OnPropertyChanged(nameof(TextColor));
-        OnPropertyChanged(nameof(IsAvailable));
+        Debug.WriteLine($"🔒 Koltuk {KoltukNo} dolu durumu değişti: {value}");
+        
+        // Ana thread'de UI güncellemelerini yap
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            OnPropertyChanged(nameof(BackgroundColor));
+            OnPropertyChanged(nameof(TextColor));
+            OnPropertyChanged(nameof(IsAvailable));
+        });
     }
 } 

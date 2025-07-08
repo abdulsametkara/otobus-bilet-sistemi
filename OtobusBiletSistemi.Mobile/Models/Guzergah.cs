@@ -14,7 +14,7 @@ namespace OtobusBiletSistemi.Mobile.Models
         public int Mesafe { get; set; }
         
         // Mobile UI için ek özellikler
-        public string GuzergahAdi => $"{KalkisYeri} - {VarisYeri}";
+        public string GuzergahAdi => $"{KalkisYeri} → {VarisYeri}";
         public string MesafeText => $"{Mesafe} km";
         
         // Backward compatibility

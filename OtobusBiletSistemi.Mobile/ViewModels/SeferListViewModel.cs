@@ -5,6 +5,7 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using OtobusBiletSistemi.Mobile.Models;
 using OtobusBiletSistemi.Mobile.Services;
+using OtobusBiletSistemi.Mobile.Views;
 using System.Linq;
 using System.Diagnostics;
 
@@ -30,7 +31,7 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
         private DateTime tarih = DateTime.Today;
 
         [ObservableProperty]
-        private string searchMessage = "Sefer aramak için yukarıdaki formu doldurun";
+        private string searchMessage = "Sefer aramak için yukardaki formu kullanın";
 
         [ObservableProperty]
         private ObservableCollection<string> kalkisYerleri = new();
@@ -44,10 +45,27 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
         [ObservableProperty]
         private ObservableCollection<int> yolcuSayisiListesi = new();
 
+        // Modern UI için ek property'ler
+        [ObservableProperty]
+        private bool isSearchSectionVisible = false;
+
+        [ObservableProperty]
+        private string greetingMessage = "Günaydın,";
+
+        [ObservableProperty]
+        private string userNameDisplay = "Değerli Yolcu";
+
+        [ObservableProperty]
+        private ObservableCollection<string> populerGuzergahlar = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Sefer> sonArananSeferler = new();
+
         // Web tasarımına uygun ek property'ler
         public bool HasResults => !IsLoading && Seferler.Any();
         public bool HasNoResults => !IsLoading && !Seferler.Any() && !string.IsNullOrEmpty(SearchMessage);
         public bool HasSearchMessage => !string.IsNullOrEmpty(SearchMessage) && !IsLoading;
+        public bool HasValidationErrors => string.IsNullOrEmpty(KalkisYeri) || string.IsNullOrEmpty(VarisYeri) || KalkisYeri == VarisYeri;
 
         public SeferListViewModel(IApiService apiService)
         {
@@ -73,7 +91,14 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
             try
             {
                 Debug.WriteLine("SeferListViewModel - InitializeAsync başladı");
+                
+                // Kişiselleştirilmiş karşılama ayarla
+                SetGreetingMessage();
+                
+                // Database verilerini yükle
                 await LoadSehirlerAsync();
+                await LoadPopulerGuzergahlarAsync();
+                await LoadSonArananSeferlerAsync();
             }
             catch (Exception ex)
             {
@@ -84,6 +109,67 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
                     "Bağlantı Hatası", 
                     "Veritabanına bağlanırken hata oluştu. Lütfen daha sonra tekrar deneyin.", 
                     "Tamam");
+            }
+        }
+
+        private void SetGreetingMessage()
+        {
+            var now = DateTime.Now;
+            if (now.Hour < 12)
+                GreetingMessage = "Günaydın,";
+            else if (now.Hour < 18)
+                GreetingMessage = "İyi günler,";
+            else
+                GreetingMessage = "İyi akşamlar,";
+        }
+
+        private async Task LoadPopulerGuzergahlarAsync()
+        {
+            try
+            {
+                Debug.WriteLine("LoadPopulerGuzergahlarAsync başlatıldı");
+                
+                var populerler = await _apiService.GetPopulerGuzergahlarAsync();
+                
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    PopulerGuzergahlar.Clear();
+                    foreach (var guzergah in populerler)
+                    {
+                        PopulerGuzergahlar.Add(guzergah);
+                    }
+                });
+                
+                Debug.WriteLine($"✅ {populerler.Count} popüler güzergah yüklendi");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ LoadPopulerGuzergahlarAsync Hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadSonArananSeferlerAsync()
+        {
+            try
+            {
+                Debug.WriteLine("LoadSonArananSeferlerAsync başlatıldı");
+                
+                var sonSeferler = await _apiService.GetSonArananSeferlerAsync(3);
+                
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    SonArananSeferler.Clear();
+                    foreach (var sefer in sonSeferler)
+                    {
+                        SonArananSeferler.Add(sefer);
+                    }
+                });
+                
+                Debug.WriteLine($"✅ {sonSeferler.Count} son sefer yüklendi");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ LoadSonArananSeferlerAsync Hatası: {ex.Message}");
             }
         }
 
@@ -107,6 +193,64 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
             OnPropertyChanged(nameof(HasNoResults));
         }
 
+        partial void OnKalkisYeriChanged(string value)
+        {
+            OnPropertyChanged(nameof(HasValidationErrors));
+        }
+
+        partial void OnVarisYeriChanged(string value)
+        {
+            OnPropertyChanged(nameof(HasValidationErrors));
+        }
+
+        // Modern UI Commands
+        [RelayCommand]
+        private async Task QuickSearchAsync(string destinations)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(destinations)) return;
+
+                // Parse destinations (format: "From,To")
+                var parts = destinations.Split(',');
+                if (parts.Length == 2)
+                {
+                    KalkisYeri = parts[0].Trim();
+                    VarisYeri = parts[1].Trim();
+                    
+                    // Perform search
+                    await SearchSeferlerAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"QuickSearch Hatası: {ex.Message}");
+                await Shell.Current.DisplayAlert("Hata", "Hızlı arama sırasında hata oluştu.", "Tamam");
+            }
+        }
+
+        [RelayCommand]
+        private void ShowSearch()
+        {
+            IsSearchSectionVisible = !IsSearchSectionVisible;
+            Debug.WriteLine($"Arama bölümü görünürlüğü: {IsSearchSectionVisible}");
+        }
+
+        [RelayCommand]
+        private void SwapLocations()
+        {
+            var temp = KalkisYeri;
+            KalkisYeri = VarisYeri;
+            VarisYeri = temp;
+            Debug.WriteLine($"Yerler değiştirildi: {KalkisYeri} <-> {VarisYeri}");
+        }
+
+        [RelayCommand]
+        private async Task SeferAraAsync()
+        {
+            await SearchSeferlerAsync();
+        }
+
         [RelayCommand]
         private async Task LoadSehirlerAsync()
         {
@@ -121,19 +265,18 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
                     throw new InvalidOperationException("ApiService bulunamadı!");
                 }
                 
-                // Veritabanından güzergahları çek
-                var guzergahlar = await _apiService.GetGuzergahlarAsync();
-                Debug.WriteLine($"✅ Veritabanından {guzergahlar.Count} güzergah alındı");
+                // Database'den benzersiz şehir listelerini çek
+                var kalkisYerleriSet = await _apiService.GetUniqueKalkisYerleriAsync();
+                var varisYerleriSet = await _apiService.GetUniqueVarisYerleriAsync();
                 
-                if (guzergahlar == null || guzergahlar.Count == 0)
+                Debug.WriteLine($"✅ Database'den {kalkisYerleriSet.Count} kalkış yeri alındı");
+                Debug.WriteLine($"✅ Database'den {varisYerleriSet.Count} varış yeri alındı");
+                
+                if (kalkisYerleriSet == null || kalkisYerleriSet.Count == 0)
                 {
-                    Debug.WriteLine("❌ HATA: Veritabanından güzergah bulunamadı!");
-                    throw new InvalidOperationException("Güzergah verisi bulunamadı!");
+                    Debug.WriteLine("❌ HATA: Database'den kalkış yerleri bulunamadı!");
+                    throw new InvalidOperationException("Kalkış yeri verisi bulunamadı!");
                 }
-                
-                // Şehirleri ayrıştır ve sırala
-                var kalkisYerleriSet = guzergahlar.Select(g => g.Nereden).Distinct().OrderBy(x => x).ToList();
-                var varisYerleriSet = guzergahlar.Select(g => g.Nereye).Distinct().OrderBy(x => x).ToList();
                 
                 Debug.WriteLine($"📍 Kalkış şehirleri ({kalkisYerleriSet.Count}): {string.Join(", ", kalkisYerleriSet)}");
                 Debug.WriteLine($"📍 Varış şehirleri ({varisYerleriSet.Count}): {string.Join(", ", varisYerleriSet)}");
@@ -182,23 +325,47 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
             {
                 IsLoading = true;
                 SearchMessage = "";
+                Debug.WriteLine("🔄 LoadSeferlerAsync başlıyor...");
 
                 var seferler = await _apiService.GetSeferlerAsync();
+                Debug.WriteLine($"📡 API'den {seferler.Count} sefer alındı");
+                
+                // İlk 3 seferi detaylı kontrol et
+                for (int i = 0; i < Math.Min(3, seferler.Count); i++)
+                {
+                    var sefer = seferler[i];
+                    Debug.WriteLine($"🎫 Sefer {i+1}:");
+                    Debug.WriteLine($"   - SeferID: {sefer.SeferID} (Type: {sefer.SeferID.GetType()})");
+                    Debug.WriteLine($"   - Fiyat: {sefer.Fiyat}");
+                    Debug.WriteLine($"   - Tarih: {sefer.Tarih}");
+                    Debug.WriteLine($"   - Saat: '{sefer.Saat}'");
+                    Debug.WriteLine($"   - GuzergahID: {sefer.GuzergahID}");
+                    Debug.WriteLine($"   - OtobusID: {sefer.OtobusID}");
+                }
                 
                 Seferler.Clear();
                 foreach (var sefer in seferler)
                 {
+                    Debug.WriteLine($"➕ Listeye eklenen sefer: ID={sefer.SeferID}, Fiyat={sefer.Fiyat}");
                     Seferler.Add(sefer);
                 }
+
+                Debug.WriteLine($"✅ {Seferler.Count} sefer UI'a yüklendi");
 
                 if (!Seferler.Any())
                 {
                     SearchMessage = "Henüz sistemde sefer bulunmuyor";
                 }
+                else
+                {
+                    SearchMessage = "";
+                }
             }
             catch (Exception ex)
             {
-                SearchMessage = $"Seferler yüklenirken bir hata oluştu: {ex.Message}";
+                Debug.WriteLine($"❌ LoadSeferlerAsync Hatası: {ex.Message}");
+                Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                SearchMessage = "Seferler yüklenirken hata oluştu";
             }
             finally
             {
@@ -209,47 +376,57 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
         [RelayCommand]
         public async Task SearchSeferlerAsync()
         {
-            if (string.IsNullOrWhiteSpace(KalkisYeri) || string.IsNullOrWhiteSpace(VarisYeri))
-            {
-                SearchMessage = "Lütfen kalkış ve varış şehirlerini seçiniz";
-                return;
-            }
-
             try
             {
+                Debug.WriteLine($"🔍 SearchSeferlerAsync başlatıldı: {KalkisYeri} → {VarisYeri}, Tarih: {Tarih:dd.MM.yyyy}");
+                
                 IsLoading = true;
                 SearchMessage = "";
-
-                // API'den tüm seferleri al
-                var seferler = await _apiService.GetSeferlerAsync();
                 
-                // Güzergah bilgilerini al
-                var guzergahlar = await _apiService.GetGuzergahlarAsync();
+                // Arama kriterleri kontrolü
+                if (string.IsNullOrEmpty(KalkisYeri) || string.IsNullOrEmpty(VarisYeri))
+                {
+                    SearchMessage = "Lütfen kalkış ve varış yerlerini seçin";
+                    IsLoading = false;
+                    return;
+                }
                 
-                // Seçilen şehirlere göre filtrele
-                var filtrelenmisler = seferler.Where(s => 
+                if (KalkisYeri == VarisYeri)
                 {
-                    var guzergah = guzergahlar.FirstOrDefault(g => g.GuzergahID == s.GuzergahID);
-                    return guzergah != null &&
-                           guzergah.Nereden.Equals(KalkisYeri, StringComparison.OrdinalIgnoreCase) &&
-                           guzergah.Nereye.Equals(VarisYeri, StringComparison.OrdinalIgnoreCase) &&
-                           s.Tarih.Date == Tarih.Date;
-                }).ToList();
-
-                Seferler.Clear();
-                foreach (var sefer in filtrelenmisler)
-                {
-                    Seferler.Add(sefer);
+                    SearchMessage = "Kalkış ve varış yerleri aynı olamaz";
+                    IsLoading = false;
+                    return;
                 }
-
-                if (!Seferler.Any())
+                
+                // ApiService ile gelişmiş sefer arama
+                var seferler = await _apiService.SearchAdvancedSeferlerAsync(KalkisYeri, VarisYeri, Tarih, YolcuSayisi);
+                Debug.WriteLine($"✅ {seferler.Count} sefer bulundu");
+                
+                // Sonuçları UI'a yükle
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    SearchMessage = $"{KalkisYeri} - {VarisYeri} arası {Tarih:dd.MM.yyyy} tarihinde sefer bulunamadı";
-                }
+                    Seferler.Clear();
+                    foreach (var sefer in seferler)
+                    {
+                        Seferler.Add(sefer);
+                    }
+                    
+                    if (!Seferler.Any())
+                    {
+                        SearchMessage = $"{KalkisYeri} → {VarisYeri} güzergahında {Tarih:dd.MM.yyyy} tarihinde sefer bulunamadı";
+                    }
+                    else
+                    {
+                        SearchMessage = "";
+                    }
+                });
             }
             catch (Exception ex)
             {
-                SearchMessage = $"Arama sırasında bir hata oluştu: {ex.Message}";
+                Debug.WriteLine($"❌ SearchSeferlerAsync Hatası: {ex.Message}");
+                Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                
+                SearchMessage = "Sefer arama sırasında hata oluştu: " + ex.Message;
             }
             finally
             {
@@ -264,8 +441,11 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
             VarisYeri = "";
             Tarih = DateTime.Today;
             YolcuSayisi = 1;
+            SearchMessage = "Sefer aramak için yukarıdaki formu doldurun";
+            
             Seferler.Clear();
-            SearchMessage = "";
+            
+            Debug.WriteLine("✅ Arama formu temizlendi");
         }
 
         [RelayCommand]
@@ -273,63 +453,119 @@ namespace OtobusBiletSistemi.Mobile.ViewModels
         {
             try
             {
-                // Dictionary ile test navigation
-                var parameters = new Dictionary<string, object>
+                Debug.WriteLine("🧪 Test navigasyonu başlatılıyor...");
+                
+                // Test verisi ile koltuk seçim sayfasına git
+                var testSefer = new Sefer
                 {
-                    ["seferId"] = "1",
-                    ["yolcuSayisi"] = "2"
+                    SeferID = 1,
+                    Tarih = DateTime.Today,
+                    Saat = "09:00",
+                    Fiyat = 50.00m,
+                    GuzergahID = 1,
+                    OtobusID = 1
                 };
                 
-                await Shell.Current.GoToAsync("//koltuklarpage", parameters);
-                Debug.WriteLine("✅ Test navigation başarılı");
+                await SeferSecAsync(testSefer);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ Test navigation hatası: {ex.Message}");
-                await Shell.Current.DisplayAlert("Test Hatası", $"Navigation test hatası:\n{ex.Message}", "OK");
+                Debug.WriteLine($"❌ Test navigasyonu hatası: {ex.Message}");
+                await Shell.Current.DisplayAlert("Test Hatası", ex.Message, "Tamam");
             }
         }
 
         [RelayCommand]
         public async Task SeferSecAsync(Sefer sefer)
         {
-            if (sefer == null) 
-            {
-                Debug.WriteLine("❌ SeferSecAsync - sefer null!");
-                await Shell.Current.DisplayAlert("Hata", "Sefer seçilmedi!", "Tamam");
-                return;
-            }
-
-            Debug.WriteLine($"🚌 SeferSecAsync çağrıldı - SeferID: {sefer.SeferID}, YolcuSayisi: {YolcuSayisi}");
-
-            if (YolcuSayisi <= 0 || YolcuSayisi > 10)
-            {
-                Debug.WriteLine($"❌ Geçersiz yolcu sayısı: {YolcuSayisi}");
-                await Shell.Current.DisplayAlert("Uyarı", 
-                    $"Geçersiz yolcu sayısı: {YolcuSayisi}\nLütfen 1-10 arası bir değer seçiniz", "Tamam");
-                return;
-            }
-
             try
             {
-                // Dictionary ile navigation parameters geç
-                var parameters = new Dictionary<string, object>
+                Debug.WriteLine($"🚀 SeferSecAsync BAŞLADI");
+                
+                if (sefer == null) 
                 {
-                    ["seferId"] = sefer.SeferID.ToString(),
-                    ["yolcuSayisi"] = YolcuSayisi.ToString()
-                };
+                    Debug.WriteLine("❌ Sefer parametresi null!");
+                    await Shell.Current.DisplayAlert("Hata", "Sefer bilgisi bulunamadı!", "Tamam");
+                    return;
+                }
                 
-                Debug.WriteLine($"🚌 Navigation Parameters: seferId={sefer.SeferID}, yolcuSayisi={YolcuSayisi}");
+                // Detaylı sefer kontrolü
+                Debug.WriteLine($"🔍 Sefer Object Details:");
+                Debug.WriteLine($"   - Object Type: {sefer.GetType().Name}");
+                Debug.WriteLine($"   - SeferID: {sefer.SeferID} (Type: {sefer.SeferID.GetType()})");
+                Debug.WriteLine($"   - GuzergahID: {sefer.GuzergahID}");
+                Debug.WriteLine($"   - OtobusID: {sefer.OtobusID}");
+                Debug.WriteLine($"   - Fiyat: {sefer.Fiyat} TL");
+                Debug.WriteLine($"   - Tarih: {sefer.Tarih:yyyy-MM-dd}");
+                Debug.WriteLine($"   - Saat: '{sefer.Saat}'");
+                Debug.WriteLine($"   - YolcuSayisi: {YolcuSayisi}");
                 
-                await Shell.Current.GoToAsync("//koltuklarpage", parameters);
-                Debug.WriteLine("✅ Navigation başarılı");
+                // SeferID kontrolü
+                if (sefer.SeferID <= 0)
+                {
+                    Debug.WriteLine($"❌ FATAL: Geçersiz SeferID: {sefer.SeferID}");
+                    Debug.WriteLine($"❌ Sefer objesi bozuk olabilir!");
+                    
+                    // Tüm seferleri kontrol et
+                    var tumSeferler = await _apiService.GetSeferlerAsync();
+                    Debug.WriteLine($"🔍 Sistemdeki toplam sefer sayısı: {tumSeferler.Count}");
+                    if (tumSeferler.Any())
+                    {
+                        var ilkSefer = tumSeferler.First();
+                        Debug.WriteLine($"🔍 İlk sefer örneği: ID={ilkSefer.SeferID}, Fiyat={ilkSefer.Fiyat}");
+                    }
+                    
+                    await Shell.Current.DisplayAlert("Kritik Hata", 
+                        $"Sefer ID geçersiz: {sefer.SeferID}\nLütfen farklı bir sefer deneyin.", "Tamam");
+                    return;
+                }
+
+                Debug.WriteLine($"✅ SeferID geçerli: {sefer.SeferID}");
+
+                // Navigation başlıyor
+                try
+                {
+                    Debug.WriteLine($"🚀 Navigation başlıyor...");
+                    Debug.WriteLine($"📊 FINAL PARAMETERS: SeferID={sefer.SeferID}, YolcuSayisi={YolcuSayisi}");
+                    
+                    // ViewModel'i oluştur VE hemen verileri yükle
+                    var koltukViewModel = new KoltukSecimViewModel(_apiService);
+                    
+                    // ÖNCE verileri yükle, SONRA sayfayı aç
+                    Debug.WriteLine($"📡 Veri yükleme başlıyor - SeferID: {sefer.SeferID}");
+                    await koltukViewModel.LoadKoltukDataAsync(sefer.SeferID, YolcuSayisi);
+                    Debug.WriteLine($"✅ Veriler yüklendi");
+                    
+                    // Şimdi sayfayı oluştur ve aç
+                    var koltukPage = new KoltukSecimPage(koltukViewModel);
+                    Debug.WriteLine($"🏗️ Sayfa oluşturuldu");
+                    
+                    await Shell.Current.Navigation.PushModalAsync(koltukPage);
+                    Debug.WriteLine($"✅ Navigation tamamlandı");
+                    
+                    return;
+                }
+                catch (Exception directEx)
+                {
+                    Debug.WriteLine($"❌ Navigation Hatası: {directEx.Message}");
+                    Debug.WriteLine($"❌ InnerException: {directEx.InnerException?.Message}");
+                    Debug.WriteLine($"❌ Stack trace: {directEx.StackTrace}");
+                    
+                    await Shell.Current.DisplayAlert(
+                        "Navigation Hatası", 
+                        $"Koltuk seçim sayfası açılamadı:\n{directEx.Message}", 
+                        "Tamam");
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ Navigation hatası: {ex.Message}");
-                // Hata mesajı göster
-                await Shell.Current.DisplayAlert("Hata", 
-                    $"Navigation hatası:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Tamam");
+                Debug.WriteLine($"❌ SeferSecAsync FATAL ERROR: {ex.Message}");
+                Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                
+                await Shell.Current.DisplayAlert(
+                    "Sistem Hatası", 
+                    $"Beklenmeyen bir hata oluştu:\n{ex.Message}", 
+                    "Tamam");
             }
         }
     }

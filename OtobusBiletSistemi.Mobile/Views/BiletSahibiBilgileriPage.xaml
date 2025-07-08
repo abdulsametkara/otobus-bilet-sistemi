@@ -1,140 +1,295 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="OtobusBiletSistemi.Mobile.Views.BiletSahibiBilgileriPage"
-             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:OtobusBiletSistemi.Mobile.ViewModels"
-             xmlns:models="clr-namespace:OtobusBiletSistemi.Mobile.Models"
              xmlns:converters="clr-namespace:OtobusBiletSistemi.Mobile.Converters"
+             x:Class="OtobusBiletSistemi.Mobile.Views.BiletSahibiBilgileriPage"
              x:DataType="viewmodels:BiletSahibiBilgileriViewModel"
-             Title=""
-             BackgroundColor="#667EEA"
+             Title="Yolcu Bilgileri"
+             BackgroundColor="{StaticResource Gray50}"
              Shell.NavBarIsVisible="False">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
-            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-        </ResourceDictionary>
+        <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+        
+        <!-- Enhanced Form Input Style -->
+        <Style x:Key="ModernFormFrameStyle" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="BorderColor" Value="{StaticResource Gray200}" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="Shadow">
+                <Shadow Brush="{StaticResource Gray300}"
+                        Offset="0,2"
+                        Radius="12"
+                        Opacity="0.08" />
+            </Setter>
+        </Style>
+        
+        <!-- Enhanced Entry Style -->
+        <Style x:Key="ModernEntryStyle" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="50" />
+            <Setter Property="Margin" Value="20,0,20,16" />
+        </Style>
+        
+        <!-- Enhanced Label Style -->
+        <Style x:Key="ModernFormLabelStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Margin" Value="20,16,20,8" />
+            <Setter Property="CharacterSpacing" Value="0.3" />
+        </Style>
+        
+        <!-- Enhanced Picker Style -->
+        <Style x:Key="ModernPickerStyle" TargetType="Picker">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="TitleColor" Value="{StaticResource Gray400}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="50" />
+            <Setter Property="Margin" Value="20,0,20,16" />
+        </Style>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        
-        <!-- Header -->
-        <StackLayout Grid.Row="0" BackgroundColor="#667EEA">
-            <Grid Padding="20,45,20,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                
-                <Button Grid.Column="0"
-                        Text="‹"
-                        Command="{Binding GeriCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="White"
-                        FontSize="28" />
-                
-                <Label Grid.Column="1" 
-                       Text="Bilet Sahibi Bilgileri" 
-                       FontSize="18" 
-                       TextColor="White" 
-                       HorizontalOptions="Center" />
-                
-                <Label Grid.Column="2"
-                       Text="{Binding SayfaBilgisi}"
-                       FontSize="12"
-                       TextColor="White" />
-            </Grid>
-        </StackLayout>
+    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
 
-        <!-- Content -->
-        <ScrollView Grid.Row="1" Padding="20">
-            <Frame BackgroundColor="White" CornerRadius="25" Padding="25">
-                <StackLayout Spacing="20" BindingContext="{Binding MevcutBiletSahibi}" x:DataType="models:BiletSahibi">
+        <!-- 1. Enhanced Header with Gradient -->
+        <Frame Grid.Row="0" BackgroundColor="{StaticResource White}" CornerRadius="0" Padding="20,24,20,24" HasShadow="False">
+            <Frame.Shadow>
+                <Shadow Brush="{StaticResource Gray300}"
+                        Offset="0,2"
+                        Radius="8"
+                        Opacity="0.1" />
+            </Frame.Shadow>
+            
+            <StackLayout Spacing="20">
+                <!-- App Bar with Enhanced Styling -->
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Border Style="{StaticResource IconButtonStyle}" HorizontalOptions="Start" BackgroundColor="{StaticResource Gray100}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GeriCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Path Data="M15.5,19 L8,11.5 L15.5,4" 
+                              Stroke="{StaticResource TextPrimary}" 
+                              StrokeThickness="2.5" 
+                              Aspect="Uniform" 
+                              VerticalOptions="Center" 
+                              HorizontalOptions="Center"/>
+                    </Border>
                     
-                    <Label Text="{Binding KoltukNo, StringFormat='Koltuk: {0}'}" 
-                           FontSize="16" 
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center" />
+                    <StackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="4">
+                        <Label Text="Yolcu Bilgileri" 
+                               Style="{StaticResource H3Style}" 
+                               HorizontalOptions="Center" 
+                               FontSize="20"/>
+                        <Label Text="Güvenli ve hızlı bilet işlemi" 
+                               Style="{StaticResource CaptionStyle}" 
+                               HorizontalOptions="Center"
+                               TextColor="{StaticResource Gray500}"/>
+                    </StackLayout>
                     
-                    <Entry Text="{Binding Ad}" Placeholder="Ad" />
-                    <Entry Text="{Binding Soyad}" Placeholder="Soyad" />
-                    <Entry Text="{Binding TcKimlikNo}" 
-                           Placeholder="TC Kimlik No" 
-                           Keyboard="Numeric" 
-                           MaxLength="11" />
-                    
-                    <!-- TC Kimlik Hata Mesajı -->
-                    <Label Text="{Binding TcKimlikHataMesaji}"
-                           TextColor="Red"
-                           FontSize="12"
-                           IsVisible="{Binding TcKimlikHataMesaji, Converter={StaticResource IsNotNullOrEmptyConverter}}"
-                           Margin="5,0,0,0" />
-                    <Entry Text="{Binding Telefon}" 
-                           Placeholder="Telefon" 
-                           Keyboard="Telephone" />
-                    <Entry Text="{Binding Email}" 
-                           Placeholder="E-posta" 
-                           Keyboard="Email" />
-                    
+                    <!-- Passenger Counter -->
+                    <Frame Grid.Column="2" 
+                           BackgroundColor="{StaticResource Primary}" 
+                           CornerRadius="12" 
+                           Padding="8,4" 
+                           HasShadow="False"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center">
+                        <Label Text="{Binding CurrentPassengerInfo}" 
+                               TextColor="{StaticResource White}" 
+                               FontSize="12" 
+                               FontAttributes="Bold"/>
+                    </Frame>
+                </Grid>
+
+                <!-- Compact Journey Info -->
+                <Frame BackgroundColor="{StaticResource Gray50}" 
+                       CornerRadius="8" 
+                       Padding="12" 
+                       HasShadow="False" 
+                       BorderColor="{StaticResource Gray200}">
+                    <Grid ColumnDefinitions="*,Auto,*" VerticalOptions="Center">
+                        <Label Grid.Column="0" 
+                               Text="{Binding KalkisYeri}" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center"/>
+                        
+                        <Path Grid.Column="1" 
+                              Stroke="{StaticResource Primary}" 
+                              StrokeThickness="2" 
+                              Data="M6,12 L18,12 M15,9 L18,12 L15,15" 
+                              VerticalOptions="Center" 
+                              HorizontalOptions="Center"
+                              Margin="16,0"/>
+                        
+                        <Label Grid.Column="2" 
+                               Text="{Binding VarisYeri}" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center"/>
+                    </Grid>
+                </Frame>
+            </StackLayout>
+        </Frame>
+
+        <!-- 2. Enhanced Content: Modern Form -->
+        <ScrollView Grid.Row="1" Padding="20,24">
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Enhanced Section Header -->
+                <StackLayout Spacing="8" Margin="0,0,0,24">
+                    <Label Text="{Binding MevcutBiletSahibi.KoltukNo, StringFormat='🪑 Koltuk {0} Yolcu Bilgileri'}" 
+                           Style="{StaticResource H2Style}" 
+                           FontSize="20"
+                           FontAttributes="Bold"/>
+                    <Label Text="Bilet sahibi bilgilerini eksiksiz doldurunuz" 
+                           Style="{StaticResource BodySmallStyle}" 
+                           TextColor="{StaticResource Gray500}"/>
                 </StackLayout>
-            </Frame>
-        </ScrollView>
 
-        <!-- Bottom -->
-        <StackLayout Grid.Row="2" Padding="20">
-            <!-- Navigation Buttons -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" 
-                  IsVisible="{Binding BiletSahipleri.Count, Converter={StaticResource IntToGreaterThanOneConverter}}">
-                <Button Grid.Column="0"
-                        Text="Önceki"
-                        Command="{Binding OncekiBiletSahibiCommand}"
-                        IsEnabled="{Binding CanGoPrevious}"
-                        BackgroundColor="#95A5A6"
-                        TextColor="White"
-                        CornerRadius="10"
-                        HeightRequest="45" />
-                <Button Grid.Column="1"
-                        Text="{Binding NextButtonText}"
-                        Command="{Binding SonrakiBiletSahibiCommand}"
-                        IsEnabled="{Binding CanGoNext}"
-                        BackgroundColor="#3498DB"
-                        TextColor="White"
-                        CornerRadius="10"
-                        HeightRequest="45" />
-            </Grid>
+                <!-- TC Kimlik No -->
+                <Frame Style="{StaticResource ModernFormFrameStyle}">
+                    <StackLayout>
+                        <Label Text="🆔 TC KİMLİK NUMARASI *" Style="{StaticResource ModernFormLabelStyle}"/>
+                        <Entry Text="{Binding MevcutBiletSahibi.TcKimlikNo}" 
+                               Placeholder="12345678912" 
+                               Keyboard="Numeric" 
+                               MaxLength="11" 
+                               Style="{StaticResource ModernEntryStyle}"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Ad and Soyad in Enhanced Grid -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                    <Frame Grid.Column="0" Style="{StaticResource ModernFormFrameStyle}">
+                        <StackLayout>
+                            <Label Text="👤 AD *" Style="{StaticResource ModernFormLabelStyle}"/>
+                            <Entry Text="{Binding MevcutBiletSahibi.Ad}" 
+                                   Placeholder="Adınız" 
+                                   Keyboard="Text" 
+                                   Style="{StaticResource ModernEntryStyle}"/>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Grid.Column="1" Style="{StaticResource ModernFormFrameStyle}">
+                        <StackLayout>
+                            <Label Text="👤 SOYAD *" Style="{StaticResource ModernFormLabelStyle}"/>
+                            <Entry Text="{Binding MevcutBiletSahibi.Soyad}" 
+                                   Placeholder="Soyadınız" 
+                                   Keyboard="Text" 
+                                   Style="{StaticResource ModernEntryStyle}"/>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- Enhanced Cinsiyet Selection -->
+                <Frame Style="{StaticResource ModernFormFrameStyle}">
+                    <StackLayout>
+                        <Label Text="⚧ CİNSİYET *" Style="{StaticResource ModernFormLabelStyle}"/>
+                        <Picker Title="Cinsiyet seçiniz" 
+                                SelectedItem="{Binding MevcutBiletSahibi.Cinsiyet}" 
+                                Style="{StaticResource ModernPickerStyle}">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Erkek</x:String>
+                                    <x:String>Kadın</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Contact Information Section -->
+                <Label Text="📞 İletişim Bilgileri" 
+                       Style="{StaticResource H3Style}" 
+                       Margin="0,32,0,16" 
+                       FontSize="18"/>
+
+                <!-- Telefon -->
+                <Frame Style="{StaticResource ModernFormFrameStyle}">
+                    <StackLayout>
+                        <Label Text="📱 TELEFON NUMARASI *" Style="{StaticResource ModernFormLabelStyle}"/>
+                        <Entry Text="{Binding MevcutBiletSahibi.Telefon}" 
+                               Placeholder="05xxxxxxxxx" 
+                               Keyboard="Telephone" 
+                               Style="{StaticResource ModernEntryStyle}"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- E-posta -->
+                <Frame Style="{StaticResource ModernFormFrameStyle}">
+                    <StackLayout>
+                        <Label Text="📧 E-POSTA ADRESİ *" Style="{StaticResource ModernFormLabelStyle}"/>
+                        <Entry Text="{Binding MevcutBiletSahibi.Email}" 
+                               Placeholder="ornek@email.com" 
+                               Keyboard="Email" 
+                               Style="{StaticResource ModernEntryStyle}"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Bottom Spacing -->
+                <BoxView HeightRequest="24" Color="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- 3. Enhanced Footer with Modern Buttons -->
+        <Frame Grid.Row="2" BackgroundColor="{StaticResource White}" CornerRadius="0" Padding="20,24" HasShadow="False">
+            <Frame.Shadow>
+                <Shadow Brush="{StaticResource Gray300}"
+                        Offset="0,-2"
+                        Radius="12"
+                        Opacity="0.1" />
+            </Frame.Shadow>
             
-            <!-- Payment Button -->
-            <Button Text="Ödemeye Devam Et"
-                    Command="{Binding OdemeDevamEtCommand}"
-                    IsVisible="{Binding ShowPaymentButton}"
-                    IsEnabled="{Binding MevcutBiletSahibi.IsValid}"
-                    BackgroundColor="#667EEA"
-                    TextColor="White"
-                    CornerRadius="25"
-                    HeightRequest="55"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    Margin="0,10,0,0">
-                <Button.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#667EEA" Offset="0.0" />
-                        <GradientStop Color="#764BA2" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-            
-            <!-- Show current passenger validation status -->
-            <Label Text="Lütfen tüm bilgileri eksiksiz doldurun"
-                   TextColor="Orange"
-                   FontSize="12"
-                   HorizontalOptions="Center"
-                   IsVisible="{Binding MevcutBiletSahibi.IsValid, Converter={StaticResource InvertedBoolConverter}}"
-                   Margin="0,5,0,0" />
-                   
-        </StackLayout>
+            <VerticalStackLayout Spacing="16">
+                <!-- Navigation for multiple passengers -->
+                <Grid ColumnDefinitions="*,*" 
+                      ColumnSpacing="16" 
+                      IsVisible="{Binding HasMultiplePassengers}">
+                    <Button Grid.Column="0" 
+                            Text="← Önceki" 
+                            Command="{Binding OncekiBiletSahibiCommand}" 
+                            IsEnabled="{Binding CanGoPrevious}" 
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HeightRequest="48"
+                            CornerRadius="12"/>
+                    <Button Grid.Column="1" 
+                            Text="Sonraki →" 
+                            Command="{Binding SonrakiBiletSahibiCommand}" 
+                            IsEnabled="{Binding CanGoNext}" 
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            HeightRequest="48"
+                            CornerRadius="12"
+                            IsVisible="{Binding CanGoNext}"/>
+                    <Button Grid.Column="1" 
+                            Text="💳 Ödemeye Geç" 
+                            Command="{Binding OdemeYapCommand}" 
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            HeightRequest="48"
+                            CornerRadius="12"
+                            IsVisible="{Binding IsLastPassenger}"/>
+                </Grid>
+                
+                <!-- Single Passenger Button -->
+                <Button Text="💳 Ödemeye Geç" 
+                        Command="{Binding OdemeYapCommand}" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        IsVisible="{Binding IsSinglePassenger}"
+                        HeightRequest="56"
+                        FontSize="18"
+                        CornerRadius="16"/>
+            </VerticalStackLayout>
+        </Frame>
 
     </Grid>
-
 </ContentPage> 

@@ -1,173 +1,191 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtobusBiletSistemi.Mobile.Models;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
-namespace OtobusBiletSistemi.Mobile.ViewModels;
-
-[QueryProperty(nameof(SeferId), nameof(SeferId))]
-[QueryProperty(nameof(SecilenKoltukIds), nameof(SecilenKoltukIds))]
-[QueryProperty(nameof(SecilenKoltukNos), nameof(SecilenKoltukNos))]
-[QueryProperty(nameof(ToplamFiyat), nameof(ToplamFiyat))]
-[QueryProperty(nameof(KalkisYeri), nameof(KalkisYeri))]
-[QueryProperty(nameof(VarisYeri), nameof(VarisYeri))]
-[QueryProperty(nameof(SeferTarihi), nameof(SeferTarihi))]
-[QueryProperty(nameof(KalkisSaati), nameof(KalkisSaati))]
-public partial class BiletSahibiBilgileriViewModel : ObservableObject
+namespace OtobusBiletSistemi.Mobile.ViewModels
 {
-    [ObservableProperty]
-    private int seferId;
-
-    [ObservableProperty]
-    private List<int> secilenKoltukIds = new();
-
-    [ObservableProperty]
-    private List<string> secilenKoltukNos = new();
-
-    [ObservableProperty]
-    private decimal toplamFiyat;
-
-    [ObservableProperty]
-    private string kalkisYeri = string.Empty;
-
-    [ObservableProperty]
-    private string varisYeri = string.Empty;
-
-    [ObservableProperty]
-    private string seferTarihi = string.Empty;
-
-    [ObservableProperty]
-    private string kalkisSaati = string.Empty;
-
-    [ObservableProperty]
-    private ObservableCollection<BiletSahibi> biletSahipleri = new();
-
-    [ObservableProperty]
-    private int mevcutIndex = 0;
-
-    [ObservableProperty]
-    private bool isLoading = false;
-
-    // Computed Properties
-    public BiletSahibi? MevcutBiletSahibi => 
-        BiletSahipleri.Count > MevcutIndex ? BiletSahipleri[MevcutIndex] : null;
-
-    public bool CanContinue => BiletSahipleri.All(b => b.IsValid);
-    public bool CanGoNext => MevcutIndex < BiletSahipleri.Count - 1;
-    public bool CanGoPrevious => MevcutIndex > 0;
-    public bool IsLastPassenger => MevcutIndex == BiletSahipleri.Count - 1;
-    public bool ShowPaymentButton => IsLastPassenger && MevcutBiletSahibi?.IsValid == true;
-    public bool ShowNavigationButtons => BiletSahipleri.Count > 1;
-    public string SayfaBilgisi => $"{MevcutIndex + 1} / {BiletSahipleri.Count}";
-    public string BaslikMetni => $"Bilet Sahibi Bilgileri - Koltuk {MevcutBiletSahibi?.KoltukNo}";
-    public string NextButtonText => IsLastPassenger ? "Tamamla" : "Sonraki";
-
-    public BiletSahibiBilgileriViewModel()
+    [QueryProperty(nameof(SeferId), "SeferId")]
+    [QueryProperty(nameof(SecilenKoltukIds), "SecilenKoltukIds")]
+    [QueryProperty(nameof(SecilenKoltukNos), "SecilenKoltukNos")]
+    [QueryProperty(nameof(ToplamFiyat), "ToplamFiyat")]
+    [QueryProperty(nameof(KalkisYeri), "KalkisYeri")]
+    [QueryProperty(nameof(VarisYeri), "VarisYeri")]
+    [QueryProperty(nameof(SeferTarihi), "SeferTarihi")]
+    [QueryProperty(nameof(KalkisSaati), "KalkisSaati")]
+    public partial class BiletSahibiBilgileriViewModel : ObservableObject
     {
-        Debug.WriteLine("🎫 BiletSahibiBilgileriViewModel oluşturuldu");
-    }
+        [ObservableProperty]
+        private int seferId;
 
-    partial void OnSecilenKoltukNosChanged(List<string> value)
-    {
-        if (value?.Count > 0)
+        [ObservableProperty]
+        private List<int> secilenKoltukIds = new();
+
+        [ObservableProperty]
+        private List<string> secilenKoltukNos = new();
+
+        [ObservableProperty]
+        private decimal toplamFiyat;
+
+        [ObservableProperty]
+        private string kalkisYeri = "";
+
+        [ObservableProperty]
+        private string varisYeri = "";
+
+        [ObservableProperty]
+        private string seferTarihi = "";
+
+        [ObservableProperty]
+        private string kalkisSaati = "";
+
+        [ObservableProperty]
+        private ObservableCollection<BiletSahibi> biletSahipleri = new();
+
+        [ObservableProperty]
+        private int mevcutIndex = 0;
+        
+        [ObservableProperty]
+        private BiletSahibi? mevcutBiletSahibi;
+
+        public bool CanGoNext => MevcutIndex < BiletSahipleri.Count - 1;
+        public bool CanGoPrevious => MevcutIndex > 0;
+        public bool IsLastPassenger => MevcutIndex == BiletSahipleri.Count - 1;
+        public bool ShowPaymentButton => IsLastPassenger && mevcutBiletSahibi?.IsValid == true;
+        public bool IsSinglePassenger => BiletSahipleri.Count == 1;
+        public bool HasMultiplePassengers => BiletSahipleri.Count > 1;
+        public string SayfaBilgisi => $"{MevcutIndex + 1} / {BiletSahipleri.Count}";
+        public string CurrentPassengerInfo => $"{MevcutIndex + 1}/{BiletSahipleri.Count}";
+        public string NextButtonText => IsLastPassenger ? "Ödemeye Geç" : "Sonraki Yolcu";
+        
+        public BiletSahibiBilgileriViewModel()
         {
-            InitializeBiletSahipleri();
         }
-    }
 
-    private void InitializeBiletSahipleri()
-    {
-        Debug.WriteLine($"🎫 Bilet sahipleri başlatılıyor: {SecilenKoltukNos.Count} koltuk");
-
-        BiletSahipleri.Clear();
-
-        for (int i = 0; i < SecilenKoltukNos.Count; i++)
+        partial void OnSecilenKoltukNosChanged(List<string> value)
         {
-            var biletSahibi = new BiletSahibi
+            if (value?.Any() == true)
             {
-                KoltukNo = SecilenKoltukNos[i],
-                KoltukId = SecilenKoltukIds[i]
-            };
-
-            BiletSahipleri.Add(biletSahibi);
-            Debug.WriteLine($"   ✅ Bilet sahibi eklendi: Koltuk {biletSahibi.KoltukNo}");
+                biletSahipleri.Clear();
+                for (int i = 0; i < value.Count; i++)
+                {
+                    var biletSahibi = new BiletSahibi
+                    {
+                        KoltukNo = value[i],
+                        KoltukId = SecilenKoltukIds[i]
+                    };
+                    biletSahipleri.Add(biletSahibi);
+                }
+                UpdateMevcutBiletSahibi();
+                OnPropertyChanged(nameof(SayfaBilgisi));
+                OnPropertyChanged(nameof(CurrentPassengerInfo));
+                OnPropertyChanged(nameof(IsSinglePassenger));
+                OnPropertyChanged(nameof(HasMultiplePassengers));
+                OnPropertyChanged(nameof(CanGoNext));
+                OnPropertyChanged(nameof(CanGoPrevious));
+                OnPropertyChanged(nameof(IsLastPassenger));
+                OnPropertyChanged(nameof(ShowPaymentButton));
+            }
         }
-
-        // UI güncellemelerini tetikle
-        OnPropertyChanged(nameof(MevcutBiletSahibi));
-        OnPropertyChanged(nameof(SayfaBilgisi));
-        OnPropertyChanged(nameof(BaslikMetni));
-        OnPropertyChanged(nameof(CanGoNext));
-        OnPropertyChanged(nameof(CanGoPrevious));
-        OnPropertyChanged(nameof(IsLastPassenger));
-        OnPropertyChanged(nameof(ShowPaymentButton));
-        OnPropertyChanged(nameof(ShowNavigationButtons));
-        OnPropertyChanged(nameof(NextButtonText));
-    }
-
-    [RelayCommand]
-    private void SonrakiBiletSahibi()
-    {
-        if (CanGoNext)
+        
+        partial void OnMevcutIndexChanged(int value)
         {
-            MevcutIndex++;
-            OnPropertyChanged(nameof(MevcutBiletSahibi));
-            OnPropertyChanged(nameof(SayfaBilgisi));
-            OnPropertyChanged(nameof(BaslikMetni));
+            UpdateMevcutBiletSahibi();
+            OnPropertyChanged(nameof(CurrentPassengerInfo));
             OnPropertyChanged(nameof(CanGoNext));
             OnPropertyChanged(nameof(CanGoPrevious));
             OnPropertyChanged(nameof(IsLastPassenger));
             OnPropertyChanged(nameof(ShowPaymentButton));
-            OnPropertyChanged(nameof(NextButtonText));
         }
-    }
-
-    [RelayCommand]
-    private void OncekiBiletSahibi()
-    {
-        if (CanGoPrevious)
+        
+        private void UpdateMevcutBiletSahibi()
         {
-            MevcutIndex--;
-            OnPropertyChanged(nameof(MevcutBiletSahibi));
-            OnPropertyChanged(nameof(SayfaBilgisi));
-            OnPropertyChanged(nameof(BaslikMetni));
-            OnPropertyChanged(nameof(CanGoNext));
-            OnPropertyChanged(nameof(CanGoPrevious));
-            OnPropertyChanged(nameof(IsLastPassenger));
-            OnPropertyChanged(nameof(ShowPaymentButton));
-            OnPropertyChanged(nameof(NextButtonText));
+            mevcutBiletSahibi = BiletSahipleri.Count > MevcutIndex ? BiletSahipleri[MevcutIndex] : null;
         }
-    }
-
-    [RelayCommand]
-    private async Task OdemeDevamEtAsync()
-    {
-        if (!CanContinue)
+        
+        [RelayCommand]
+        private void SonrakiBiletSahibi()
         {
-            await Shell.Current.DisplayAlert("Uyarı", 
-                "Lütfen tüm bilet sahiplerinin bilgilerini eksiksiz doldurun!", "Tamam");
-            return;
+            if (CanGoNext)
+            {
+                MevcutIndex++;
+            }
         }
 
-        // TODO: Ödeme sayfasına geç
-        await Shell.Current.DisplayAlert("Bilgi", 
-            $"Tüm bilgiler tamamlandı!\n" +
-            $"Toplam: {ToplamFiyat:F0} TL\n" +
-            $"Koltuklar: {string.Join(", ", SecilenKoltukNos)}", "Tamam");
-    }
+        [RelayCommand]
+        private void OncekiBiletSahibi()
+        {
+            if (CanGoPrevious)
+            {
+                MevcutIndex--;
+            }
+        }
 
-    [RelayCommand]
-    private async Task GeriAsync()
-    {
-        await Shell.Current.GoToAsync("..");
-    }
+        [RelayCommand]
+        private async Task GeriAsync()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
 
-    partial void OnMevcutIndexChanged(int value)
-    {
-        OnPropertyChanged(nameof(CanContinue));
-        OnPropertyChanged(nameof(IsLastPassenger));
-        OnPropertyChanged(nameof(ShowPaymentButton));
-        OnPropertyChanged(nameof(NextButtonText));
+        [RelayCommand]
+        private async Task OdemeYapAsync()
+        {
+            try
+            {
+                // Mevcut yolcunun bilgilerini kontrol et
+                if (mevcutBiletSahibi == null)
+                {
+                    await Shell.Current.DisplayAlert("Hata", "Yolcu bilgileri bulunamadı.", "Tamam");
+                    return;
+                }
+
+                // Mevcut yolcunun bilgilerini kontrol et
+                if (!mevcutBiletSahibi.IsValid)
+                {
+                    await Shell.Current.DisplayAlert("Eksik Bilgi", "Lütfen tüm zorunlu alanları doldurun.", "Tamam");
+                    return;
+                }
+
+                // Tüm yolcuların bilgilerini kontrol et
+                if (!BiletSahipleri.All(b => b.IsValid))
+                {
+                    await Shell.Current.DisplayAlert("Eksik Bilgi", "Lütfen tüm yolcuların bilgilerini eksiksiz doldurun.", "Tamam");
+                    return;
+                }
+
+                Debug.WriteLine("✅ Validasyon başarılı, ödeme sayfasına yönlendiriliyor...");
+                
+                // Ödeme sayfasına sadece temel bilgileri geçir - complex object serialization'dan kaçın
+                var parameters = new Dictionary<string, object>
+                {
+                    ["SeferId"] = SeferId,
+                    ["BiletSayisi"] = BiletSahipleri.Count,
+                    ["ToplamFiyat"] = ToplamFiyat,
+                    ["KalkisYeri"] = KalkisYeri ?? "",
+                    ["VarisYeri"] = VarisYeri ?? "",
+                    ["SeferTarihi"] = SeferTarihi ?? "",
+                    ["KalkisSaati"] = KalkisSaati ?? ""
+                };
+
+                Debug.WriteLine($"📋 Navigation parametreleri:");
+                Debug.WriteLine($"   SeferId: {SeferId}");
+                Debug.WriteLine($"   BiletSayisi: {BiletSahipleri.Count}");
+                Debug.WriteLine($"   ToplamFiyat: {ToplamFiyat}");
+                Debug.WriteLine($"   KalkisYeri: {KalkisYeri}");
+                Debug.WriteLine($"   VarisYeri: {VarisYeri}");
+
+                await Shell.Current.GoToAsync("OdemePage", parameters);
+                Debug.WriteLine("✅ Navigation başarılı!");
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ Ödeme sayfasına geçiş hatası: {ex.Message}");
+                Debug.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                await Shell.Current.DisplayAlert("Hata", $"Bir hata oluştu: {ex.Message}\n\nLütfen tekrar deneyin.", "Tamam");
+            }
+        }
     }
 } 

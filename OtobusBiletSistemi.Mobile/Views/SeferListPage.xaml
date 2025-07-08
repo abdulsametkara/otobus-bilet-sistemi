@@ -5,478 +5,531 @@
              xmlns:converters="clr-namespace:OtobusBiletSistemi.Mobile.Converters"
              x:Class="OtobusBiletSistemi.Mobile.Views.SeferListPage"
              x:Name="SeferListPageRoot"
-             Title="Sefer Ara"
-             BackgroundColor="#F8F9FA">
+             Title="Ana Sayfa"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundMain}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
             
-            <!-- Web ile aynı gradient'lar -->
-            <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#667EEA" Offset="0.0" />
-                <GradientStop Color="#764BA2" Offset="1.0" />
-            </LinearGradientBrush>
-            
-            <LinearGradientBrush x:Key="HeroGradient" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#FF6B6B" Offset="0.0" />
-                <GradientStop Color="#FECA57" Offset="1.0" />
-            </LinearGradientBrush>
-            
-            <!-- Professional Card Style -->
-            <Style x:Key="SearchCardStyle" TargetType="Frame">
-                <Setter Property="BackgroundColor" Value="White" />
-                <Setter Property="CornerRadius" Value="20" />
+            <!-- Modern Card Styles -->
+            <Style x:Key="HeroCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceCard}" />
+                <Setter Property="CornerRadius" Value="16" />
                 <Setter Property="HasShadow" Value="True" />
-                <Setter Property="Padding" Value="30" />
-                <Setter Property="Margin" Value="20,-40,20,20" />
+                <Setter Property="Padding" Value="20" />
+                <Setter Property="Margin" Value="8" />
+                <Setter Property="BorderColor" Value="Transparent" />
             </Style>
             
-            <Style x:Key="ResultCardStyle" TargetType="Frame">
-                <Setter Property="BackgroundColor" Value="White" />
-                <Setter Property="CornerRadius" Value="15" />
+            <Style x:Key="QuickActionCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="CornerRadius" Value="12" />
                 <Setter Property="HasShadow" Value="True" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="20,10" />
+                <Setter Property="Padding" Value="16,12" />
+                <Setter Property="Margin" Value="6" />
+                <Setter Property="BorderColor" Value="Transparent" />
             </Style>
             
-            <!-- Modern Button Styles -->
-            <Style x:Key="SearchButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource PrimaryGradient}" />
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="CornerRadius" Value="10" />
-                <Setter Property="HeightRequest" Value="55" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="Margin" Value="0,5" />
+            <Style x:Key="TripCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceCard}" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HasShadow" Value="True" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Margin" Value="8,6" />
+                <Setter Property="BorderColor" Value="{StaticResource SurfaceBorder}" />
             </Style>
             
-            <Style x:Key="ClearButtonStyle" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#6C757D" />
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="CornerRadius" Value="10" />
-                <Setter Property="HeightRequest" Value="55" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="Margin" Value="0,5" />
-            </Style>
-            
-            <Style x:Key="HeroButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource HeroGradient}" />
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="CornerRadius" Value="30" />
-                <Setter Property="HeightRequest" Value="55" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="Padding" Value="25,0" />
-            </Style>
-            
-            <!-- Professional Form Styles -->
-            <Style x:Key="FormLabelStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#555" />
-                <Setter Property="Margin" Value="0,0,0,8" />
-            </Style>
-            
-            <Style x:Key="FormEntryStyle" TargetType="Entry">
-                <Setter Property="BackgroundColor" Value="#F8F9FA" />
-                <Setter Property="TextColor" Value="#333" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,0,0,20" />
-            </Style>
-            
-            <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
-                <Setter Property="BackgroundColor" Value="#F8F9FA" />
-                <Setter Property="TextColor" Value="#333" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,0,0,20" />
-            </Style>
-            
-            <Style x:Key="FormPickerStyle" TargetType="Picker">
-                <Setter Property="BackgroundColor" Value="#F8F9FA" />
-                <Setter Property="TextColor" Value="#333" />
-                <Setter Property="TitleColor" Value="#888" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,0,0,20" />
-                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
-            
-            <!-- Modern Sefer Card Style -->
-            <Style x:Key="SeferCardStyle" TargetType="Frame">
-                <Setter Property="BackgroundColor" Value="White" />
+            <Style x:Key="SeferResultCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceCard}" />
                 <Setter Property="CornerRadius" Value="12" />
                 <Setter Property="HasShadow" Value="True" />
                 <Setter Property="Padding" Value="20" />
-                <Setter Property="Margin" Value="15,8" />
-            </Style>
-            
-            <!-- Header Styles -->
-            <Style x:Key="CardHeaderStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="FontSize" Value="18" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="Margin" Value="0,8" />
+                <Setter Property="BorderColor" Value="{StaticResource SurfaceBorder}" />
             </Style>
             
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <StackLayout Spacing="0">
+    <ScrollView BackgroundColor="{StaticResource BackgroundMain}">
+        <StackLayout Spacing="0" Padding="0">
             
-            <!-- Header Section (Web benzeri hero) -->
-            <Grid Background="{StaticResource PrimaryGradient}" HeightRequest="140">
-                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                    <Label Text="🚌 Otobüs Bilet Sistemi"
-                           TextColor="White"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center" />
-                    <Label Text="Türkiye'nin En Güvenilir Otobüs Bileti Platformu"
-                           TextColor="White"
-                           FontSize="14"
-                           Opacity="0.9"
-                           HorizontalOptions="Center"
-                           Margin="0,5,0,0" />
+            <!-- Modern Compact Header -->
+            <Grid BackgroundColor="#667EEA" HeightRequest="120" Padding="20,45,20,20">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#667EEA" Offset="0.0" />
+                        <GradientStop Color="#764BA2" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <!-- App Logo -->
+                <Frame Grid.Column="0" BackgroundColor="White" CornerRadius="12" 
+                       Padding="8" HasShadow="False" WidthRequest="48" HeightRequest="48">
+                    <Label Text="🚌" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Frame>
+                
+                <!-- App Name -->
+                <StackLayout Grid.Column="1" VerticalOptions="Center" Margin="15,0,0,0">
+                    <Label Text="OtoBilet" FontSize="20" FontAttributes="Bold" 
+                           TextColor="White" VerticalOptions="Center" />
                 </StackLayout>
+                
+                <!-- Profile Button -->
+                <Frame Grid.Column="2" BackgroundColor="White" CornerRadius="20" 
+                       Padding="0" HasShadow="False" WidthRequest="40" HeightRequest="40">
+                    <Button Text="👤" BackgroundColor="Transparent" TextColor="#667EEA" 
+                            FontSize="18" />
+                </Frame>
             </Grid>
             
-            <!-- Search Form Card (Web'deki search-card benzeri) -->
-            <Frame Style="{StaticResource SearchCardStyle}">
-                <StackLayout Spacing="20">
+            <!-- Search Section -->
+            <StackLayout BackgroundColor="{StaticResource BackgroundMain}" Padding="20" Spacing="16">
+                
+                <!-- Search Section Title -->
+                <Label Text="🔍 Sefer Arama" 
+                       Style="{StaticResource H1Style}"
+                       HorizontalOptions="Center" />
+                
+                <!-- Professional Search Form Card -->
+                <Frame BackgroundColor="{StaticResource SurfaceCard}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="20"
+                       Margin="0"
+                       BorderColor="{StaticResource SurfaceBorder}">
+                    <Frame.Shadow>
+                        <Shadow Brush="{StaticResource Black}"
+                                Offset="0,4"
+                                Radius="20"
+                                Opacity="0.08" />
+                    </Frame.Shadow>
                     
-                    <!-- Form Header -->
-                    <Label Text="🔍 Sefer Arama" 
-                           FontSize="20" 
-                           FontAttributes="Bold" 
-                           TextColor="#667EEA"
-                           HorizontalOptions="Center"
-                           Margin="0,0,0,10" />
-                    
-                    <!-- Form Fields -->
-                    <StackLayout Spacing="0">
-                        <Label Text="📍 Nereden" Style="{StaticResource FormLabelStyle}" />
-                        <Frame BackgroundColor="White" 
-                               CornerRadius="12" 
-                               Padding="0" 
-                               HasShadow="True"
-                               BorderColor="#DEE2E6"
-                               Margin="0,0,0,20">
-                            <Picker x:Name="KalkisYeriPicker"
-                                    ItemsSource="{Binding KalkisYerleri}"
-                                    SelectedItem="{Binding KalkisYeri}"
-                                    ItemDisplayBinding="{Binding .}"
-                                    Title="Kalkış şehri seçiniz"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#495057"
-                                    TitleColor="#6C757D"
-                                    FontSize="16"
-                                    HeightRequest="50"
-                                    Margin="15,0"
-                                    HorizontalOptions="FillAndExpand" />
-                        </Frame>
-                    </StackLayout>
-                    
-                    <StackLayout Spacing="0">
-                        <Label Text="📍 Nereye" Style="{StaticResource FormLabelStyle}" />
-                        <Frame BackgroundColor="White" 
-                               CornerRadius="12" 
-                               Padding="0" 
-                               HasShadow="True"
-                               BorderColor="#DEE2E6"
-                               Margin="0,0,0,20">
-                            <Picker x:Name="VarisYeriPicker"
-                                    ItemsSource="{Binding VarisYerleri}"
-                                    SelectedItem="{Binding VarisYeri}"
-                                    ItemDisplayBinding="{Binding .}"
-                                    Title="Varış şehri seçiniz"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#495057"
-                                    TitleColor="#6C757D"
-                                    FontSize="16"
-                                    HeightRequest="50"
-                                    Margin="15,0"
-                                    HorizontalOptions="FillAndExpand" />
-                        </Frame>
-                    </StackLayout>
-                    
-                    <StackLayout Spacing="0">
-                        <Label Text="📅 Tarih" Style="{StaticResource FormLabelStyle}" />
-                        <DatePicker x:Name="TarihPicker"
-                                   Date="{Binding Tarih}"
-                                   Style="{StaticResource FormDatePickerStyle}" />
-                    </StackLayout>
-                    
-                    <StackLayout Spacing="0">
-                        <Label Text="👥 Yolcu Sayısı" Style="{StaticResource FormLabelStyle}" />
-                        <Frame BackgroundColor="White" 
-                               CornerRadius="12" 
-                               Padding="0" 
-                               HasShadow="True"
-                               BorderColor="#DEE2E6"
-                               Margin="0,0,0,20">
-                            <Picker x:Name="YolcuSayisiPicker"
-                                    ItemsSource="{Binding YolcuSayisiListesi}"
-                                    SelectedItem="{Binding YolcuSayisi}"
-                                    SelectedIndex="0"
-                                    Title="Yolcu sayısı seçiniz"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#495057"
-                                    TitleColor="#6C757D"
-                                    FontSize="16"
-                                    HeightRequest="50"
-                                    Margin="15,0"
-                                    HorizontalOptions="FillAndExpand" />
-                        </Frame>
-                    </StackLayout>
-                    
-                    <!-- Action Buttons -->
-                    <Grid ColumnDefinitions="2*,1*" ColumnSpacing="15" Margin="0,10,0,0">
-                        <Button Text="🔍 Sefer Ara"
-                                Command="{Binding SearchSeferlerCommand}"
-                                Style="{StaticResource SearchButtonStyle}"
-                                Grid.Column="0" />
+                    <StackLayout Spacing="20">
                         
-                        <Button Text="🗑️ Temizle"
-                                Command="{Binding ClearSearchCommand}"
-                                Style="{StaticResource ClearButtonStyle}"
-                                Grid.Column="1" />
-                    </Grid>
-                    
-                    <!-- Test Navigation Button -->
-                    <Button Text="🧪 Test Navigation (Debug)"
-                            Command="{Binding TestNavigationCommand}"
-                            BackgroundColor="Orange"
-                            TextColor="White"
-                            CornerRadius="10"
-                            HeightRequest="45"
-                            FontSize="14"
-                            Margin="0,10,0,0" />
-                    
-                </StackLayout>
-            </Frame>
-            
-            <!-- Results Section -->
-            <Frame Style="{StaticResource ResultCardStyle}">
-                <StackLayout Spacing="0">
-                    
-                    <!-- Results Header (Web'deki card-header) -->
-                    <Grid Background="{StaticResource PrimaryGradient}" 
-                          HeightRequest="60" 
-                          Margin="0">
-                        <StackLayout Orientation="Horizontal" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"
-                                   Spacing="10">
-                            <Label Text="🚌" 
-                                   TextColor="White" 
-                                   FontSize="20" />
-                            <Label Text="Bulunan Seferler" 
-                                   Style="{StaticResource CardHeaderStyle}"
-                                   FontSize="18" />
-                        </StackLayout>
-                    </Grid>
-                    
-                    <!-- Content Area -->
-                    <StackLayout Padding="20" Spacing="15">
-                        
-                        <!-- Loading State -->
-                        <StackLayout IsVisible="{Binding IsLoading}" 
-                                    Spacing="15" 
-                                    HorizontalOptions="Center" 
-                                    VerticalOptions="Center"
-                                    Padding="40">
-                            <ActivityIndicator IsRunning="{Binding IsLoading}" 
-                                             Color="#667EEA" 
-                                             HeightRequest="50" />
-                            <Label Text="Seferler aranıyor..." 
-                                   FontSize="16" 
-                                   TextColor="#6C757D"
-                                   HorizontalOptions="Center" />
-                        </StackLayout>
-                        
-                        <!-- Empty State (Web'deki empty state) -->
-                        <StackLayout IsVisible="{Binding HasNoResults}"
-                                    Spacing="20"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    Padding="40">
-                            <Label Text="🔍" 
-                                   FontSize="80" 
-                                   HorizontalOptions="Center" 
-                                   TextColor="#E9ECEF" />
-                            <Label Text="Aramanıza uygun sefer bulunamadı" 
-                                   FontSize="20" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#6C757D"
-                                   HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center" />
-                            <Label Text="Lütfen arama kriterlerinizi değiştirerek tekrar deneyin." 
-                                   FontSize="14" 
-                                   TextColor="#6C757D"
-                                   HorizontalOptions="Center" 
-                                   HorizontalTextAlignment="Center"
-                                   Margin="0,0,0,20" />
-                            <Button Text="🚌 Tüm Seferleri Göster"
-                                    Command="{Binding LoadSeferlerCommand}"
-                                    Style="{StaticResource HeroButtonStyle}" />
-                        </StackLayout>
-                        
-                    </StackLayout>
-                    
-                    <!-- Sefer Results List -->
-                    <CollectionView ItemsSource="{Binding Seferler}"
-                                   IsVisible="{Binding HasResults}"
-                                   BackgroundColor="Transparent">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0">
-                                    <Frame Style="{StaticResource SeferCardStyle}">
-                                        <StackLayout Spacing="15">
-                                            
-                                            <!-- Route Header -->
-                                            <StackLayout Orientation="Horizontal" Spacing="12">
-                                                <Frame BackgroundColor="#667EEA" 
-                                                       CornerRadius="20" 
-                                                       HeightRequest="40" 
-                                                       WidthRequest="40" 
-                                                       HasShadow="False"
-                                                       Padding="0"
-                                                       VerticalOptions="Center">
-                                                    <Label Text="🚌" 
-                                                           FontSize="18" 
-                                                           TextColor="White"
-                                                           HorizontalOptions="Center"
-                                                           VerticalOptions="Center" />
-                                                </Frame>
-                                                <StackLayout VerticalOptions="Center" Spacing="2">
-                                                    <Label Text="{Binding GuzergahText}" 
-                                                           FontSize="18" 
-                                                           FontAttributes="Bold" 
-                                                           TextColor="#2E3A59" />
-                                                    <Label Text="{Binding FormattedTarih}" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D" />
-                                                </StackLayout>
-                                            </StackLayout>
-                                            
-                                            <!-- Time & Terminal Information -->
-                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                                                <StackLayout Grid.Column="0" Spacing="8">
-                                                    <Label Text="🕐 Kalkış" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D" 
-                                                           FontAttributes="Bold" />
-                                                    <Label Text="{Binding FormattedKalkisSaati}" 
-                                                           FontSize="16" 
-                                                           FontAttributes="Bold" 
-                                                           TextColor="#28A745" />
-                                                    <Label Text="{Binding KalkisTerminal}" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D" />
-                                                </StackLayout>
-                                                
-                                                <StackLayout Grid.Column="1" Spacing="8">
-                                                    <Label Text="📍 Varış" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D" 
-                                                           FontAttributes="Bold" />
-                                                    <Label Text="{Binding FormattedVarisSaati}" 
-                                                           FontSize="16" 
-                                                           FontAttributes="Bold" 
-                                                           TextColor="#DC3545" />
-                                                    <Label Text="{Binding VarisTerminal}" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D" />
-                                                </StackLayout>
-                                            </Grid>
-                                            
-                                            <!-- Price & Seat Information -->
-                                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                                                <StackLayout Grid.Column="0" Spacing="5">
-                                                    <Label Text="💰 Fiyat" 
-                                                           FontSize="11" 
-                                                           TextColor="#6C757D" 
-                                                           FontAttributes="Bold" />
-                                                    <Frame BackgroundColor="#28A745" 
-                                                           CornerRadius="15" 
-                                                           Padding="8,4" 
-                                                           HasShadow="False">
-                                                        <Label Text="{Binding FormattedFiyat}" 
-                                                               FontSize="14" 
-                                                               FontAttributes="Bold" 
-                                                               TextColor="White"
-                                                               HorizontalOptions="Center" />
-                                                    </Frame>
-                                                </StackLayout>
-                                                
-                                                <StackLayout Grid.Column="1" Spacing="5">
-                                                    <Label Text="💺 Boş Koltuk" 
-                                                           FontSize="11" 
-                                                           TextColor="#6C757D" 
-                                                           FontAttributes="Bold" />
-                                                    <Frame BackgroundColor="#17A2B8" 
-                                                           CornerRadius="15" 
-                                                           Padding="8,4" 
-                                                           HasShadow="False">
-                                                        <Label Text="{Binding BosKoltukText}" 
-                                                               FontSize="14" 
-                                                               FontAttributes="Bold" 
-                                                               TextColor="White"
-                                                               HorizontalOptions="Center" />
-                                                    </Frame>
-                                                </StackLayout>
-                                                
-                                                <StackLayout Grid.Column="2" Spacing="5">
-                                                    <Label Text="🚌 Otobüs" 
-                                                           FontSize="11" 
-                                                           TextColor="#6C757D" 
-                                                           FontAttributes="Bold" />
-                                                    <Label Text="{Binding OtobusInfo}" 
-                                                           FontSize="12" 
-                                                           TextColor="#6C757D"
-                                                           HorizontalTextAlignment="Center" />
-                                                </StackLayout>
-                                            </Grid>
-                                            
-                                            <!-- Action Button -->
-                                            <Button Text="🎫 Koltuk Seç ve Devam Et"
-                                                   Command="{Binding BindingContext.SeferSecCommand, Source={x:Reference Name=SeferListPageRoot}}"
-                                                   CommandParameter="{Binding .}"
-                                                   Background="{StaticResource PrimaryGradient}"
-                                                   TextColor="White"
-                                                   CornerRadius="25"
-                                                   HeightRequest="50"
-                                                   FontSize="16"
-                                                   FontAttributes="Bold"
-                                                   Margin="0,15,0,0" />
-                                            
-                                        </StackLayout>
+                        <!-- From/To Fields -->
+                        <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12" RowSpacing="12">
+                            
+                            <!-- Enhanced From Field -->
+                            <StackLayout Grid.Column="0" Spacing="10">
+                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                    <Frame BackgroundColor="{StaticResource Primary}"
+                                           CornerRadius="8"
+                                           Padding="4"
+                                           HasShadow="False"
+                                           WidthRequest="24"
+                                           HeightRequest="24">
+                                        <Label Text="📍"
+                                               FontSize="12"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
                                     </Frame>
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                    
-                </StackLayout>
-            </Frame>
+                                    <Label Text="Nereden" 
+                                           Style="{StaticResource BodyMediumStyle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
+                                           VerticalOptions="Center" />
+                                </StackLayout>
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="12"
+                                       HasShadow="False"
+                                       Padding="16,12"
+                                       BorderColor="#E8E8E8">
+                                    <Frame.Shadow>
+                                        <Shadow Brush="{StaticResource Gray300}"
+                                                Offset="0,2"
+                                                Radius="8"
+                                                Opacity="0.1" />
+                                    </Frame.Shadow>
+                                    <Picker ItemsSource="{Binding KalkisYerleri}"
+                                            SelectedItem="{Binding KalkisYeri}"
+                                            ItemDisplayBinding="{Binding .}"
+                                            Title="Kalkış şehri"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            FontSize="16"
+                                            FontAttributes="Bold" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Enhanced Swap Button -->
+                            <Button Grid.Column="1"
+                                    Text="⇄"
+                                    Background="{StaticResource SecondaryGradient}"
+                                    TextColor="{StaticResource TextOnPrimary}"
+                                    CornerRadius="26"
+                                    WidthRequest="52"
+                                    HeightRequest="52"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    VerticalOptions="End"
+                                    Command="{Binding SwapLocationsCommand}">
+                                <Button.Shadow>
+                                    <Shadow Brush="{StaticResource Secondary}"
+                                            Offset="0,4"
+                                            Radius="12"
+                                            Opacity="0.25" />
+                                </Button.Shadow>
+                            </Button>
+                            
+                            <!-- Enhanced To Field -->
+                            <StackLayout Grid.Column="2" Spacing="10">
+                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                    <Frame BackgroundColor="{StaticResource Secondary}"
+                                           CornerRadius="8"
+                                           Padding="4"
+                                           HasShadow="False"
+                                           WidthRequest="24"
+                                           HeightRequest="24">
+                                        <Label Text="🎯"
+                                               FontSize="12"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Frame>
+                                    <Label Text="Nereye" 
+                                           Style="{StaticResource BodyMediumStyle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Secondary}"
+                                           VerticalOptions="Center" />
+                                </StackLayout>
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="12"
+                                       HasShadow="False"
+                                       Padding="16,12"
+                                       BorderColor="#E8E8E8">
+                                    <Frame.Shadow>
+                                        <Shadow Brush="{StaticResource Gray300}"
+                                                Offset="0,2"
+                                                Radius="8"
+                                                Opacity="0.1" />
+                                    </Frame.Shadow>
+                                    <Picker ItemsSource="{Binding VarisYerleri}"
+                                            SelectedItem="{Binding VarisYeri}"
+                                            ItemDisplayBinding="{Binding .}"
+                                            Title="Varış şehri"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            FontSize="16"
+                                            FontAttributes="Bold" />
+                                </Frame>
+                            </StackLayout>
+                        </Grid>
+                        
+                        <!-- Date and Passenger Count -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                            
+                            <!-- Enhanced Date Field -->
+                            <StackLayout Grid.Column="0" Spacing="10">
+                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                    <Frame BackgroundColor="{StaticResource Accent}"
+                                           CornerRadius="8"
+                                           Padding="4"
+                                           HasShadow="False"
+                                           WidthRequest="24"
+                                           HeightRequest="24">
+                                        <Label Text="📅"
+                                               FontSize="12"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Frame>
+                                    <Label Text="Gidiş Tarihi" 
+                                           Style="{StaticResource BodyMediumStyle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Accent}"
+                                           VerticalOptions="Center" />
+                                </StackLayout>
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="12"
+                                       HasShadow="False"
+                                       Padding="16,12"
+                                       BorderColor="#E8E8E8">
+                                    <Frame.Shadow>
+                                        <Shadow Brush="{StaticResource Gray300}"
+                                                Offset="0,2"
+                                                Radius="8"
+                                                Opacity="0.1" />
+                                    </Frame.Shadow>
+                                    <DatePicker Date="{Binding Tarih}"
+                                               BackgroundColor="Transparent"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontSize="16"
+                                               FontAttributes="Bold" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Enhanced Passenger Count -->
+                            <StackLayout Grid.Column="1" Spacing="10">
+                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                    <Frame BackgroundColor="{StaticResource TravelBlue}"
+                                           CornerRadius="8"
+                                           Padding="4"
+                                           HasShadow="False"
+                                           WidthRequest="24"
+                                           HeightRequest="24">
+                                        <Label Text="👥"
+                                               FontSize="12"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Frame>
+                                    <Label Text="Yolcu Sayısı" 
+                                           Style="{StaticResource BodyMediumStyle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
+                                           VerticalOptions="Center" />
+                                </StackLayout>
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="12"
+                                       HasShadow="False"
+                                       Padding="16,12"
+                                       BorderColor="#E8E8E8">
+                                    <Frame.Shadow>
+                                        <Shadow Brush="{StaticResource Gray300}"
+                                                Offset="0,2"
+                                                Radius="8"
+                                                Opacity="0.1" />
+                                    </Frame.Shadow>
+                                    <Picker ItemsSource="{Binding YolcuSayisiListesi}"
+                                            SelectedItem="{Binding YolcuSayisi}"
+                                            Title="Kişi sayısı"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            FontSize="16"
+                                            FontAttributes="Bold" />
+                                </Frame>
+                            </StackLayout>
+                        </Grid>
+                        
+                        <!-- Validation Messages -->
+                        <StackLayout Spacing="4" IsVisible="{Binding HasValidationErrors}">
+                            <Label Text="Lütfen kalkış ve varış yerlerini seçin"
+                                   Style="{StaticResource CaptionStyle}"
+                                   TextColor="{StaticResource StatusError}"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                        
+                        <!-- Enhanced Search Button with Modern Gradient -->
+                        <Button Text="🔍 Sefer Ara"
+                                Command="{Binding SeferAraCommand}"
+                                IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="{StaticResource TextOnPrimary}"
+                                CornerRadius="20"
+                                HeightRequest="60"
+                                Margin="0,20,0,0">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#667EEA" Offset="0.0" />
+                                    <GradientStop Color="#764BA2" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <Button.Shadow>
+                                <Shadow Brush="#667EEA"
+                                        Offset="0,8"
+                                        Radius="24"
+                                        Opacity="0.4" />
+                            </Button.Shadow>
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsLoading}" Value="True">
+                                    <Setter Property="Text" Value="🔄 Aranıyor..." />
+                                    <Setter Property="Opacity" Value="0.7" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
             
-            <!-- Bottom Message -->
-            <Label Text="{Binding SearchMessage}" 
-                   IsVisible="{Binding HasSearchMessage}"
-                   FontSize="14"
-                   TextColor="#6C757D"
+            
+            
+            <!-- Search Results Section -->
+            <StackLayout x:Name="ResultsSection" 
+                         Padding="20" 
+                         Spacing="16"
+                         IsVisible="{Binding Seferler.Count, Converter={StaticResource CountToBoolConverter}}">
+                
+                
+                
+                <CollectionView ItemsSource="{Binding Seferler}"
+                              BackgroundColor="Transparent"
+                              SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White"
+                                   CornerRadius="16"
+                                   HasShadow="True"
+                                   Padding="24"
+                                   Margin="16,12"
+                                   BorderColor="#E8E8E8">
+                                <Frame.Shadow>
+                                    <Shadow Brush="{StaticResource Black}"
+                                            Offset="0,4"
+                                            Radius="20"
+                                            Opacity="0.08" />
+                                </Frame.Shadow>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Scale" Value="0.98" />
+                                                <Setter Property="Opacity" Value="0.8" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <StackLayout Spacing="18">
+                                    
+                                    <!-- Header Row: Route & Price -->
+                                    <Grid ColumnDefinitions="*,Auto" RowSpacing="8">
+                                        <StackLayout Grid.Column="0" Spacing="8">
+                                            <Label Text="{Binding Guzergah.GuzergahAdi}"
+                                                   Style="{StaticResource H1Style}"
+                                                   TextColor="{StaticResource TextPrimary}" />
+                                            <Label Text="{Binding Guzergah.Mesafe, StringFormat='{}{0} km'}"
+                                                   Style="{StaticResource BodyStyle}"
+                                                   TextColor="{StaticResource TextSecondary}" />
+                                        </StackLayout>
+                                        
+                                        <StackLayout Grid.Column="1" HorizontalOptions="End" Spacing="4">
+                                            <Label Text="{Binding Fiyat, StringFormat='{}{0:F0} TL'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource StatusSuccess}"
+                                                   HorizontalTextAlignment="End" />
+                                            <Label Text="Kişi başı" 
+                                                   Style="{StaticResource BodySmallStyle}"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   HorizontalTextAlignment="End" />
+                                        </StackLayout>
+                                    </Grid>
+                                    
+                                    <!-- Journey Details - Enhanced Background -->
+                                    <Frame BackgroundColor="#F8F9FA"
+                                           CornerRadius="12"
+                                           HasShadow="False"
+                                           Padding="16,12"
+                                           Margin="0">
+                                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
+                                            <StackLayout Grid.Column="0" Spacing="4">
+                                                <Label Text="🕐 Kalkış" 
+                                                       Style="{StaticResource BodySmallStyle}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16" />
+                                                <Label Text="{Binding Saat}" 
+                                                       Style="{StaticResource BodyMediumStyle}"
+                                                       FontAttributes="Bold" 
+                                                       TextColor="{StaticResource TextPrimary}" />
+                                            </StackLayout>
+                                           
+                                            
+                                            <StackLayout Grid.Column="2" HorizontalOptions="End" Spacing="4">
+                                                <Label Text="💺 Koltuk" 
+                                                       Style="{StaticResource BodySmallStyle}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16"
+                                                       HorizontalTextAlignment="End" />
+                                                <Label Text="{Binding BosKoltukSayisi, StringFormat='{}{0} Boş'}" 
+                                                       Style="{StaticResource BodyMediumStyle}"
+                                                       FontAttributes="Bold" 
+                                                       TextColor="{StaticResource StatusSuccess}"
+                                                       HorizontalTextAlignment="End" />
+                                            </StackLayout>
+                                        </Grid>
+                                    </Frame>
+                                    
+                                    <!-- Features Section - Enhanced -->
+                                    <StackLayout Spacing="12">
+                                        <Label Text="Özellikler" 
+                                               Style="{StaticResource BodyMediumStyle}"
+                                               FontAttributes="Bold" />
+                                               
+                                        <StackLayout Orientation="Horizontal" Spacing="12">
+                                            <Frame BackgroundColor="{StaticResource PrimarySubtle}" 
+                                                   CornerRadius="12" 
+                                                   Padding="12,8" 
+                                                   HasShadow="False"
+                                                   MinimumHeightRequest="44">
+                                                <Label Text="📶 WiFi" 
+                                                       Style="{StaticResource BodySmallStyle}"
+                                                       TextColor="{StaticResource Primary}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16" />
+                                            </Frame>
+                                            <Frame BackgroundColor="{StaticResource SecondarySubtle}" 
+                                                   CornerRadius="12" 
+                                                   Padding="12,8" 
+                                                   HasShadow="False"
+                                                   MinimumHeightRequest="44">
+                                                <Label Text="❄️ Klima" 
+                                                       Style="{StaticResource BodySmallStyle}"
+                                                       TextColor="{StaticResource Secondary}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16" />
+                                            </Frame>
+                                            <Frame BackgroundColor="{StaticResource AccentSubtle}" 
+                                                   CornerRadius="12" 
+                                                   Padding="12,8" 
+                                                   HasShadow="False"
+                                                   MinimumHeightRequest="44">
+                                                <Label Text="🔌 USB" 
+                                                       Style="{StaticResource BodySmallStyle}"
+                                                       TextColor="{StaticResource Accent}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16" />
+                                            </Frame>
+                                        </StackLayout>
+                                    </StackLayout>
+                                    
+                                    <!-- Enhanced Action Button -->
+                                    <Button Text="🎫 Koltuk Seç"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            Margin="0,12,0,0"
+                                            Command="{Binding BindingContext.SeferSecCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                            CommandParameter="{Binding}" />
+                                    
+                                </StackLayout>
+                                
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.SeferSecCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                        CommandParameter="{Binding}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+            
+            <!-- Yükleniyor Göstergesi -->
+            <ActivityIndicator IsVisible="{Binding IsLoading}"
+                             IsRunning="{Binding IsLoading}"
+                             Color="{StaticResource Primary}"
+                             HeightRequest="50"
+                             Margin="0,20" />
+            
+            <!-- Arama Mesajı -->
+            <Label Text="{Binding SearchMessage}"
+                   IsVisible="{Binding SearchMessage, Converter={StaticResource IsNotNullOrEmptyConverter}}"
+                   Style="{StaticResource BodyStyle}"
+                   TextColor="{StaticResource TextSecondary}"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
-                   Padding="20,10,20,40" />
+                   Margin="16,20" />
+            
+            <!-- Boş Alan -->
+            <BoxView HeightRequest="50" Color="Transparent" />
             
         </StackLayout>
     </ScrollView>
-    
 </ContentPage>
