@@ -1,21 +1,835 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0",
-    "RelativePath": "weatherforecast",
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.BiletController",
+    "Method": "GetAllBiletler",
+    "RelativePath": "api/Bilet",
     "HttpMethod": "GET",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "WeatherForecast[]",
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Bilet, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
-          "application/json"
+          "text/plain",
+          "application/json",
+          "text/json"
         ],
         "StatusCode": 200
       }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.BiletController",
+    "Method": "CreateBilet",
+    "RelativePath": "api/Bilet",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bilet",
+        "Type": "OtobusBiletSistemi.Core.Entities.Bilet",
+        "IsRequired": true
+      }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Bilet",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.BiletController",
+    "Method": "GetBilet",
+    "RelativePath": "api/Bilet/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Bilet",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.BiletController",
+    "Method": "UpdateBilet",
+    "RelativePath": "api/Bilet/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bilet",
+        "Type": "OtobusBiletSistemi.Core.Entities.Bilet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Bilet",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.BiletController",
+    "Method": "DeleteBilet",
+    "RelativePath": "api/Bilet/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.GuzergahController",
+    "Method": "GetAllGuzergah",
+    "RelativePath": "api/Guzergah",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Guzergah, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.GuzergahController",
+    "Method": "CreateGuzergah",
+    "RelativePath": "api/Guzergah",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "guzergah",
+        "Type": "OtobusBiletSistemi.Core.Entities.Guzergah",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Guzergah",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.GuzergahController",
+    "Method": "GetGuzergah",
+    "RelativePath": "api/Guzergah/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Guzergah",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.GuzergahController",
+    "Method": "UpdateGuzergah",
+    "RelativePath": "api/Guzergah/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "guzergah",
+        "Type": "OtobusBiletSistemi.Core.Entities.Guzergah",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Guzergah",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.GuzergahController",
+    "Method": "DeleteGuzergah",
+    "RelativePath": "api/Guzergah/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.KoltukController",
+    "Method": "GetAllKoltuklar",
+    "RelativePath": "api/Koltuk",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Koltuk, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.KoltukController",
+    "Method": "CreateKoltuk",
+    "RelativePath": "api/Koltuk",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "koltuk",
+        "Type": "OtobusBiletSistemi.Core.Entities.Koltuk",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Koltuk",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.KoltukController",
+    "Method": "GetKoltuk",
+    "RelativePath": "api/Koltuk/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Koltuk",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.KoltukController",
+    "Method": "UpdateKoltuk",
+    "RelativePath": "api/Koltuk/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "koltuk",
+        "Type": "OtobusBiletSistemi.Core.Entities.Koltuk",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Koltuk",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.KoltukController",
+    "Method": "DeleteKoltuk",
+    "RelativePath": "api/Koltuk/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OdemeController",
+    "Method": "GetAllOdemeler",
+    "RelativePath": "api/Odeme",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Odeme, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OdemeController",
+    "Method": "CreateOdeme",
+    "RelativePath": "api/Odeme",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "odeme",
+        "Type": "OtobusBiletSistemi.Core.Entities.Odeme",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Odeme",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OdemeController",
+    "Method": "GetOdeme",
+    "RelativePath": "api/Odeme/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Odeme",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OdemeController",
+    "Method": "UpdateOdeme",
+    "RelativePath": "api/Odeme/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "odeme",
+        "Type": "OtobusBiletSistemi.Core.Entities.Odeme",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Odeme",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OdemeController",
+    "Method": "DeleteOdeme",
+    "RelativePath": "api/Odeme/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OtobusController",
+    "Method": "GetAllOtobusler",
+    "RelativePath": "api/Otobus",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Otobus, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OtobusController",
+    "Method": "CreateOtobus",
+    "RelativePath": "api/Otobus",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "otobus",
+        "Type": "OtobusBiletSistemi.Core.Entities.Otobus",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Otobus",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OtobusController",
+    "Method": "GetOtobus",
+    "RelativePath": "api/Otobus/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Otobus",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OtobusController",
+    "Method": "UpdateOtobus",
+    "RelativePath": "api/Otobus/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "otobus",
+        "Type": "OtobusBiletSistemi.Core.Entities.Otobus",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Otobus",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.OtobusController",
+    "Method": "DeleteOtobus",
+    "RelativePath": "api/Otobus/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.SeferController",
+    "Method": "GetAllSeferler",
+    "RelativePath": "api/Sefer",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Sefer, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.SeferController",
+    "Method": "CreateSefer",
+    "RelativePath": "api/Sefer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sefer",
+        "Type": "OtobusBiletSistemi.Core.Entities.Sefer",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Sefer",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.SeferController",
+    "Method": "GetSefer",
+    "RelativePath": "api/Sefer/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Sefer",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.SeferController",
+    "Method": "UpdateSefer",
+    "RelativePath": "api/Sefer/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "sefer",
+        "Type": "OtobusBiletSistemi.Core.Entities.Sefer",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Sefer",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.SeferController",
+    "Method": "DeleteSefer",
+    "RelativePath": "api/Sefer/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.YolcuController",
+    "Method": "GetAllYolcular",
+    "RelativePath": "api/Yolcu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[OtobusBiletSistemi.Core.Entities.Yolcu, OtobusBiletSistemi.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.YolcuController",
+    "Method": "CreateYolcu",
+    "RelativePath": "api/Yolcu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "yolcu",
+        "Type": "OtobusBiletSistemi.Core.Entities.Yolcu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Yolcu",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.YolcuController",
+    "Method": "GetYolcu",
+    "RelativePath": "api/Yolcu/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Yolcu",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.YolcuController",
+    "Method": "UpdateYolcu",
+    "RelativePath": "api/Yolcu/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "yolcu",
+        "Type": "OtobusBiletSistemi.Core.Entities.Yolcu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "OtobusBiletSistemi.Core.Entities.Yolcu",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "OtobusBiletSistemi.API.Controllers.YolcuController",
+    "Method": "DeleteYolcu",
+    "RelativePath": "api/Yolcu/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

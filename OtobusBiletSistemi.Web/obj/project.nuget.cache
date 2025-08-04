@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PQxrqcDkkuw=",
+  "dgSpecHash": "0LxL0eE5Hqs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj",
+  "projectFilePath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Web\\OtobusBiletSistemi.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\samet\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\samet\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.0\\microsoft.aspnetcore.cryptography.internal.9.0.0.nupkg.sha512",

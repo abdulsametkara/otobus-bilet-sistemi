@@ -4044,11 +4044,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
+      "projectUniqueName": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
       "projectName": "OtobusBiletSistemi.API",
-      "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
+      "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
       "packagesPath": "C:\\Users\\samet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\obj\\",
+      "outputPath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4070,8 +4070,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj": {
-              "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj"
+            "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj": {
+              "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj"
             }
           }
         }

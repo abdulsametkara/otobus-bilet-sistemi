@@ -101,16 +101,17 @@ namespace OtobusBiletSistemi.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteSefer(int id)
+        public async Task<IActionResult> DeleteSefer(int id)
         {
             try
             {
-                var result = await _seferRepository.DeleteAsync(id);
-
-                if (!result)
+                var sefer = await _seferRepository.GetByIdAsync(id);
+                if (sefer == null)
                 {
                     return NotFound($"ID {id} olan sefer bulunamadı.");
                 }
+
+                await _seferRepository.DeleteAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

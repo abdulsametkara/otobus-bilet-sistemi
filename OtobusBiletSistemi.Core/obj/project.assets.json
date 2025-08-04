@@ -3427,11 +3427,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj",
+      "projectUniqueName": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj",
       "projectName": "OtobusBiletSistemi.Core",
-      "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj",
+      "projectPath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\OtobusBiletSistemi.Core.csproj",
       "packagesPath": "C:\\Users\\samet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\obj\\",
+      "outputPath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

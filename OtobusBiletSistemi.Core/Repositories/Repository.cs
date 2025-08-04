@@ -35,10 +35,7 @@ namespace OtobusBiletSistemi.Core.Repositories
 
         public async Task<T> UpdateAsync(T entity)
         {
-            // Önce takip edilen entity'leri temizle
             _context.ChangeTracker.Clear();
-            
-            // Entity'yi güncelle
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return entity;

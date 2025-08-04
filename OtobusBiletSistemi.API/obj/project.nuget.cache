@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vlf7/iwloXo=",
+  "dgSpecHash": "afwT/3TTUwg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\samet\\Desktop\\test-project\\admin-panalleri\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
+  "projectFilePath": "C:\\Users\\samet\\Desktop\\test-project\\projeler\\OtobusBiletSistemi\\OtobusBiletSistemi.API\\OtobusBiletSistemi.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\samet\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\samet\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
